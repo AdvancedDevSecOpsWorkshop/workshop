@@ -1,5 +1,5 @@
-name: argo-rollouts-workshop
-title: Argo Rollouts Workshop
+name: advanced-devsec-workshop
+title: Advanced DevSecOps Workshop
 version: main
 nav:
   - modules/ROOT/nav.adoc

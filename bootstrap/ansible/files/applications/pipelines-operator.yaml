@@ -22,6 +22,6 @@ spec:
         factor: 2
         maxDuration: 3m
   source:
-    repoURL: https://github.com/OpenShiftDemos/argo-rollouts-workshop
+    repoURL: https://github.com/OpenShiftDemos/advanced-devsecops-workshop
     targetRevision: main
     path: bootstrap/infra/pipelines-operator/base
