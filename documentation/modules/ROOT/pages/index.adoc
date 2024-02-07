@@ -1,0 +1,3 @@
+= Welcome to the Advanced DevSecOps Workshop
+:page-layout: home
+:!sectids:
