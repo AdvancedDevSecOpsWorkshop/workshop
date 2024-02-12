@@ -102,11 +102,6 @@
         state: present
         src: "{{ item }}"
       loop: "{{ query('fileglob', 'files/applications/*.yaml') }}"
-      # with_items:
-      #   - files/applications/pipelines-operator.yaml
-      #   - files/applications/gitea-operator.yaml
-      #   - files/applications/quay-operator.yaml
-      #   - files/applications/devspaces-operator.yaml
 
     # Todo: Check health of apps
     - name: Wait 30 seconds for deployment
