@@ -91,10 +91,11 @@
       command: "oc rollout status deployment {{ item }} -n openshift-gitops"
       with_items: "{{ gitops_deployments }}"
 
-    - name: Deploy cluster-config appproject
+    - name: Deploy appprojects
       kubernetes.core.k8s:
         state: present
-        src: "files/appprojects/cluster-config.yaml"
+        src: "{{ item }}"
+      loop: "{{ query('fileglob', 'files/appprojects/*.yaml') }}"
 
     - name: Deploy infra applications
       kubernetes.core.k8s:
