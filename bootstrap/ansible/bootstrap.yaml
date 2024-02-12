@@ -73,10 +73,14 @@
         state: present
         src: files/gitops-operator/application-controller-rolebinding.yaml
 
-    - name: Deploy CMP Configuration
+    - name: Deploy additional configuration
       kubernetes.core.k8s:
         state: present
-        src: files/gitops-operator/setenv-cmp-plugin-cm.yaml
+        src: files/gitops-operator/{{ item }}
+      with_items:
+        - setenv-cmp-plugin-cm.yaml
+        - controller-managedby-rbac.yaml
+        - server-managedby-rbac.yaml
 
     - name: Update openshift-gitops-instance
       kubernetes.core.k8s:
