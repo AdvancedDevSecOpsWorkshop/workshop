@@ -97,14 +97,16 @@
         src: "{{ item }}"
       with_items:
         - files/applications/pipelines-operator.yaml
-        - files/applications/web-terminal-operator.yaml
+        - files/applications/gitea-operator.yaml
+        - files/applications/quay-operator.yaml
+        - files/applications/devspaces-operator.yaml
 
     # Todo: Check health of apps
     - name: Wait 30 seconds for deployment
       wait_for:
         timeout: 30
 
-    - name: Update users applicationset
-      kubernetes.core.k8s:
-        state: present
-        definition: "{{ lookup('template', 'user-appset.yaml.j2') }}"
+    # - name: Update users applicationset
+    #   kubernetes.core.k8s:
+    #     state: present
+    #     definition: "{{ lookup('template', 'user-appset.yaml.j2') }}"
