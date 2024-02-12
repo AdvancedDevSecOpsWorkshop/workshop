@@ -2,7 +2,7 @@
   connection: local
 
   vars:
-    users: 10
+    users: 5
     gitops_deployments:
       - cluster
       - kam
@@ -112,7 +112,7 @@
       wait_for:
         timeout: 30
 
-    # - name: Update users applicationset
-    #   kubernetes.core.k8s:
-    #     state: present
-    #     definition: "{{ lookup('template', 'user-appset.yaml.j2') }}"
+    - name: Update users applicationset
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('template', 'user-appset.yaml.j2') }}"
