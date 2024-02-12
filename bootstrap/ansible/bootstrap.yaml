@@ -91,15 +91,21 @@
       command: "oc rollout status deployment {{ item }} -n openshift-gitops"
       with_items: "{{ gitops_deployments }}"
 
+    - name: Deploy cluster-config appproject
+      kubernetes.core.k8s:
+        state: present
+        src: "files/appprojects/cluster-config.yaml"
+
     - name: Deploy infra applications
       kubernetes.core.k8s:
         state: present
         src: "{{ item }}"
-      with_items:
-        - files/applications/pipelines-operator.yaml
-        - files/applications/gitea-operator.yaml
-        - files/applications/quay-operator.yaml
-        - files/applications/devspaces-operator.yaml
+      loop: "{{ query('fileglob', 'files/applications/*.yaml') }}"
+      # with_items:
+      #   - files/applications/pipelines-operator.yaml
+      #   - files/applications/gitea-operator.yaml
+      #   - files/applications/quay-operator.yaml
+      #   - files/applications/devspaces-operator.yaml
 
     # Todo: Check health of apps
     - name: Wait 30 seconds for deployment

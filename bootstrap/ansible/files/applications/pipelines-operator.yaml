@@ -10,7 +10,7 @@ spec:
   destination:
     namespace: openshift-pipelines
     server: 'https://kubernetes.default.svc'
-  project: default
+  project: cluster-config
   syncPolicy:
     automated:
       prune: false
