@@ -5,4 +5,5 @@ metadata:
     openshift.io/display-name:  Production Environment
   labels:
     argocd.argoproj.io/managed-by: user{{ .Values.user }}-argocd
+    user: user{{ .Values.user }}
   name: user{{ .Values.user }}-prod

@@ -3,4 +3,6 @@ kind: Namespace
 metadata:
   annotations:
     openshift.io/display-name:  Argo CD
+  labels:
+    user: user{{ .Values.user }}
   name: user{{ .Values.user }}-argocd

@@ -5,6 +5,6 @@ description: Chart generates everything need for a specified user to run the Adv
 type: application
 kubeVersion: '>=1.14.6'
 sources:
- - https://github.com/OpenShiftDemos/argo-rollouts-workshop
+ - https://github.com/OpenShiftDemos/advanced-devsecops-workshop
 maintainers:
 - name: Gerald Nunn

@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: declarative-configurations
+  namespace: stackrox
+data:
+  openshift-auth.yaml: |
+    minimumRole: None
+    openshift:
+        enable: true
+    groups:
+        - key: name
+          value: admin
+          role: Admin
+        {{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
+        - key: name
+          value: user{{ . }}
+          role: user{{ . }}
+        {{- end }}
+  {{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
+  user{{ . }}-access-scope.yaml: |
+            name: user{{.}}
+            rules:
+                clusterLabelSelectors:
+                    - requirements:
+                        - key: kubernetes.io/metadata.name
+                          operator: IN
+                          values:
+                            - local-cluster
+                namespaceLabelSelectors:
+                    - requirements:
+                        - key: user
+                          operator: IN
+                          values:
+                            - user{{.}}
+  {{- end }}
+  permission-set.yaml: |
+    name: users
+    resources:
+        - resource: Access
+          access: READ_ACCESS
+  {{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
+  user{{ . }}-role.yaml: |
+    name: user{{ . }}
+    accessScope: user{{ . }}
+    permissionSet: users
+  {{- end}}
