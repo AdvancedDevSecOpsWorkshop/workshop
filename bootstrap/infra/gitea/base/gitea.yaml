@@ -13,22 +13,13 @@ spec:
   giteaAdminEmail: gitea-admin@ignore-redhat.com
   giteaCreateUsers: true
   giteaGenerateUserFormat: "user1"
-  giteaUserNumber: 1
+  giteaUserNumber: "${USERS}"
   giteaUserPassword: openshift
   giteaMigrateRepositories: true
   giteaRepositoriesList:
-  - repo: https://github.com/coolstore-demo/coolstore.git
-    name: coolstore
-    private: false
-  - repo: https://github.com/coolstore-demo/inventory-quarkus.git
-    name: inventory-quarkus
-    private: false
-  - repo: https://github.com/coolstore-demo/web-nodejs.git
-    name: web-nodejs
-    private: false
-  - repo: https://github.com/coolstore-demo/catalog-spring-boot.git
-    name: catalog-spring-boot
-    private: false
-  - repo: https://github.com/coolstore-demo/gateway-vertx.git
-    name: gateway-vertx
-    private: false
+    - repo: https://github.com/redhat-gpte-devopsautomation/globex-ui.git
+      name: globex-ui
+      private: false
+    - repo: https://github.com/redhat-gpe/stssc-on-ocp-wks.git
+      name: stssc-on-ocp-wks
+      private: false
