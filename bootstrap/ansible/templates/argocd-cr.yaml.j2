@@ -65,7 +65,7 @@ spec:
           - name: SUB_DOMAIN
             value: {{ sub_domain }}
           - name: USERS
-            value: {{ users }}
+            value: "{{ users }}"
         image: quay.io/gnunn/tools:latest
         imagePullPolicy: Always
         securityContext:
