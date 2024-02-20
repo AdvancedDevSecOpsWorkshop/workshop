@@ -10,7 +10,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/channel
-        value: 'rhacs-4.1'
+        value: 'rhacs-4.3'
     target:
       kind: Subscription
       name: rhacs-operator
@@ -20,3 +20,11 @@ patches:
         value: EBPF
     target:
       kind: SecuredCluster
+  - patch: |-
+      - op: add
+        path: /spec/central/declarativeConfiguration
+        value:
+          configMaps:
+            - name: declarative-configurations
+    target:
+      kind: Central
