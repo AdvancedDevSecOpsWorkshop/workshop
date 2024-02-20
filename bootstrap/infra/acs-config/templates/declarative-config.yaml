@@ -65,7 +65,7 @@ data:
           access: NO_ACCESS
         - resource: K8sRole
           access: READ_ACCESS
-        - resource: k8sRoleBinding
+        - resource: K8sRoleBinding
           access: READ_ACCESS
         - resource: K8sSubject
           access: READ_ACCESS
