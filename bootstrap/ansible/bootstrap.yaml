@@ -112,6 +112,11 @@
       wait_for:
         timeout: 30
 
+    - name: Deploy ACS Configuration
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('template', 'acs-config-app.yaml.j2') }}"
+
     - name: Update users applicationset
       kubernetes.core.k8s:
         state: present
