@@ -6,7 +6,7 @@ metadata:
 data:
   openshift-auth.yaml: |
     name: openshift
-    uiEndpoint: central-stackrox.{{ sub_domain }}:443
+    uiEndpoint: central-stackrox.{{ $.Values.sub_domain }}:443
     openshift:
         enable: true
     minimumRole: None
