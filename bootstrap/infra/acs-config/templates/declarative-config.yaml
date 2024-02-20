@@ -22,6 +22,7 @@ data:
   {{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
   user{{ . }}-access-scope.yaml: |
             name: user{{.}}
+            description: Access scope for user{{.}}
             rules:
                 clusterLabelSelectors:
                     - requirements:
@@ -38,12 +39,58 @@ data:
   {{- end }}
   permission-set.yaml: |
     name: users
+    description: Workshop users permissions
     resources:
         - resource: Access
           access: READ_ACCESS
+        - resource: Administration
+          access: READ_ACCESS
+        - resource: Alert
+          access: READ_ACCESS
+        - resource: CVE
+          access: READ_ACCESS
+        - resource: Cluster
+          access: READ_ACCESS
+        - resource: Compliance
+          access: READ_ACCESS
+        - resource: Deployment
+          access: READ_ACCESS
+        - resource: DeploymentExtension
+          access: READ_ACCESS
+        - resource: Detection
+          access: READ_ACCESS
+        - resource: Image
+          access: READ_ACCESS
+        - resource: Integration
+          access: NO_ACCESS
+        - resource: K8sRole
+          access: READ_ACCESS
+        - resource: k8sRoleBinding
+          access: READ_ACCESS
+        - resource: K8sSubject
+          access: READ_ACCESS
+        - resource: Namespace
+          access: READ_ACCESS
+        - resource: NetworkGraph
+          access: READ_ACCESS
+        - resource: NetworkPolicy
+          access: READ_ACCESS
+        - resource: Node
+          access: READ_ACCESS
+        - resource: Secret
+          access: READ_ACCESS
+        - resource: ServiceAccount
+          access: READ_ACCESS
+        - resource: WatchedImage
+          access: READ_WRITE_ACCESS
+        - resource: VulnerabilityManagementApprovals
+          access: READ_ACCESS
+        - resource: VulnerabilityManagementRequests
+          access: READ_WRITE_ACCESS
   {{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
   user{{ . }}-role.yaml: |
     name: user{{ . }}
+    description: Role for user{{.}}
     accessScope: user{{ . }}
     permissionSet: users
   {{- end}}
