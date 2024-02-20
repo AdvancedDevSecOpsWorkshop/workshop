@@ -24,4 +24,4 @@ spec:
   source:
     repoURL: https://github.com/OpenShiftDemos/advanced-devsecops-workshop
     targetRevision: main
-    path: bootstrap/infra/acs-operator/oauth
+    path: bootstrap/infra/acs-operator/overlays/oauth
