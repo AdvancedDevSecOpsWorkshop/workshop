@@ -14,7 +14,8 @@ spec:
     targetRevision: main
     helm:
         values: |
-        users: "{% raw %}{{ users }}{% endraw %}"
+          users: "{% raw %}{{ users }}{% endraw %}"
+          sub_domain: {{ sub_domain }}
   syncPolicy:
     automated:
       selfHeal: true
