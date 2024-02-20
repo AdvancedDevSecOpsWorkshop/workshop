@@ -5,9 +5,11 @@ metadata:
   namespace: stackrox
 data:
   openshift-auth.yaml: |
-    minimumRole: None
+    name: openshift
+    uiEndpoint: central-stackrox.${subdomain}:443
     openshift:
         enable: true
+    minimumRole: None
     groups:
         - key: name
           value: admin
