@@ -12,7 +12,7 @@ spec:
   port:
     targetPort: https
   tls:
-    termination: rencrypt
+    termination: reencrypt
   to:
     kind: Service
     name: central
