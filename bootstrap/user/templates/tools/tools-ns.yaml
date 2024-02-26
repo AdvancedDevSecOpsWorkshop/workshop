@@ -4,6 +4,6 @@ metadata:
   annotations:
     openshift.io/display-name:  CI/CD Tools
   labels:
-    argocd.argoproj.io/managed-by: user{{ .Values.user }}-argocd
+    argocd.argoproj.io/managed-by: gitops
     user: user{{ .Values.user }}
   name: user{{ .Values.user }}-tools
