@@ -56,9 +56,10 @@
             upgradeStrategy: Default
 
     - name: deploy-gitops-operator
-      k8s:
-        src: files/gitops-operator/subscription.yaml
+      kubernetes.core.k8s:
         state: present
+        src: "{{ item }}"
+      loop: "{{ query('fileglob', 'files/gitops-operator/*.yaml') }}"
 
     - name: Sleep for 60 seconds
       wait_for:
@@ -72,12 +73,6 @@
       kubernetes.core.k8s:
         state: present
         src: files/gitops-operator/application-controller-rolebinding.yaml
-
-    - name: Deploy additional configuration
-      kubernetes.core.k8s:
-        state: present
-        src: "{{ item }}"
-      loop: "{{ query('fileglob', 'files/gitops-operator/*.yaml') }}"
 
     - name: Update openshift-gitops-instance
       kubernetes.core.k8s:
