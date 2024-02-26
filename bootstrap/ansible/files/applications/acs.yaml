@@ -22,6 +22,6 @@ spec:
         factor: 2
         maxDuration: 3m
   source:
-    repoURL: https://github.com/OpenShiftDemos/advanced-devsecops-workshop
+    repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop
     targetRevision: main
     path: bootstrap/infra/acs-operator/overlays/oauth

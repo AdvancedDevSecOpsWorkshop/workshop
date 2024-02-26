@@ -14,6 +14,6 @@ spec:
       prune: false
       selfHeal: true
   source:
-    repoURL: https://github.com/OpenShiftDemos/advanced-devsecops-workshop
+    repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop
     targetRevision: main
     path: bootstrap/infra/consolelinks/overlays/default
