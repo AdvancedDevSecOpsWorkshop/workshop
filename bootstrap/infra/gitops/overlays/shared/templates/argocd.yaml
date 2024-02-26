@@ -49,7 +49,7 @@ spec:
     resource.respectRBAC: normal
   kustomizeBuildOptions: --enable-helm
   rbac:
-    defaultPolicy: role:none
+    defaultPolicy: role:readonly
     policy: |
       p, role:none, *, *, */*, deny
       g, system:cluster-admins, role:admin
