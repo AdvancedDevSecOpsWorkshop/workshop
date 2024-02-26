@@ -1,0 +1,25 @@
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: shared-gitops
+  namespace: openshift-gitops
+spec:
+  destination:
+    namespace: gitops
+    server: 'https://kubernetes.default.svc'
+  project: cluster-config
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+  source:
+    repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop
+    targetRevision: main
+    path: bootstrap/infra/gitops/overlays/shared

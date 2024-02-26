@@ -1,0 +1,42 @@
+{{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  labels:
+    argocd.argoproj.io/project-inherit: global
+  name: user{{ . }}
+  namespace: gitops
+spec:
+  description: product-catalog project
+  destinations:
+  - name: in-cluster
+    namespace: user{{ . }}-argocd
+  - name: in-cluster
+    namespace: user{{ . }}-dev
+  - name: in-cluster
+    namespace: user{{ . }}-stage
+  - name: in-cluster
+    namespace: user{{ . }}-prod
+  - name: in-cluster
+    namespace: user{{ . }}-tools
+  roles:
+  - description: user{{ . }} admins
+    groups:
+    - user{{ . }}
+    name: admin
+    policies:
+    - p, proj:product-catalog:admin, applications, *, product-catalog/*, allow
+    - p, proj:product-catalog:admin, exec, create, product-catalog/*, allow
+  - description: Pipeline accounts
+    groups:
+    - user{{ . }}-pipeline
+    name: pipeline
+    policies:
+    - p, proj:product-catalog:pipeline, applications, get, product-catalog/*, allow
+    - p, proj:product-catalog:pipeline, applications, sync, product-catalog/*, allow
+  sourceNamespaces:
+  - user{{ . }}-argocd
+  sourceRepos:
+  - '*'
+{{- end }}
