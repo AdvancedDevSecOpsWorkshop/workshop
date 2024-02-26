@@ -4,8 +4,6 @@ commonAnnotations:
 resources:
   - github.com/redhat-cop/gitops-catalog/advanced-cluster-security-operator/operator/overlays/latest
   - github.com/redhat-cop/gitops-catalog/advanced-cluster-security-operator/instance/overlays/internal-registry-integration
-  - route.yaml
-#  - init-acs.yaml
 
 patches:
   - patch: |-
