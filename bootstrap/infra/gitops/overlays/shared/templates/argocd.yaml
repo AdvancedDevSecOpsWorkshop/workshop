@@ -65,7 +65,7 @@ spec:
       - name: KUSTOMIZE_PLUGIN_HOME
         value: /etc/kustomize/plugin
       - name: SUB_DOMAIN
-        value: apps.home.ocplab.com
+        value: {{ sub_domain }}
       image: quay.io/gnunn/tools:latest
       imagePullPolicy: Always
       name: setenv-plugin

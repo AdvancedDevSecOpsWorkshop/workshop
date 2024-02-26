@@ -13,13 +13,11 @@ spec:
     automated:
       prune: false
       selfHeal: true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
   source:
-    repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop
-    targetRevision: main
     path: bootstrap/infra/gitops/overlays/shared
+    repoURL: 'https://github.com/OpenShiftDemos/advanced-devsecops-workshop'
+    targetRevision: main
+    helm:
+        values: |
+          users: "{{ users }}"
+          sub_domain: {{ sub_domain }}
