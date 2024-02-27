@@ -10,7 +10,7 @@ spec:
   duration: 2160h
   commonName: keycloak.${SUB_DOMAIN}
   dnsNames:
-  - ${SUB_DOMAIN}
+  - keycloak.${SUB_DOMAIN}
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
