@@ -36,7 +36,7 @@ applications:
     source:
       path: bootstrap/infra/acs-operator/overlays/oauth
 
-  devspaces-operator:
+  devspaces:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
     source:
