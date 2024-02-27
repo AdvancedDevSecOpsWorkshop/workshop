@@ -12,4 +12,11 @@ spec:
     hostname: keycloak.${SUB_DOMAIN}
   http:
     tlsSecret: keycloak-tls
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt
+      acme.cert-manager.io/http01-ingress-class: openshift-default
+    className:
+      openshift-default
+    enabled: true
   instances: 1

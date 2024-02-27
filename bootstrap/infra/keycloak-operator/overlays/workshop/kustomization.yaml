@@ -1,4 +1,4 @@
 resources:
 - ../../base
-- certificate.yaml
+# - certificate.yaml
 - keycloak.yaml
