@@ -55,6 +55,12 @@ applications:
         factor: 2
         maxDuration: 3m
 
+  keycloak:
+    annotations:
+      argocd.argoproj.io/sync-wave: '11'
+    source:
+      path: bootstrap/infra/keycloak-operator/overlays/workshop
+
   pipelines:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
