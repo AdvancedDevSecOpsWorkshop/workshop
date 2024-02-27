@@ -3,6 +3,7 @@ kind: Keycloak
 metadata:
   annotations:
     argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true,Validate=false
+    argocd.argoproj.io/sync-wave: "5"
   labels:
     app: sso
   name: keycloak
