@@ -26,8 +26,5 @@ patches:
         value:
           configMaps:
             - name: declarative-configurations
-      - op: add
-        path: /spec/central/exposure/route/enabled
-        value: false
     target:
       kind: Central
