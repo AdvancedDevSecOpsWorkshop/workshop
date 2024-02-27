@@ -3,14 +3,14 @@ kind: Certificate
 metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
-  name: keycloak
+  name: central
 spec:
   secretName: keycloak-tls
   renewBefore: 240h0m0s
   duration: 2160h0m0s
-  commonName: keycloak.${SUB_DOMAIN}
+  commonName: central-stackrox.${SUB_DOMAIN}
   dnsNames:
-  - keycloak.${SUB_DOMAIN}
+  - central-stackrox.${SUB_DOMAIN}
   issuerRef:
     name: letsencrypt
     kind: ClusterIssuer
