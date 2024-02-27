@@ -4,8 +4,9 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "-1"
   name: central
+  namespace: stackrox
 spec:
-  secretName: keycloak-tls
+  secretName: central-default-tls-cert
   renewBefore: 240h0m0s
   duration: 2160h0m0s
   commonName: central-stackrox.${SUB_DOMAIN}
