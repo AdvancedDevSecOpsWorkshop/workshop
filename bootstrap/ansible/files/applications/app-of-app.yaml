@@ -2,26 +2,18 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  annotations:
-    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
-  name: quay
+  name: cluster-bootstrap
   namespace: openshift-gitops
 spec:
   destination:
-    namespace: quay-operator
+    namespace: openshift-gitops
     server: 'https://kubernetes.default.svc'
   project: cluster-config
   syncPolicy:
     automated:
       prune: false
       selfHeal: true
-    retry:
-      limit: 5
-      backoff:
-        duration: 5s
-        factor: 2
-        maxDuration: 3m
   source:
     repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop
     targetRevision: main
-    path: bootstrap/infra/quay-registry-operator/overlays/default
+    path: bootstrap/infra/apps/base
