@@ -1,3 +1,5 @@
+namespace: keycloak
+
 resources:
 - ../../base
 # - certificate.yaml

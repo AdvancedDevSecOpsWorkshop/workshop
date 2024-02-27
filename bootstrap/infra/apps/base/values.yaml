@@ -33,12 +33,16 @@ applications:
   acs:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: stackrox
     source:
       path: bootstrap/infra/acs-operator/overlays/oauth
 
   devspaces:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: devspaces
     source:
       repoURL: https://github.com/redhat-cop/gitops-catalog
       path: devspaces/aggregate/overlays/default
@@ -46,6 +50,8 @@ applications:
   gitea:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: gitea
     source:
       path: bootstrap/infra/gitea/base
     syncPolicyRetry:
@@ -58,17 +64,23 @@ applications:
   keycloak:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: keycloak
     source:
       path: bootstrap/infra/keycloak-operator/overlays/workshop
 
   pipelines:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: openshift-pipelines
     source:
       path: bootstrap/infra/pipelines-operator/base
 
   quay:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: quay-operator
     source:
       path: bootstrap/infra/quay-registry-operator/overlays/default
