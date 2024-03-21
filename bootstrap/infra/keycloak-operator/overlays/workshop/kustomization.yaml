@@ -4,3 +4,4 @@ resources:
 - ../../base
 - certificate.yaml
 - keycloak.yaml
+- configure-keycloak-job.yaml
