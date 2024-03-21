@@ -34,7 +34,7 @@ spec:
 
               ansible-galaxy collection install -r collections/requirements.yaml
 
-              ansible-playbook configure.yaml -e access_token=$token -e sub_domain=$sub_domain -e admin_user=$username admin_password=$password
+              ansible-playbook configure.yaml -e access_token=$token -e sub_domain=$sub_domain -e admin_user=$username -e admin_password=$password
 
           name: configure
       dnsPolicy: ClusterFirst
