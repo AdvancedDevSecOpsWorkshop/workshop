@@ -3,5 +3,6 @@ namespace: keycloak
 resources:
 - ../../base
 - certificate.yaml
+- db-secret.yaml
 - keycloak.yaml
 # - configure-keycloak-job.yaml

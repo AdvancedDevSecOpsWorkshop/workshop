@@ -9,6 +9,15 @@ metadata:
   name: keycloak
   namespace: keycloak
 spec:
+  db:
+    vendor: postgres
+    host: postgres-db
+    usernameSecret:
+      name: keycloak-db
+      key: username
+    passwordSecret:
+      name: keycloak-db
+      key: password
   hostname:
     hostname: keycloak.${SUB_DOMAIN}
   http:
