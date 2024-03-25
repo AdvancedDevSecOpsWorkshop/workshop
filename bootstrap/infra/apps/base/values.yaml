@@ -92,3 +92,16 @@ applications:
       namespace: keycloak
     source:
       path: bootstrap/infra/keycloak-operator/instance/base
+
+  keycloak-realm-import:
+    annotations:
+      argocd.argoproj.io/sync-wave: '31'
+    destination:
+      namespace: keycloak
+    source:
+      path: bootstrap/infra/keycloak-operator/realm-import
+      extraSourceFields: |
+        helm:
+            values: |
+              users: ${USERS}
+              sub_domain: ${SUB_DOMAIN}
