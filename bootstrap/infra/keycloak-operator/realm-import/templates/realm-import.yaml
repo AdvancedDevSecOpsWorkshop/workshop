@@ -56,16 +56,16 @@ spec:
       clientId: argocd
       name: Argo CD
       description: 'Argo CD'
-      rootUrl: https://({ $.Values.sub_domain }}
-      adminUrl: https://({ $.Values.sub_domain }}
-      baseUrl: https://({ $.Values.sub_domain }}
+      rootUrl: https://{{ $.Values.sub_domain }}
+      adminUrl: https://{{ $.Values.sub_domain }}
+      baseUrl: https://{{ $.Values.sub_domain }}
       surrogateAuthRequired: false
       enabled: true
       alwaysDisplayInConsole: false
       clientAuthenticatorType: client-secret
       redirectUris:
-      - https://openshift-gitops-server-openshift-gitops.({ $.Values.sub_domain }}/*
-      - https://argocd-server-gitops.apps.({ $.Values.sub_domain }}/*
+      - https://openshift-gitops-server-openshift-gitops.{{ $.Values.sub_domain }}/*
+      - https://argocd-server-gitops.apps.{{ $.Values.sub_domain }}/*
       - http://localhost:8085/auth/callback
       webOrigins:
       - "*"
@@ -120,7 +120,7 @@ spec:
       clientAuthenticatorType: client-secret
       secret: 75befbcf-75de-4933-aea7-e819921a83e1
       redirectUris:
-      - https://oauth-openshift.apps.({ $.Values.sub_domain }}/*
+      - https://oauth-openshift.apps.{{ $.Values.sub_domain }}/*
       webOrigins:
       - "*"
       notBefore: 0
@@ -135,7 +135,7 @@ spec:
       protocol: openid-connect
       attributes:
         client.secret.creation.time: '1690676233'
-        post.logout.redirect.uris: https://console-openshift-console.({ $.Values.sub_domain }}
+        post.logout.redirect.uris: https://console-openshift-console.{{ $.Values.sub_domain }}
         oauth2.device.authorization.grant.enabled: 'false'
         backchannel.logout.revoke.offline.tokens: 'false'
         use.refresh.tokens: 'true'
