@@ -61,13 +61,13 @@ applications:
         factor: 2
         maxDuration: 3m
 
-  keycloak:
+  keycloak-operator:
     annotations:
       argocd.argoproj.io/sync-wave: '11'
     destination:
       namespace: keycloak
     source:
-      path: bootstrap/infra/keycloak-operator/overlays/workshop
+      path: bootstrap/infra/keycloak-operator/operator/base
 
   pipelines:
     annotations:
@@ -84,3 +84,11 @@ applications:
       namespace: quay-operator
     source:
       path: bootstrap/infra/quay-registry-operator/overlays/default
+
+  keycloak-instance:
+    annotations:
+      argocd.argoproj.io/sync-wave: '21'
+    destination:
+      namespace: keycloak
+    source:
+      path: bootstrap/infra/keycloak-operator/instance/base

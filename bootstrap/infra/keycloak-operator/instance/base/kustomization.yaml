@@ -8,4 +8,3 @@ resources:
 - postgresql-svc.yaml
 - postgresql-dc.yaml
 - keycloak.yaml
-# - configure-keycloak-job.yaml

@@ -1,0 +1,10 @@
+apiVersion: v2
+name: keycloak-realm-import
+version: 0.1.0
+description: Creates a new realm-import with a dynamic number of users
+type: application
+kubeVersion: '>=1.14.6'
+sources:
+ - https://github.com/OpenShiftDemos/advanced-devsecops-workshop
+maintainers:
+- name: Gerald Nunn
