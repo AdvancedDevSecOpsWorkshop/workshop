@@ -56,16 +56,16 @@ spec:
       clientId: argocd
       name: Argo CD
       description: 'Argo CD'
-      rootUrl: https://${SUB_DOMAIN}
-      adminUrl: https://${SUB_DOMAIN}
-      baseUrl: https://${SUB_DOMAIN}
+      rootUrl: https://({ $.Values.sub_domain }}
+      adminUrl: https://({ $.Values.sub_domain }}
+      baseUrl: https://({ $.Values.sub_domain }}
       surrogateAuthRequired: false
       enabled: true
       alwaysDisplayInConsole: false
       clientAuthenticatorType: client-secret
       redirectUris:
-      - https://openshift-gitops-server-openshift-gitops.${SUB_DOMAIN}/*
-      - https://argocd-server-gitops.apps.${SUB_DOMAIN}/*
+      - https://openshift-gitops-server-openshift-gitops.({ $.Values.sub_domain }}/*
+      - https://argocd-server-gitops.apps.({ $.Values.sub_domain }}/*
       - http://localhost:8085/auth/callback
       webOrigins:
       - "*"
