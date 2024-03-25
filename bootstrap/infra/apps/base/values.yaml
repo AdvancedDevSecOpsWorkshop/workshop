@@ -105,3 +105,11 @@ applications:
             values: |
               users: ${USERS}
               sub_domain: ${SUB_DOMAIN}
+
+  openshift-oauth:
+    annotations:
+      argocd.argoproj.io/sync-wave: '41'
+    destination:
+      namespace: openshift-config
+    source:
+      path: bootstrap/infra/oauth/base

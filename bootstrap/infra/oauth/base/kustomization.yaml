@@ -1,0 +1,3 @@
+resources:
+- oauth-sso.yaml
+- oidc-secret.yaml
