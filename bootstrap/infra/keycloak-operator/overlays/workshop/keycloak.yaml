@@ -11,13 +11,13 @@ metadata:
 spec:
   db:
     vendor: postgres
-    host: postgres-db
+    host: postgresql
     usernameSecret:
-      name: keycloak-db
-      key: username
+      name: postgresql
+      key: database-user
     passwordSecret:
-      name: keycloak-db
-      key: password
+      name: postgresql
+      key: database-password
   hostname:
     hostname: keycloak.${SUB_DOMAIN}
   http:
