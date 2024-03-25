@@ -104,8 +104,7 @@ applications:
         helm:
             values: |
               users: ${USERS}
-              sub_domain: ${SUB_DOMAIN}
-
+              sub_domain: apps.${SUB_DOMAIN}
   openshift-oauth:
     annotations:
       argocd.argoproj.io/sync-wave: '41'
