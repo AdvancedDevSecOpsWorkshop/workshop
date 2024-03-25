@@ -28,5 +28,5 @@ spec:
         extraScopes:
           - email
           - profile
-        issuer: 'https://keycloak.apps.${SUB_DOMAIN}'
+        issuer: 'https://keycloak.${SUB_DOMAIN}'
       type: OpenID
