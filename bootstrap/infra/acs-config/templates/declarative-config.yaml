@@ -4,6 +4,24 @@ metadata:
   name: declarative-configurations
   namespace: stackrox
 data:
+  keycloak.yaml: |
+    name: keycloak
+    minimumRole: None
+    uiEndpoint: central-stackrox.{{ $.Values.sub_domain }}:443
+    oidc:
+        issuer: https://keycloak.{{ $.Values.sub_domain }}/realms/openshift
+        mode: auto
+        clientID: acs
+        clientSecret: 94395add-db2d-4564-bc40-fd9ed4f23cdf
+    groups:
+        - key: name
+          value: admin
+          role: Admin
+        {{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
+        - key: name
+          value: user{{ . }}
+          role: user{{ . }}
+        {{- end }}
   openshift-auth.yaml: |
     name: openshift
     uiEndpoint: central-stackrox.{{ $.Values.sub_domain }}:443
