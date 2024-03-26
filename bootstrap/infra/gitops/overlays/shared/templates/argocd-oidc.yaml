@@ -1,0 +1,8 @@
+kind: Secret
+apiVersion: v1
+metadata:
+  name: argocd-oidc
+  namespace: gitops
+data:
+  oidc.keycloak.clientSecret: ZTFBUTI2NVlRRkFieFQ3bGRnTUc1YktmWFRKQ3Z5bDQ=
+type: Opaque
