@@ -16,6 +16,14 @@ default:
 
 applications:
 
+  rbac:
+    annotations:
+      argocd.argoproj.io/sync-wave: '0'
+    destination:
+      namespace: openshift-gitops
+    source:
+      path: bootstrap/infra/rbac/base
+
   cert-manager:
     annotations:
       argocd.argoproj.io/sync-wave: '0'

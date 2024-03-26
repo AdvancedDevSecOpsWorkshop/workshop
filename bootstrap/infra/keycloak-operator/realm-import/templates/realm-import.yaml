@@ -11,6 +11,7 @@ spec:
     id: openshift
     realm: openshift
     displayName: OpenShift
+    enabled: true
     sslRequired: external
     registrationAllowed: false
     registrationEmailAsUsername: false
@@ -454,7 +455,7 @@ spec:
       clientAuthenticatorType: client-secret
       redirectUris:
       - https://openshift-gitops-server-openshift-gitops.{{ $.Values.sub_domain }}/*
-      - https://argocd-server-gitops.apps.{{ $.Values.sub_domain }}/*
+      - https://argocd-server-gitops.{{ $.Values.sub_domain }}/*
       - http://localhost:8085/auth/callback
       webOrigins:
       - "*"
@@ -500,16 +501,16 @@ spec:
       clientId: openshift
       name: openshift
       description: OpenShift Authentication
-      rootUrl: https://ocplab.com
+      rootUrl: https://{{ $.Values.sub_domain }}
       adminUrl: ''
-      baseUrl: https://ocplab.com
+      baseUrl: https://{{ $.Values.sub_domain }}
       surrogateAuthRequired: false
       enabled: true
       alwaysDisplayInConsole: false
       clientAuthenticatorType: client-secret
       secret: 75befbcf-75de-4933-aea7-e819921a83e1
       redirectUris:
-      - https://oauth-openshift.apps.{{ $.Values.sub_domain }}/*
+      - https://oauth-openshift.{{ $.Values.sub_domain }}/*
       webOrigins:
       - "*"
       notBefore: 0
@@ -559,6 +560,21 @@ spec:
         name: cluster-admins
         path: /cluster-admins
     users:
+      - id: clusteradmin
+        username: clusteradmin
+        enabled: true
+        groups:
+          - developers
+          - cluster-admins
+        credentials:
+        - type: password
+          hashedSaltedValue: 5Mhqu6I43dSlDqVzpbv5yVjMYrTKOY4mbTwJu+1B0SA=
+          salt: rkNa/C8CumJNCka2cm5FtQ==
+          hashIterations: 27500
+          counter: 0
+          algorithm: pbkdf2-sha256
+          digits: 0
+          period: 0
       - id: admin
         username: admin
         enabled: true
