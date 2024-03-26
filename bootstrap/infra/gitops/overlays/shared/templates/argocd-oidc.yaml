@@ -1,6 +1,8 @@
 kind: Secret
 apiVersion: v1
 metadata:
+  labels:
+    app.kubernetes.io/part-of: "argocd"
   name: argocd-oidc
   namespace: gitops
 data:
