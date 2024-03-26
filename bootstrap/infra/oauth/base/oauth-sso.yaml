@@ -4,6 +4,12 @@ metadata:
   name: cluster
 spec:
   identityProviders:
+    - htpasswd:
+        fileData:
+          name: htpasswd
+      mappingMethod: claim
+      name: htpasswd_provider
+      type: HTPasswd
     - mappingMethod: claim
       name: Keycloak
       openID:
