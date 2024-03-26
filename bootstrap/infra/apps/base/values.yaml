@@ -36,7 +36,7 @@ applications:
     annotations:
       argocd.argoproj.io/sync-wave: '99'
     source:
-      path: bootstrap/infra/consolelinks/overlays/default
+      path: bootstrap/infra/consolelinks/base
 
   acs:
     annotations:
