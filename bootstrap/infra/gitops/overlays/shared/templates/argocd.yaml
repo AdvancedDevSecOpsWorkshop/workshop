@@ -14,7 +14,7 @@ spec:
     name: Keycloak
     issuer: https://keycloak.{{ $.Values.sub_domain }}/realms/ocplab
     clientID: argocd
-    clientSecret: clientSecret: $argocd-oidc:oidc.keycloak.clientSecret
+    clientSecret: $argocd-oidc:oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
   extraConfig:
     {{- range untilStep 1 (int ($.Values.users | add 1)) 1 }}
