@@ -9,7 +9,7 @@ site:
 content:
   sources:
     - url: ./
-      start_path: documentation
+      start_path: content
 
 asciidoc:
   attributes:
