@@ -9,7 +9,7 @@ spec:
   applicationSet: {}
   oidcConfig: |
     name: Keycloak
-    issuer: https://keycloak.{{ $.Values.sub_domain }}/realms/openshift
+    issuer: https://keycloak.{{ sub_domain }}/realms/openshift
     clientID: argocd
     clientSecret: $argocd-oidc:oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
@@ -297,4 +297,4 @@ spec:
       p, role:none, gpgkeys, get, *, deny
       g, system:cluster-admins, role:admin
       g, cluster-admins, role:admin
-    scopes: "[groups]"
+    scopes: "[accounts,groups]"
