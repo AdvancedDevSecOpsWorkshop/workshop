@@ -7,3 +7,4 @@ resources:
 # - sonarqube-consolelink.yaml
 - gitea.yaml
 - quay.yaml
+- keycloak.yaml
