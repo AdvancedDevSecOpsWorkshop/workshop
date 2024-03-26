@@ -12,7 +12,7 @@ spec:
         enabled: false
   oidcConfig: |
     name: Keycloak
-    issuer: https://sso.{{ $.Values.sub_domain }}/realms/ocplab
+    issuer: https://keycloak.{{ $.Values.sub_domain }}/realms/ocplab
     clientID: argocd
     clientSecret: $oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
@@ -214,6 +214,7 @@ spec:
       kind: QuayRegistry
   resourceTrackingMethod: annotation
   server:
+    host: argocd-server-gitops.{{ $.Values.sub_domain }}
     ingress:
       enabled: false
     insecure: true
