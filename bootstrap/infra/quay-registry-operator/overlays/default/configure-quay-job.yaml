@@ -28,7 +28,7 @@ spec:
               echo "tempuser:x:$(id -G | cut -d' ' -f 2)" >> /etc/group
               id
 
-              git clone https://github.com/coolstore-demo/quay-init
+              git clone https://github.com/AdvancedDevSecOpsWorkshop/quay
 
               cd quay-init
 

@@ -45,7 +45,7 @@ spec:
 
               sleep 120
 
-              git clone https://github.com/coolstore-demo/quay-init
+              git clone https://github.com/AdvancedDevSecOpsWorkshop/quay
 
               cd quay-init
 
