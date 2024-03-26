@@ -12,7 +12,7 @@ spec:
         enabled: false
   oidcConfig: |
     name: Keycloak
-    issuer: https://keycloak.{{ $.Values.sub_domain }}/realms/ocplab
+    issuer: https://keycloak.{{ $.Values.sub_domain }}/realms/openshift
     clientID: argocd
     clientSecret: $argocd-oidc:oidc.keycloak.clientSecret
     requestedScopes: ["openid", "profile", "email", "groups"]
