@@ -7,6 +7,12 @@ metadata:
 spec:
   resourceTrackingMethod: annotation
   applicationSet: {}
+  oidcConfig: |
+    name: Keycloak
+    issuer: https://keycloak.{{ $.Values.sub_domain }}/realms/openshift
+    clientID: argocd
+    clientSecret: $argocd-oidc:oidc.keycloak.clientSecret
+    requestedScopes: ["openid", "profile", "email", "groups"]
   extraConfig:
     resource.ignoreResourceUpdatesEnabled: 'true'
     resource.customizations.ignoreResourceUpdates.external-secrets.io_ExternalSecret: |
@@ -106,10 +112,6 @@ spec:
       tls:
         termination: edge
         insecureEdgeTerminationPolicy: Redirect
-  sso:
-    dex:
-      openShiftOAuth: true
-    provider: dex
   notifications:
     enabled: true
   resourceHealthChecks:

@@ -77,7 +77,10 @@
     - name: Deploy gitops instance plugin
       kubernetes.core.k8s:
         state: present
-        src: files/gitops-instance/setenv-cmp-plugin-cm.yaml
+        src: files/gitops-instance/{{ item }}
+      with_items:
+        - setenv-cmp-plugin-cm.yaml
+        - argocd-oidc.yaml
 
     - name: Update openshift-gitops-instance
       kubernetes.core.k8s:
