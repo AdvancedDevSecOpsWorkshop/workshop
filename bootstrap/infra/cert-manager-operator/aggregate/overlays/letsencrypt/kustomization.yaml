@@ -1,4 +1,0 @@
-resources:
-- ../../../operator/base
-- ../../../instance/base
-- ../../../issuers/letsencrypt-route53/base
