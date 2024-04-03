@@ -7,3 +7,12 @@ Work-In-Progress
 #### Installation
 
 See the bootstrap repository
+
+#### Getting Started
+
+
+Run ./utilities/lab-serve
+
+Open http://localhost:8443 in your browser
+
+Run ./utilities/lab-build to build your html
