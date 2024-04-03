@@ -1,6 +1,7 @@
 = Welcome to OpenShift DevOps Roadshow
 :page-layout: home
 :!sectids:
+
 == 1. Introduction and Overview - 10 minutes
 
 

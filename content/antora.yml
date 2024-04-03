@@ -6,7 +6,6 @@ nav:
 
 asciidoc:
   attributes:
-    title: OpenShift DevOps Roadshow(Dev Mode)
     # ?
     page-pagination: true
 
