@@ -1,5 +1,0 @@
-= Getting Started
-include::_attributes.adoc[]
-
-[#cluster-login]
-== OpenShift cluster login

@@ -1,4 +1,4 @@
-### OpenShift Advanced DevSecOps Workshop
+### OpenShift DevOps Roadshow
 
 #### Introduction
 

@@ -1,7 +1,7 @@
 name: advanced-devsec-workshop
-title: Advanced DevSecOps Workshop
+title: OpenShift DevOps Roadshow
 version: main
 nav:
   - modules/ROOT/nav.adoc
 
-start_page: ROOT:index.adoc
+start_page: ROOT::index.adoc
