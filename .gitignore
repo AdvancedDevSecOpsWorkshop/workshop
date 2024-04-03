@@ -1,3 +1,7 @@
+# Ignore antora output and cache
+www/
+.cache/
+
 target/
 !.mvn/wrapper/maven-wrapper.jar
 audit.log

@@ -1,7 +1,11 @@
-name: advanced-devsec-workshop
+name: modules
 title: OpenShift DevOps Roadshow
 version: main
 nav:
   - modules/ROOT/nav.adoc
 
-start_page: ROOT::index.adoc
+asciidoc:
+  attributes:
+    title: OpenShift DevOps Roadshow(Dev Mode)
+    # ?
+    page-pagination: true
