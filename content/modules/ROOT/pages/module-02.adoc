@@ -92,6 +92,9 @@ Next click on Settings and the Projects.
 
 image::gitops/argocd-cluster-settings-appproject.png[]
 
+This will take you to the list of projects where you will see a single project called `users`. Click on `users` to view
+the following tab:
+
 
 
 
