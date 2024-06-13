@@ -1,13 +1,68 @@
 = The Power of GitOps with OpenShift GitOps(60 mins)
 
-In this module
+In this module you will understand how GitOps is used to manage cluster configuration and application deployments.
 
 == Introduction
 
-I
+GitOps is the process that is used to deploy and manage cluster configuration and application deployments. In GitOps, git
+as the source of truth and the GitOps engine, OpenShift GitOps, reconciles what is stored in git with the state of the cluster.
+This process is two-way, changes to git can be automatically reconciled to the cluster and direct, manual changes in the cluster
+can be automatically reverted back to what is in git.
+
+In this way GitOps provides a powerful way to manage state in Kubernetes clusters while addressing common issues like
+configuration drift, change management and auditing.
+
+OpenShift GitOps is provided with OpenShift at no additional cost, it provides a fully supported GitOps engine
+using the upstream link:https://argoproj.github.io/cd[Argo CD,window='_blank'] project. Argo CD is a popular
+GitOps engine for Kubernetes that provides a variety of features to manage a GitOps environment including
+the engine, a comprehensive user interface, etc.
+
+== OpenShift GitOps Architecture
+
+In this section we will do a brief overview of the OpenShift GitOps architecture which is depicted in the diagram below.
+
+image::argocd-architecture.png[]
+
+In the diagram above, everything contained within the dotted is running in OpenShift whereas outside the line are external
+dependencies or interactions.
+
+The OpenShift GitOps operator is used to deploy, manage and upgrade an installation of Argo CD which runs in a
+specified namespace. The Argo CD installation contains several components, running as individual deployments,
+which are as follows:
+
+1. application-controller. This component is responsible for deploying and monitoring Kubernetes resources,
+as a result it interacts with the Kubernetes API.
+2. repo-server. This component manages access to the manifests via a git repository, it is responsible for
+fetching the manifests (i.e. yaml files). These manifests can be built from raw yaml, helm or kustomize but
+additional tools can be used via a plugin architecture. For improved performance, it caches these manifests
+in the redis component.
+3. Server. This provides the user interface as well as a REST API.
+4. Dex (optional). Provides authentication via OpenShift OAuth2, in this workshop it is not used as we
+are authenticating directly against Keycloak.
+5. applicationset-controller (Not shown). This component is responsible for managing ApplicationSets which
+are used to generate Applications using generators. These generators can create Applications based on Pull Requests,
+directories in git, clusters, etc.
+
+== Workshop Architecture
+
+In this workshop, two GitOps instances have been deployed as follows:
+
+1. Cluster GitOps. This is used by the platform team to manage cluster configuration as well as
+cluster-scoped tenant resources (i.e. Namespaces, Quotas, Networkpolicy, Operators, etc).
+
+2. Shared GitOps. This instance is used by application teams to deploy their applications. This is a shared
+GitOps environment with multiple application teams accessing it. As a result Argo CD RBAC has been
+configured to manage access so that users from different teams cannot view or modify other teams applications.
+
+=== Cluster GitOps
+
+By default the OpenShift GitOps operator will install
+an instance in the `openshift-gitops` namespace, this instance is cluster-scoped and
+users are encouraged to use this instance for cluster configuraton.
+
+
 
 == Conclusion
 
 A
 == More Information:
-
