@@ -21,7 +21,7 @@ the engine, a comprehensive user interface, etc.
 
 In this section we will do a brief overview of the OpenShift GitOps architecture which is depicted in the diagram below.
 
-image::argocd-architecture.png[]
+image::gitops/argocd-architecture.png[]
 
 In the diagram above, everything contained within the dotted is running in OpenShift whereas outside the line are external
 dependencies or interactions.
@@ -51,7 +51,7 @@ In this workshop, two GitOps instances have been deployed as follows:
 cluster-scoped tenant resources (i.e. Namespaces, Quotas, Networkpolicy, Operators, etc).
 
 2. Shared GitOps. This instance is used by application teams to deploy their applications. This is a shared
-GitOps environment with multiple application teams accessing it. As a result Argo CD RBAC has been
+GitOps environment with multiple application teams accessing it. As a result Argo CD Role Based Access Controls (RBAC) has been
 configured to manage access so that users from different teams cannot view or modify other teams applications.
 
 === Cluster GitOps
@@ -63,11 +63,37 @@ privileged resources on behalf of tenants (Namespaces, Quotas, Operators, etc).
 Lets, have a look at this instance now, to do so access the OpenShift Application Menu and select the Cluster Argo CD
 item highlighted in red:
 
-image::openshift-app-menu-cluster-argocd.png[]
+image::gitops/openshift-app-menu-cluster-argocd.png[]
 
 This will take you to the Argo CD user interface for this instance, to login click the Keycloak button shown in red:
 
-image::argocd-keycloak-login.png[]
+image::gitops/argocd-keycloak-login.png[]
+
+Assuming you have already logged into OpenShift with Keycloak you will be automatically logged into Argo CD since
+we are using Keycloak to provide Single-Sign-On in this workshop. Once you are logged in you will see the following
+applications:
+
+image::gitops/argocd-cluster-users.png[]
+
+Notice how you view all of the user projects (user1, user2, user3, etc), this is because we have used Argo CD RBAC
+to provide users in the `developers` group with limited access to these projects.
+
+[Note]
+It is rare for developers to have access to the cluster scoped instance which is typically managed by the platform
+team, we are providing it here for illustrative purposes.
+
+You can view the groups associated with your logged in user by clicking on the user button, note the `developers`
+group that is shown along with the team, `teamX`, that your user is associated with. In our scenario user1 is on
+team 1, user2 on team2, etc. The `developers` group is a catch all group that all of the users belong to.
+
+These groups are provisioned in Keycloak and made available to Argo CD when you logged into the application.
+
+Next click on Settings and the Projects.
+
+image::gitops/argocd-cluster-settings-appproject.png[]
+
+
+
 
 
 == Conclusion
