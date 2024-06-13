@@ -56,10 +56,18 @@ configured to manage access so that users from different teams cannot view or mo
 
 === Cluster GitOps
 
-By default the OpenShift GitOps operator will install
-an instance in the `openshift-gitops` namespace, this instance is cluster-scoped and
-users are encouraged to use this instance for cluster configuraton.
+By default the OpenShift GitOps operator will install an instance in the `openshift-gitops` namespace, this instance
+is cluster-scoped and users are encouraged to use this instance for cluster configuraton including managing
+privileged resources on behalf of tenants (Namespaces, Quotas, Operators, etc).
 
+Lets, have a look at this instance now, to do so access the OpenShift Application Menu and select the Cluster Argo CD
+item highlighted in red:
+
+image::openshift-app-menu-cluster-argocd.png[]
+
+This will take you to the Argo CD user interface for this instance, to login click the Keycloak button shown in red:
+
+image::argocd-keycloak-login.png[]
 
 
 == Conclusion
