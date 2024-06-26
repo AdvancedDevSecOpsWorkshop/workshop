@@ -12,21 +12,21 @@ In this Roadshow, you will learn the techniques and technologies for adopting ht
 * Learn how to leverage *Red Hat OpenShift*  as an *Application Platform Trusted-Comprehensive- Consistent capabilities*.
 * Dive into *CI/CD* pipelines using *OpenShift Pipelines*.
 * Adopt *DevOps* best practices securely with *OpenShift GitOps* and *Trusted Software Supply Chain*.
-*TBD
+* TBD
 
-== 2. Environment Overview
+== 3. Environment Overview
 
 Our cluster is provisioned just for you and this roadshow. During this day, you will be accessing the same cluster with pre-defined credentials shared in each module.
  
 Below is a list of the technologies installed and configured in the OpenShift cluster.
 
 
-=== 2.1 Technology Flow Diagram
+=== 3.1 Technology Flow Diagram
 
 image::intro/devops_env_architecture.png[width=100%]
 Fig 1. The diagram shows the technology stack and its interactions.
 
-=== 2.2 Technology Stack
+=== 3.2 Technology Stack
 
 * https://www.redhat.com/en/technologies/cloud-computing/openshift[Red Hat OpenShift^] is a unified platform to build, modernize, and deploy applications at scale. Work smarter and faster with a complete set of services for bringing apps to market on your choice of infrastructure. 
 
