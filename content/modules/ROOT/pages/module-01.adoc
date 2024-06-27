@@ -1,14 +1,309 @@
-= OpenShift as An Application Platform: Trusted- Comprehensive- Consistent(60 mins)
+= OpenShift as An Application Platform: Trusted - Comprehensive - Consistent(60 mins)
 
-
-In this module
+This module will give you a comprehensive understanding of OpenShift as an Application Platform that can accelerate their day-to-day activities, from modernization to build, deploy, manage, and auto-scale your applications with serverless in a hybrid cloud and at the edge.
 
 == Introduction
 
-I
+In this module you will:
+
+* Review the OpenShift as an Application Platform capabilities.
+* Migrate two applications to OpenShift using the Developer Perspective using Deployment and Serverless types.
+* Explore application status, cpu usage and events
+
+== OpenShift as an Application Platform Overview
+
+*Red Hat OpenShift* is a *trusted, comprehensive, consistent application platform* based on open standards with key capabilities that help you successfully develop,deliver and run legacy and cloud-native applications.
+
+
+image::ocp-app/devops_01_ocpapp_platform.png[width=100%]
+Fig 1. The image shows an Overview of the OpenShift as an Application Platform.
+
+* Built on the *trusted* foundation of *Red Hat Enterprise Linux*, *Red Hat OpenShift* provides a flexible, scalable foundation for modern application development across hybrid cloud environments—including onsite infrastructure, public cloud resources, and edge devices.
+
+* *Red Hat OpenShift* provides a *comprehensive application platform* that helps streamline secure, scalable development across varied environments, addressing modernization and deployment hurdles and boosting developer productivity and operational efficiency with extensive tooling and services.
+
+* *Red Hat OpenShift* gives developers, operations and platform engineers a single, *consistent* user experience and the freedom to quickly build and deploy apps anywhere using the tools they want anywhere, whether they are on-premise, on a public cloud, at the edge, or using a hybrid infrastructure.
+
+
+== Building your a Serverless application with the OpenShift Application Platform
+
+The serverless cloud computing model provides developers with a modern, cloud-native app dev stack for hybrid clouds. Serverless lets developers focus on their code without worrying about the infrastructure. Red Hat® OpenShift® Serverless allows you to avoid being locked into a single vendor and enables a multicloud approach. https://www.redhat.com/en/technologies/cloud-computing/openshift/serverless[More information^]
+
+
+=== Application Overview
+
+- *Web NodeJS*: The application recently created is the UI enabling users to interact with the coolstore.
+- *Gateway-vertx*: A Java application that works as a gateway between the UI and the rest of the application services.
+- *Inventory*: A Java-based application built with Quarkus that provides the inventory information for each specific product. The data is shown in the UI as to how much quantity is available on each product.
+- *Catalog*: A Java-based application built with Spring Boot that connects with the Catalog Database to provide all the catalog information. The catalog data will not be visible in the UI without this service.
+
+== Building your a Serverless application with the OpenShift Application Platform
+=== Create your project
+
+* Log in the OpenShift using the terminal:
+
+[source,sh,subs="attributes",role=execute]
+----
+{login_command}
+----
+
+* Create a new project to deploy the {app_name}. Run the following command in the terminal:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+oc new-project coolstore-dev-{user}
+----
+
+* Clone the project to access the files.
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+git clone https://github.com/OpenShiftDemos/app-platform.git ~/app-platform
+----
+
+* Explore the yaml file that will deploy the catalog and the database.
+
+[.console-input]
+[source,bash,subs="+attributes,macros+"]
+----
+cd ~/app-platform/content/modules/ROOT/files/module-01
+----
+
+* Install the the Coolstore components:
+
+[.console-input]
+[source,bash,subs="+attributes,macros+"]
+----
+oc apply -f coolstore.yaml
+----
+[.console-output]
+[source,subs="+attributes,macros+"]
+----
+output:
+    deployment.apps/gateway-vertx created
+    service/gateway-vertx created
+    route.route.openshift.io/gateway-vertx created
+    deployment.apps/inventory-quarkus created
+    service/inventory-quarkus created
+    serviceaccount/catalog-app created
+    secret/catalog-database created
+    deployment.apps/catalog-database created
+    service/catalog-database created
+----
+
+=== Explore the topology view
+The Topology view in the Developer perspective of the web console provides a visual representation of all the applications within a project, their build status, and the associated components and services.
+
+==== Review the set of microservices that composed the Coolstore application
+
+** Access the OpenShift Web Console
+
+* Obtain the console URL:
+
+[source,sh,subs="attributes",role=execute]
+----
+{openshift_console_url}
+----
+* Copy the console URL in your web browser.
+
+* Use your OpenShift credentials to login in the Web Console.
+
+* user: {user}
+
+* password: {password}
+
+** Click on *Topology* to access the Developer's Perspective
+
+image::ocp-app/coolstore_topology.png[width=80%]
+
+All the components shown are deployments, which are in charge of managing your application. They are all in blue, indicating that the application is running. The arrows will indicate which components are connected.
+
+https://docs.openshift.com/container-platform/latest/applications/odc-viewing-application-composition-using-topology-view.html[For more information^]
+
+As you can see, everything is there except the UI and the catalog. In the next section, you will be moving the UI into OpenShift.
+
+=== Import the application
+
+In this section, you will move the UI source code into OpenShift using the Developer Perspective. OpenShift will create an automated ci/cd pipeline and all the manifests required by the application.
+
+1. Access Developer Perspective by clicking on *Developer* on the left menu.
+2. Click on *+Add*
+3. *Import from Git*
+4. Git Repo URL
++
+[.console-input]
+[source,bash,subs="+attributes",role=execute]
+----
+https://github.com/OpenShiftDemos/web-nodejs.git
+----
++
+5. Edit *Import Strategy* and select *Builder Image* (keep Node.js and Builder Image version: 16-ubi8)
+6. On Resource Type, select *Serverless Deployment*
+7. Click on Advanced options: Deployment and add *an environment variable* to connect with the Gateway URL:
+
+*Note*: Ensure you copy the entire Gateway URL before pasting it.
+
+    - *name*: SECURE_COOLSTORE_GW_ENDPOINT
+    - *value*: https://gateway-vertx-coolstore-dev-{user}.{openshift_cluster_ingress_domain}/
+
+Verify your input data is the same as shown below:
+
+image::ocp-app/serverless.png[width=80%]
+
+* Click on *Create*
+
+https://docs.openshift.com/container-platform/latest/applications/creating_applications/odc-creating-applications-using-developer-perspective.html[For more information^]
+
+==== Verify build and deployment:
+
+1. Select the new Service by clicking on *No Revisions*
+2. On the right menu, Click on the *Resources* tab
+
+image::ocp-app/serverless_resources.png[width=80%]
+
+*Note*: Revision will be ready once the build process is completed.
+
+* Verify the build process:
+
+1. Click on the *View Logs* on the *Builds* section
+2. Verify that the build is running and that the logs have no issues. The log will show *Push successful* in the last line once has finished.
+
+**Notes**: The build might take a few seconds to complete.
+
+image::ocp-app/build_ok.png[width=80%]
+
+Once the Build has finished the application will run successfully.
+
+* Go back to the *Topology view*: Click on *Topology* on the left menu.
+
+image::ocp-app/coolstore_topology_web.png[width=80%]
+
+The application is triggered once the build process is completed. Additionally, the application will restart when it receives any HTTP requests by accessing the application in the web browser.
+
+==== Verify the application is running
+
+* Click on the *Routes* under the Resources tab. Verify that the application is running.
+
+
+image::ocp-app/coolstore_website_black.png[width=80%]
+
+**Notes**: As you can see, no catalog is available. We need to install the catalog application to access the catalog data.
+
+* Go back to the *Topology view* in the Web Console.
+
+* Explore the application logs by clicking on *View logs* on the *Resources Tab* -> *Pods* section.
+
+image::ocp-app/logs_webui.png[width=60%]
+
+
+*Congratulations* you build and deploy a new application into OpenShift in just a few clicks!
+
+== Building your first backend application using the OpenShift Application Platform with OpenShift Pipelines
+In this section, you will move the catalog Java Spring Boot application into OpenShift using the Developer Perspective. OpenShift will create an automated ci/cd pipeline and all the manifests required by the application.
+
+Red Hat OpenShift Pipelines is a cloud-native, continuous integration and continuous delivery (CI/CD) solution based on Kubernetes resources. It uses Tekton building blocks to automate deployments across multiple platforms by abstracting away the underlying implementation details. Tekton introduces a number of standard custom resource definitions (CRDs) for defining CI/CD pipelines that are portable across Kubernetes distributions. https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/cicd/pipelines[More information^]
+
+1. Access Developer Perspective
+2. Click on  *+Add*
+3. *Import from Git*
+4. Git Repo URL:
++
+[.console-input]
+[source,bash,subs="+attributes",role=execute]
+----
+https://github.com/OpenShiftDemos/catalog-spring-boot.git
+----
++
+5. Edit *Import Strategy* and select *Builder Image* (keep Java and Builder Image version: *openjdk-17-ubi8*)
+6. *Update the Name to: catalog-spring-boot*
+7. On Resource Type, select *Deployment*
+8. Select the checkbox: *Add Pipeline*
+
+Verify your input data is the same as shown below:
+
+image::ocp-app/deployment.png[width=80%]
+
+* Click on *Create*
+
+==== Verify build and deployment:
+
+* Click the new Deployment *catalog-spring-boot* on the Topology view
+* Click on *Pipeline Runs*
+
+image::ocp-app/pipelines_detail.png[width=80%]
+
+* Verify that the pipeline is running and that everything is green.
+
+**Notes**: The pipeline might take a few minutes to complete. Explore the Pipeline Run logs.
+
+image::ocp-app/pipelines_deployment.png[width=80%]
+
+Once the Pipeline has finished, it will be shown as Pipeline Succeeded, and Pod will run successfully.
+
+* Explore the Pipeline logs:
+
+** Click on the Logs tab and explore the logs generated by each Task.
+
+image::ocp-app/pipeline_logs.png[width=60%]
+
+* Verify the application is running as expected
+** Return to the topology view: Click *Topology* on the left menu.
+** Click on the UI Serverless deployment, *web-nodejs-git...*
+** Click on the *Routes* under the Resources tab. Verify that the application is running.
+
+The catalog information is now available.
+
+image::ocp-app/coolstore_website.png[width=80%]
+
+
+* Observe the application CPU usage
+
+In the Observe section of OpenShift Container Platform web console, you can access and manage monitoring features such as metrics, alerts, monitoring dashboards, and metrics targets. https://docs.openshift.com/container-platform/4.14/monitoring/monitoring-overview.html[More information^]
+
+* Go back to the Topology View, Click on *Topology* on the left menu.
+
+* Access the *Observe* tab.
+
+image::ocp-app/coolstore_topology_observe.png[width=60%]
+
+* Click on *View Dashboard* to explore the application metrics:
+
+image::ocp-app/view_dashboard.png[width=0%]
+
+* Explore the *CPU Usage*:
+
+image::ocp-app/dashboard_metrics.png[width=80%]
+
+* Explore all the available metrics:
+
+** Select from the Dashboard dropdown the different metrics.
+
+image::ocp-app/available_metrics.png[width=80%]
+
+* Explore the *events*:
+
+image::ocp-app/events.png[width=80%]
+
+https://docs.openshift.com/container-platform/4.14/monitoring/reviewing-monitoring-dashboards.html[Reviewing monitoring dashboards^]
+
 
 == Conclusion
 
-A
+With the Developer Perspective, you can create, build, and manage applications or the command line. The Developer perspective is a powerful tool that enables you to move applications from a Git repository, helm chart, jar file, and much more.
+*Serverless* allows the deployment of applications without the burden of operations. The application's pods will be created depending on how much traffic is received. Serverless is a way to save costs since the applications will only run when receiving traffic.
+*OpenShift Pipelines* allows teams to build and deploy applications via ci/cd. Pipelines can be autogenerated when selecting the Pipelines checkbox.
+
 == More Information:
+
+* https://docs.openshift.com/container-platform/latest/applications/creating_applications/odc-creating-applications-using-developer-perspective.html[Creating applications using the Developer perspective^]
+* https://docs.openshift.com/container-platform/latest/applications/odc-viewing-application-composition-using-topology-view.html[Viewing application composition using the Topology view^]
+
+* https://docs.openshift.com/pipelines/1.13/create/working-with-pipelines-web-console.html[Working with Red Hat OpenShift Pipelines in the web console^]
+
+* https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/cicd/pipelines[Pipelines^]
+
+* https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/cicd/builds[Builds^]
+
 
