@@ -1,6 +1,6 @@
 = OpenShift as An Application Platform: Trusted - Comprehensive - Consistent(60 mins)
 
-This module will give you a comprehensive understanding of OpenShift as an Application Platform that can accelerate their day-to-day activities, from modernization to build, deploy, manage, and auto-scale your applications with serverless in a hybrid cloud and at the edge.
+This module will give you a comprehensive understanding of OpenShift as an Application Platform that can accelerate their day-to-day activities, from modernization to build, deploy, manage, and auto-scale your applications with serverless in the open hybrid cloud.
 
 == Introduction
 
@@ -16,7 +16,7 @@ In this module you will:
 
 
 image::ocp-app/devops_01_ocpapp_platform.png[width=100%]
-Fig 1. The image shows an Overview of the OpenShift as an Application Platform.
+Fig 1. The image shows an Overview of OpenShift as an Application Platform.
 
 * Built on the *trusted* foundation of *Red Hat Enterprise Linux*, *Red Hat OpenShift* provides a flexible, scalable foundation for modern application development across hybrid cloud environments—including onsite infrastructure, public cloud resources, and edge devices.
 
@@ -25,7 +25,7 @@ Fig 1. The image shows an Overview of the OpenShift as an Application Platform.
 * *Red Hat OpenShift* gives developers, operations and platform engineers a single, *consistent* user experience and the freedom to quickly build and deploy apps anywhere using the tools they want anywhere, whether they are on-premise, on a public cloud, at the edge, or using a hybrid infrastructure.
 
 
-== Building your a Serverless application with the OpenShift Application Platform
+== Building a Serverless application with the OpenShift Application Platform
 
 The serverless cloud computing model provides developers with a modern, cloud-native app dev stack for hybrid clouds. Serverless lets developers focus on their code without worrying about the infrastructure. Red Hat® OpenShift® Serverless allows you to avoid being locked into a single vendor and enables a multicloud approach. https://www.redhat.com/en/technologies/cloud-computing/openshift/serverless[More information^]
 
@@ -60,7 +60,7 @@ oc new-project coolstore-dev-{user}
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-git clone https://github.com/OpenShiftDemos/app-platform.git ~/app-platform
+git clone https://github.com/AdvancedDevSecOpsWorkshop/workshop.git ~/workshop
 ----
 
 * Explore the yaml file that will deploy the catalog and the database.
@@ -68,7 +68,7 @@ git clone https://github.com/OpenShiftDemos/app-platform.git ~/app-platform
 [.console-input]
 [source,bash,subs="+attributes,macros+"]
 ----
-cd ~/app-platform/content/modules/ROOT/files/module-01
+cd ~/workshop/content/modules/ROOT/files/module-01
 ----
 
 * Install the the Coolstore components:
@@ -139,9 +139,12 @@ In this section, you will move the UI source code into OpenShift using the Devel
 https://github.com/OpenShiftDemos/web-nodejs.git
 ----
 +
-5. Edit *Import Strategy* and select *Builder Image* (keep Node.js and Builder Image version: 16-ubi8)
-6. On Resource Type, select *Serverless Deployment*
-7. Click on Advanced options: Deployment and add *an environment variable* to connect with the Gateway URL:
+
+Git reference: roadshow-devops
+
+5. Edit *Import Strategy* and select *Builder Image* (keep Node.js and Builder Image version: 18-ubi8)
+6. On Deploy -> Resource Type, select *Serverless Deployment*
+7. Click on *Show advanced Deployment option*: and add *an environment variable* to connect with the Gateway URL:
 
 *Note*: Ensure you copy the entire Gateway URL before pasting it.
 
@@ -200,7 +203,7 @@ image::ocp-app/logs_webui.png[width=60%]
 
 *Congratulations* you build and deploy a new application into OpenShift in just a few clicks!
 
-== Building your first backend application using the OpenShift Application Platform with OpenShift Pipelines
+== Building a backend application using the OpenShift Application Platform with OpenShift Pipelines
 In this section, you will move the catalog Java Spring Boot application into OpenShift using the Developer Perspective. OpenShift will create an automated ci/cd pipeline and all the manifests required by the application.
 
 Red Hat OpenShift Pipelines is a cloud-native, continuous integration and continuous delivery (CI/CD) solution based on Kubernetes resources. It uses Tekton building blocks to automate deployments across multiple platforms by abstracting away the underlying implementation details. Tekton introduces a number of standard custom resource definitions (CRDs) for defining CI/CD pipelines that are portable across Kubernetes distributions. https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/cicd/pipelines[More information^]
@@ -216,10 +219,14 @@ Red Hat OpenShift Pipelines is a cloud-native, continuous integration and contin
 https://github.com/OpenShiftDemos/catalog-spring-boot.git
 ----
 +
+
+Branch: roadshow-devops
+
+
 5. Edit *Import Strategy* and select *Builder Image* (keep Java and Builder Image version: *openjdk-17-ubi8*)
-6. *Update the Name to: catalog-spring-boot*
+6. On Build -> Build Option, select *Pipelines*
 7. On Resource Type, select *Deployment*
-8. Select the checkbox: *Add Pipeline*
+
 
 Verify your input data is the same as shown below:
 

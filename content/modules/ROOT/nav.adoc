@@ -1,6 +1,10 @@
 * xref:index.adoc[0. Introduction]
 * xref:module-01.adoc[1. OpenShift as an Application Platform: Trusted - Comprehensive - Consistent]
 ** xref:module-01.adoc#_introduction[1. Introduction]
+
+** xref:module-01.adoc#_openshift_as_an_application_platform_overview[OpenShift as an Application Platform Overview]
+** xref:module-01.adoc#_building_a_serverless_application_with_the_openshift_application_platform[Building a Serverless application with the OpenShift Application Platform]
+** xref:module-01.adoc#_building_a_backend_application_using_the_openshift_application_platform_with_openshift_pipelines[Building a backend application using the OpenShift Application Platform with OpenShift Pipelines]
 ** xref:module-01.adoc#_conclusion[1. Conclusion]
 ** xref:module-01.adoc#_more_information[1. More Information]
 * xref:module-02.adoc[2. The Power of GitOps with OpenShift GitOps]
