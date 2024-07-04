@@ -1,4 +1,4 @@
-= OpenShift as An Application Platform: Trusted - Comprehensive - Consistent(60 mins)
+= OpenShift as An Application Platform: Trusted - Comprehensive - Consistent(45 mins)
 
 This module will give you a comprehensive understanding of OpenShift as an Application Platform that can accelerate their day-to-day activities, from modernization to build, deploy, manage, and auto-scale your applications with serverless in the open hybrid cloud.
 
@@ -25,9 +25,57 @@ Fig 1. The image shows an Overview of OpenShift as an Application Platform.
 * *Red Hat OpenShift* gives developers, operations and platform engineers a single, *consistent* user experience and the freedom to quickly build and deploy apps anywhere using the tools they want anywhere, whether they are on-premise, on a public cloud, at the edge, or using a hybrid infrastructure.
 
 
-== Building a Serverless application with the OpenShift Application Platform
+== Exploring OpenShift as an Application Platform from the OpenShift console
 
-The serverless cloud computing model provides developers with a modern, cloud-native app dev stack for hybrid clouds. Serverless lets developers focus on their code without worrying about the infrastructure. Red Hat® OpenShift® Serverless allows you to avoid being locked into a single vendor and enables a multicloud approach. https://www.redhat.com/en/technologies/cloud-computing/openshift/serverless[More information^]
+In this section we will explore some of the capabilities discussed such as Image Build, Runtimes, Serverless and CI/CD. 
+
+=== Introducing our module technology stack
+
+*Red Hat OpenShift* allows you to use the *Developer perspective* to build applications and associated components and services, define how they work together, and monitor their health over time.
+
+
+=== Working with UBI Images
+
+Red Hat Universal Base Images (UBI) are OCI-compliant container base operating system images with complementary runtime languages and packages that are freely redistributable. https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image[(Re)Introducing the Red Hat Universal Base Image^]
+
+The Developer perspective allows you to select a UBI image to be used as a base image for the new applications that will be built and deployed in OpenShift.
+
+=== *CI/CD with OpenShift Pipelines*
+
+https://docs.openshift.com/pipelines/1.15/about/understanding-openshift-pipelines.html[OpenShift Pipelines^] provides a Kubernetes-native CI/CD framework to design and run each step of the CI/CD pipeline in its own container. It can scale independently to meet the on-demand pipelines with predictable outcomes.
+
+* *Task* resources are the building blocks of a pipeline and consist of sequentially executed steps. It is essentially a function of inputs and outputs. 
+
+* *Steps* are a series of commands that are sequentially executed by the task and achieve a specific goal, such as building an image. 
+
+
+=== *Working with Serverless*
+The serverless cloud computing model provides developers with a modern, cloud-native app dev stack for hybrid clouds. Serverless lets developers focus on their code without worrying about the infrastructure. Red Hat® OpenShift® Serverless allows you to avoid being locked into a single vendor and enables a multicloud approach.  *Red Hat OpenShift Serverless*, based on the open-source *Knative project*, is your bridge to streamlined, efficient, and scalable event-driven cloud-native app development. 
+
+=== *Benefits of Serverless*
+
+- Simplified cloud native development
+- Automatic scaling
+- Multi-cloud portability
+- Comprehensive integration
+- Built-in security
+- Enterprise-grade application platform
+
+=== *Knative:*
+
+image::ocp-app/serverless_types.png[width=100%]
+
+
+* https://docs.openshift.com/serverless/latest/about/about-knative-serving.html[Knative Serving^] allows you to create Knative services and functions on your cluster. It also allows you to use additional functionality such as autoscaling and networking options for your applications. 
+
+* With https://docs.openshift.com/serverless/latest/about/about-knative-eventing.html[Knative Eventing^] you can create Knative components such as event sources, brokers, and channels and then use them to send events to applications or external systems.
+
+=== *Knative Serving:*
+
+image::ocp-app/serverless_serving.png[width=100%]
+
+
+=== Building a Serverless application with the OpenShift Application Platform
 
 
 === Application Overview
@@ -307,10 +355,9 @@ With the Developer Perspective, you can create, build, and manage applications o
 * https://docs.openshift.com/container-platform/latest/applications/creating_applications/odc-creating-applications-using-developer-perspective.html[Creating applications using the Developer perspective^]
 * https://docs.openshift.com/container-platform/latest/applications/odc-viewing-application-composition-using-topology-view.html[Viewing application composition using the Topology view^]
 
-* https://docs.openshift.com/pipelines/1.13/create/working-with-pipelines-web-console.html[Working with Red Hat OpenShift Pipelines in the web console^]
+* https://docs.openshift.com/pipelines/latest/create/working-with-pipelines-web-console.html[Working with Red Hat OpenShift Pipelines in the web console^]
 
-* https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/cicd/pipelines[Pipelines^]
+* https://docs.openshift.com/pipelines/latest/about/about-pipelines.html[Pipelines^]
 
-* https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/cicd/builds[Builds^]
-
+* https://docs.openshift.com/container-platform/latest/cicd/index.html[Builds^]
 

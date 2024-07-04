@@ -45,3 +45,7 @@ Fig 1. The diagram shows the technology stack and its interactions.
 * https://www.redhat.com/en/technologies/cloud-computing/openshift-data-foundation[Red Hat OpenShift Data Foundation^] previously Red Hat OpenShift Container Storage—is software-defined storage for containers. Red Hat OpenShift Data Foundation helps teams develop and deploy applications quickly and efficiently across clouds.
 
 * https://about.gitea.com/[Gitea^] is the SCM used to store and push application source code. 
+
+* https://docs.sonarsource.com/sonarqube/latest/[SonarQube^] is a tool for continuously inspecting the Code Quality and Security of an application source code.
+
+* https://www.sonatype.com/products/sonatype-nexus-repository[Nexus^] as a central artifactory repository.
