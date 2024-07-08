@@ -4,7 +4,7 @@
 
 == 1. Introduction and Overview
 
-Welcome to the OpenShift DevOps Roadshow! 
+*Welcome to the OpenShift DevOps Roadshow!* 
 In this Roadshow, you will learn the techniques and technologies for adopting https://www.redhat.com/en/topics/devops[DevOps^] and https://www.redhat.com/en/topics/devops/what-is-devsecops[DevSecOps^] practices to run applications in https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux?intcmp=7013a0000026H3vAAE&extIdCarryOver=true&sc_cid=7013a000003ScmnAAC[The Open Hybrid Cloud^].
 
 == 2. Key Takeaways

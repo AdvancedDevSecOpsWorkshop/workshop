@@ -27,9 +27,7 @@ Fig 1. The image shows an Overview of OpenShift as an Application Platform.
 
 == Exploring OpenShift as an Application Platform from the OpenShift console
 
-In this section we will explore some of the capabilities discussed such as Image Build, Runtimes, Serverless and CI/CD. 
-
-=== Introducing our module technology stack
+In this section we will explore some of the capabilities discussed such as *Image Build, *Runtimes*, *Serverless* and *CI/CD*. 
 
 *Red Hat OpenShift* allows you to use the *Developer perspective* to build applications and associated components and services, define how they work together, and monitor their health over time.
 
@@ -39,14 +37,6 @@ In this section we will explore some of the capabilities discussed such as Image
 Red Hat Universal Base Images (UBI) are OCI-compliant container base operating system images with complementary runtime languages and packages that are freely redistributable. https://www.redhat.com/en/blog/introducing-red-hat-universal-base-image[(Re)Introducing the Red Hat Universal Base Image^]
 
 The Developer perspective allows you to select a UBI image to be used as a base image for the new applications that will be built and deployed in OpenShift.
-
-=== *CI/CD with OpenShift Pipelines*
-
-https://docs.openshift.com/pipelines/1.15/about/understanding-openshift-pipelines.html[OpenShift Pipelines^] provides a Kubernetes-native CI/CD framework to design and run each step of the CI/CD pipeline in its own container. It can scale independently to meet the on-demand pipelines with predictable outcomes.
-
-* *Task* resources are the building blocks of a pipeline and consist of sequentially executed steps. It is essentially a function of inputs and outputs. 
-
-* *Steps* are a series of commands that are sequentially executed by the task and achieve a specific goal, such as building an image. 
 
 
 === *Working with Serverless*
@@ -61,7 +51,7 @@ The serverless cloud computing model provides developers with a modern, cloud-na
 - Built-in security
 - Enterprise-grade application platform
 
-=== *Knative:*
+=== *Knative*
 
 image::ocp-app/serverless_types.png[width=100%]
 
@@ -70,12 +60,12 @@ image::ocp-app/serverless_types.png[width=100%]
 
 * With https://docs.openshift.com/serverless/latest/about/about-knative-eventing.html[Knative Eventing^] you can create Knative components such as event sources, brokers, and channels and then use them to send events to applications or external systems.
 
-=== *Knative Serving:*
+=== *Knative Serving*
 
 image::ocp-app/serverless_serving.png[width=100%]
 
 
-=== Building a Serverless application with the OpenShift Application Platform
+== Modernize applications using OpenShift Web Console
 
 
 === Application Overview
@@ -85,7 +75,7 @@ image::ocp-app/serverless_serving.png[width=100%]
 - *Inventory*: A Java-based application built with Quarkus that provides the inventory information for each specific product. The data is shown in the UI as to how much quantity is available on each product.
 - *Catalog*: A Java-based application built with Spring Boot that connects with the Catalog Database to provide all the catalog information. The catalog data will not be visible in the UI without this service.
 
-== Building your a Serverless application with the OpenShift Application Platform
+== Building a Serverless application with the OpenShift Application Platform
 === Create your project
 
 * Log in the OpenShift using the terminal:
@@ -174,7 +164,7 @@ As you can see, everything is there except the UI and the catalog. In the next s
 
 === Import the application
 
-In this section, you will move the UI source code into OpenShift using the Developer Perspective. OpenShift will create an automated ci/cd pipeline and all the manifests required by the application.
+In this section, you will move the UI source code into OpenShift using the Developer Perspective. 
 
 1. Access Developer Perspective by clicking on *Developer* on the left menu.
 2. Click on *+Add*
@@ -248,16 +238,42 @@ image::ocp-app/coolstore_website_black.png[width=80%]
 
 image::ocp-app/logs_webui.png[width=60%]
 
+* Observe the pods scaling down to *zero* once there is no more traffic. A serverless application will only start running once it starts receiving traffic, and pods will be created depending on how much traffic the application will be receiving.
+
+
+image::ocp-app/serverless_scaling.png[width=100%]
+More information on https://docs.openshift.com/serverless/latest/knative-serving/autoscaling/serverless-autoscaling-developer.html[Serving Autoscaling^]
 
 *Congratulations* you build and deploy a new application into OpenShift in just a few clicks!
 
 == Building a backend application using the OpenShift Application Platform with OpenShift Pipelines
 In this section, you will move the catalog Java Spring Boot application into OpenShift using the Developer Perspective. OpenShift will create an automated ci/cd pipeline and all the manifests required by the application.
 
-Red Hat OpenShift Pipelines is a cloud-native, continuous integration and continuous delivery (CI/CD) solution based on Kubernetes resources. It uses Tekton building blocks to automate deployments across multiple platforms by abstracting away the underlying implementation details. Tekton introduces a number of standard custom resource definitions (CRDs) for defining CI/CD pipelines that are portable across Kubernetes distributions. https://access.redhat.com/documentation/en-us/openshift_container_platform/4.14/html/cicd/pipelines[More information^]
+
+=== *CI/CD with OpenShift Pipelines*
+
+Red Hat OpenShift Pipelines is a cloud-native, continuous integration and continuous delivery (CI/CD) solution based on Kubernetes resources. It uses Tekton building blocks to automate deployments across multiple platforms by abstracting away the underlying implementation details. Tekton introduces a number of standard custom resource definitions (CRDs) for defining CI/CD pipelines that are portable across Kubernetes distributions. 
+
+
+https://docs.openshift.com/pipelines/latest/about/understanding-openshift-pipelines.html[OpenShift Pipelines^] provides a Kubernetes-native CI/CD framework to design and run each step of the CI/CD pipeline in its own container. It can scale independently to meet the on-demand pipelines with predictable outcomes.
+
+* *Task* resources are the building blocks of a pipeline and consist of sequentially executed steps. It is essentially a function of inputs and outputs. 
+
+* *Steps* are a series of commands that are sequentially executed by the task and achieve a specific goal, such as building an image. 
+
+* *Task Run* An invocation of a task with inputs and outputs
+
+image::ocp-app/task_run.png[width=100%]
+
+* *Pipeline Resource* Inputs and outputs to tasks and pipelines (git, image, etc)
+* *Pipeline* A graph of tasks executed in a certain order
+* *Pipeline Run* An invocation of a pipeline with inputs and outputs
+
+image::ocp-app/pipeline_run.png[width=100%]
+
 
 1. Access Developer Perspective
-2. Click on  *+Add*
+2. Click on *+Add*
 3. *Import from Git*
 4. Git Repo URL:
 +
@@ -274,7 +290,6 @@ Branch: roadshow-devops
 5. Edit *Import Strategy* and select *Builder Image* (keep Java and Builder Image version: *openjdk-17-ubi8*)
 6. On Build -> Build Option, select *Pipelines*
 7. On Resource Type, select *Deployment*
-
 
 Verify your input data is the same as shown below:
 
