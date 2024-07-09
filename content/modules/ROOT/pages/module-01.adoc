@@ -178,8 +178,6 @@ https://github.com/OpenShiftDemos/web-nodejs.git
 ----
 +
 
-Git reference: roadshow-devops
-
 5. Edit *Import Strategy* and select *Builder Image* (keep Node.js and Builder Image version: 18-ubi8)
 6. On Deploy -> Resource Type, select *Serverless Deployment*
 7. Click on *Show advanced Deployment option*: and add *an environment variable* to connect with the Gateway URL:
@@ -240,8 +238,6 @@ image::ocp-app/logs_webui.png[width=60%]
 
 * Observe the pods scaling down to *zero* once there is no more traffic. A serverless application will only start running once it starts receiving traffic, and pods will be created depending on how much traffic the application will be receiving.
 
-
-image::ocp-app/serverless_scaling.png[width=100%]
 More information on https://docs.openshift.com/serverless/latest/knative-serving/autoscaling/serverless-autoscaling-developer.html[Serving Autoscaling^]
 
 *Congratulations* you build and deploy a new application into OpenShift in just a few clicks!
@@ -263,13 +259,15 @@ https://docs.openshift.com/pipelines/latest/about/understanding-openshift-pipeli
 
 * *Task Run* An invocation of a task with inputs and outputs
 
-image::ocp-app/task_run.png[width=100%]
+image::ocp-app/task_run.png[width=80%]
 
 * *Pipeline Resource* Inputs and outputs to tasks and pipelines (git, image, etc)
 * *Pipeline* A graph of tasks executed in a certain order
 * *Pipeline Run* An invocation of a pipeline with inputs and outputs
 
-image::ocp-app/pipeline_run.png[width=100%]
+image::ocp-app/pipeline_run.png[width=80%]
+
+=== Create your backend application
 
 
 1. Access Developer Perspective
@@ -283,9 +281,6 @@ image::ocp-app/pipeline_run.png[width=100%]
 https://github.com/OpenShiftDemos/catalog-spring-boot.git
 ----
 +
-
-Branch: roadshow-devops
-
 
 5. Edit *Import Strategy* and select *Builder Image* (keep Java and Builder Image version: *openjdk-17-ubi8*)
 6. On Build -> Build Option, select *Pipelines*
