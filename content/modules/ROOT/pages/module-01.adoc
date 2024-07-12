@@ -171,7 +171,7 @@ In this section, you will move the UI source code into OpenShift using the Devel
 
 1. Access Developer Perspective by clicking on *Developer* on the left menu.
 2. Click on *+Add*
-3. *Import from Git*
+3. *Import from Git, under Git Repository*
 4. Git Repo URL
 +
 [.console-input]
@@ -180,6 +180,8 @@ In this section, you will move the UI source code into OpenShift using the Devel
 https://github.com/OpenShiftDemos/web-nodejs.git
 ----
 +
+
+*Note*: Ignore the error "Danger alert: Import is not possible." You will be updating the Builder Option.
 
 5. Edit *Import Strategy* and select *Builder Image* (keep Node.js and Builder Image version: 18-ubi8)
 6. On Deploy -> Resource Type, select *Serverless Deployment*
@@ -278,7 +280,7 @@ image::ocp-app/pipeline_run.png[width=80%]
 
 1. Access Developer Perspective
 2. Click on *+Add*
-3. *Import from Git*
+3. *Import from Git, under Git Repository*
 4. Git Repo URL:
 +
 [.console-input]
@@ -287,6 +289,8 @@ image::ocp-app/pipeline_run.png[width=80%]
 https://github.com/OpenShiftDemos/catalog-spring-boot.git
 ----
 +
+
+*Note*: Ignore the error "Danger alert: Import is not possible." You will be updating the Builder Option.
 
 5. Edit *Import Strategy* and select *Builder Image* (keep Java and Builder Image version: *openjdk-17-ubi8*)
 6. On Build -> Build Option, select *Pipelines*
