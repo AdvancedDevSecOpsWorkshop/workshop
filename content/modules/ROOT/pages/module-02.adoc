@@ -145,7 +145,9 @@ with the same name multiple times in the same Argo CD instance?
 
 We are going to look at this and RBAC in more depth in the subsequent sections.
 
-== Argo CD CLI
+== Deep Dive
+
+=== Argo CD CLI
 
 We wil use the ArgoCD CLI to explore the Shared GitOps in more detail. To do this login into Argo CD as follows
 using the `--sso` switch to login using Keycloak.
@@ -247,7 +249,7 @@ route.openshift.io  Route                  user{user}-cicd   sonarqube          
 In addition to retrieving information about the Application, various tasks can be performed via the CLI including syncing, refreshing and modifying the Application. We
 will look at these in more depth in subsequent sections.
 
-== Argo CD Projects
+=== Argo CD Projects
 
 Argo CD link:https://argo-cd.readthedocs.io/en/stable/user-guide/projects/[Projects,window='_blank'] are used to group Applications together as well as manage
 permissions to the Applications and other Project scoped resources. They are basically useful when managing a multi-tenant Argo CD as the Project not
@@ -313,11 +315,11 @@ Orphaned Resources:          disabled
 ----
 
 
-== Role Based Access Control
+=== Role Based Access Control
 
 aaa
 
-== Apps in Any Namespace
+=== Apps in Any Namespace
 
 The answer is that we are using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace[Apps in Any Namespace,window='_blank'] feature. Traditionally,
 Argo CD requires that Application resources be in the same namespace as the Argo CD installation. Apps in Any Namespace allow applications to exist in other
@@ -331,7 +333,7 @@ The Apps in Any Namespace feature avoids this issue by requiring the platform te
 
 There is a subtle indication that Apps in Any Namespace is being used
 
-== Deploying Applications
+=== Deploying Applications
 
 aaa
 
