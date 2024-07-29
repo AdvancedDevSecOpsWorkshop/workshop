@@ -11,7 +11,7 @@
 ** xref:module-02.adoc#_introduction[1. Introduction]
 ** xref:module-02.adoc#_openshift_gitops_architecture[2. OpenShift GitOps Architecture]
 ** xref:module-02.adoc#_workshop_architecture[3. Workshop Architecture]
-** xref:module-02.adoc#_deep_dive[4. Workshop Architecture]
+** xref:module-02.adoc#_deep_dive[4. Deep Dive]
 ** xref:module-02.adoc#_conclusion[5. Conclusion]
 ** xref:module-02.adoc#_more_information[6. More Information]
 * xref:module-03.adoc[3. Trusted Software Supply Chain with OpenShift Pipelines]
