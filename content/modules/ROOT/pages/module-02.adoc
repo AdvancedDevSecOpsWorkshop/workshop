@@ -49,11 +49,13 @@ directories in git, clusters, etc.
 In this workshop, two GitOps instances have been deployed as follows:
 
 1. Cluster GitOps. This is used by the platform team to manage cluster configuration as well as
-cluster-scoped tenant resources (i.e. Namespaces, Quotas, Networkpolicy, Operators, etc).
+cluster-scoped tenant resources (i.e. Namespaces, Quotas, Networkpolicy, Operators, etc). It has cluster-admin
+level Kubernetes privileges in order to manage cluster configuration.
 
 2. Shared GitOps. This instance is used by application teams to deploy their applications. This is a shared
 GitOps environment with multiple application teams accessing it. As a result Argo CD Role Based Access Controls (RBAC) has been
-configured to manage access so that users from different teams cannot view or modify other teams applications.
+configured to manage access so that users from different teams cannot view or modify other teams applications. Additionally
+it has much less Kubernetes privileges then the Cluster GitOps instance possesses.
 
 === Cluster GitOps
 
@@ -124,6 +126,16 @@ While technically a single Argo CD instance can be used for both cluster configu
 by leveraging Argo CD RBAC, it is recommended that these use cases be in separate instances to minimize the possibilities
 of privilege escalation. Privilege escalation can occur if there is a hole in the Argo CD RBAC configuration enabling
 a developer team member to leverage the higher kubernetes permissions a cluster configuration GitOps instance would have,
+
+Login into the Shared GitOps instance by using the link in the OpenShift application menu:
+
+image::gitops/openshift-app-menu-shared-argocd.png
+
+The login process is identical to the Cluster GitOps instance, click the Keycloak login button to complete the process. Once logged
+in a set of Applications will be displayed:
+
+image::gitops/shared-gitops-apps.png
+
 
 
 
