@@ -1,6 +1,7 @@
 = The Power of GitOps with OpenShift GitOps(60 mins)
 
-In this module you will understand how GitOps is used to manage cluster configuration and application deployments.
+In this module you will understand how GitOps is used to manage cluster configuration and application deployments. This module
+assumes you have some familiarity with Argo CD.
 
 == Introduction
 
@@ -30,16 +31,16 @@ The OpenShift GitOps operator is used to deploy, manage and upgrade an installat
 specified namespace. The Argo CD installation contains several components, running as individual deployments,
 which are as follows:
 
-1. application-controller. This component is responsible for deploying and monitoring Kubernetes resources,
+1. *Application Controller*. This component is responsible for deploying and monitoring Kubernetes resources,
 as a result it interacts with the Kubernetes API.
-2. repo-server. This component manages access to the manifests via a git repository, it is responsible for
+2. *Repo Server*. This component manages access to the manifests via a git repository, it is responsible for
 fetching the manifests (i.e. yaml files). These manifests can be built from raw yaml, helm or kustomize but
 additional tools can be used via a plugin architecture. For improved performance, it caches these manifests
 in the redis component.
-3. Server. This provides the user interface as well as a REST API.
-4. Dex (optional). Provides authentication via OpenShift OAuth2, in this workshop it is not used as we
+3. *Server*. This provides the user interface as well as a REST API.
+4. *Dex (optional)*. Provides authentication via OpenShift OAuth2, in this workshop it is not used as we
 are authenticating directly against Keycloak.
-5. applicationset-controller (Not shown). This component is responsible for managing ApplicationSets which
+5. *ApplicationSet Controller (Not shown)*. This component is responsible for managing ApplicationSets which
 are used to generate Applications using generators. These generators can create Applications based on Pull Requests,
 directories in git, clusters, etc.
 
@@ -57,10 +58,10 @@ configured to manage access so that users from different teams cannot view or mo
 === Cluster GitOps
 
 By default the OpenShift GitOps operator will install an instance in the `openshift-gitops` namespace, this instance
-is cluster-scoped and users are encouraged to use this instance for cluster configuraton including managing
+is cluster-scoped and users are encouraged to use this instance for cluster configuration including managing
 privileged resources on behalf of tenants (Namespaces, Quotas, Operators, etc).
 
-Lets, have a look at this instance now, to do so access the OpenShift Application Menu and select the Cluster Argo CD
+Lets have a brief look at this instance first, to do so access the OpenShift Application Menu and select the Cluster Argo CD
 item highlighted in red:
 
 image::gitops/openshift-app-menu-cluster-argocd.png[]
@@ -75,12 +76,26 @@ applications:
 
 image::gitops/argocd-cluster-users.png[]
 
-Notice how you view all of the user projects (user1, user2, user3, etc), this is because we have used Argo CD RBAC
-to provide users in the `developers` group with limited access to these projects.
+Notice how you can view all of the user projects (user1, user2, user3, etc), this is because we have used Argo CD RBAC
+to provide users in the `developers` group with limited access to the Argo CD Project that these applications are tied to.
 
 [Note]
-It is rare for developers to have access to the cluster scoped instance which is typically managed by the platform
-team, we are providing it here for illustrative purposes.
+It is uncommon for developers to have any access to the cluster scoped instance which is typically managed by the platform
+team, we are providing it here for illustrative purposes. In situations where it is beneficial for high performing
+developer teams to have limited access typically that access would be limited to Applications that are specific
+to that team. (i.e. user1 could only see the user1 application, etc)
+
+Select the app for your particular user called `user{user}`. Depending on the number of users attending the workshop there
+could be a lot of Applications, you can find your application by using the filter bar:
+
+image::gitops/argocd-filter.png[]
+
+Once you find the Application, click on it to view all of the resources that this Application deployed. This Application
+is provisioning all of the resources that a tenant, i.e. your user, requires on this cluster including namespaces, rolebindings,
+etc. These are the resources that the platform team, i.e. cluster-admins, need to provision for developer teams on the
+cluster.
+
+image::gitops/cluster-argocd-user-app.png[]
 
 You can view the groups associated with your logged in user by clicking on the user button, note the `developers`
 group that is shown along with the team, `teamX`, that your user is associated with. In our scenario user1 is on
@@ -88,12 +103,66 @@ team 1, user2 on team2, etc. The `developers` group is a catch all group that al
 
 These groups are provisioned in Keycloak and made available to Argo CD when you logged into the application.
 
-Next click on Settings and the Projects.
+In the next section we will review the Shared Argo CD instance and do a deeper dive afterwards on how Argo CD RBAC is configured
+to determine the access that users have to resources in Argo CD. For now know that you have limited permissions
+on the Applications in the `Users` project, only Get and Sync permissions have been enabled.
 
-image::gitops/argocd-cluster-settings-appproject.png[]
+[Note]
+There is another Argo CD Project deployed here for cluster configuration for which the Developers group has no
+permissions, If at the end of the workshop you would like to see how the Workshop was configured using GitOps
+you can ask the instructor to enable visibility.
 
-This will take you to the list of projects where you will see a single project called `users`. Click on `users` to view
-the following tab:
+
+=== Shared GitOps
+
+The Shared GitOps instance is the Argo CD instance that developer teams will interact with. Compared to the
+Cluster GitOps instance it has much less privileges on the cluster and are more aligned with developer
+team responsibilities around deploying applications.
+
+[Note]
+While technically a single Argo CD instance can be used for both cluster configuration and developer deployments
+by leveraging Argo CD RBAC, it is recommended that these use cases be in separate instances to minimize the possibilities
+of privilege escalation. Privilege escalation can occur if there is a hole in the Argo CD RBAC configuration enabling
+a developer team member to leverage the higher kubernetes permissions a cluster configuration GitOps instance would have,
+
+
+
+Next, use the ArgoCD CLI to explore the Cluster GitOps in more detail. To do this login into Argo CD as follows
+using the `--sso` switch to login using Keycloak.
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+argocd login --sso --grpc-web openshift-gitops-server-openshift-gitops.{openshift_cluster_ingress_domain}
+----
+
+[Note] The `--sso` switch starts a local web server on localhost:8085 that is used to handle the callback from
+Keycloak. The `--grpc-web` switch tells Argo CD to tunnel GRPC calls over the web since Argo CD is being
+accessed via an OpenShift Route.
+
+If not logged into Keycloak already the login page will be presented to enter
+credentials:
+
+image::gitops/keycloak-login.png[]
+
+Once the logged into Keycloak the following screen indicating a successful login will be displayed:
+
+image::gitops/argocd-login-success.png[]
+
+Once the login is confirmed, or when already logged into Keycloak, the following output will be displayed indicating
+a successful login.
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+---
+Opening browser for authentication
+Performing authorization_code flow login: https://keycloak.{openshift_cluster_ingress_domain}/realms/openshift/protocol/openid-connect/auth?access_type=offline&client_id=argocd&code_challenge=hKfv93CDiHNQDoNYG7WJy94I5s0HHwc1jHyOeZAREjE&code_challenge_method=S256&redirect_uri=http%3A%2F%2Flocalhost%3A8085%2Fauth%2Fcallback&response_type=code&scope=openid+profile+email+groups+offline_access&state=IgTnVDmglRtmzysjAqoRSiwE
+Authentication successful
+'clusteradmin@workshop.com' logged in successfully
+Context 'openshift-gitops-server-openshift-gitops.{openshift_cluster_ingress_domain}' updated
+---
+
+Once logged in, the Argo CD CLI can be used to view the Applications that were shown in the user interface:
 
 
 
