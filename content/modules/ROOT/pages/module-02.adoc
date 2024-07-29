@@ -248,6 +248,69 @@ will look at these in more depth in subsequent sections.
 
 == Argo CD Projects
 
+Argo CD link:https://argo-cd.readthedocs.io/en/stable/user-guide/projects/[Projects,window='_blank'] are used to group Applications together as well as manage
+permissions to the Applications and other Project scoped resources. They are basically useful when managing a multi-tenant Argo CD as the Project not
+only determines the user permissions but also the permissions of the Applications it is managing in terms of Kubernetes access. As per the
+documentation, an Argo CD Project can:
+
+* restrict what may be deployed (trusted Git source repositories)
+* restrict where apps may be deployed to (destination clusters and namespaces)
+* restrict what kinds of objects may or may not be deployed (e.g. RBAC, CRDs, DaemonSets, NetworkPolicy etc...)
+* defining project roles to provide application RBAC (bound to OIDC groups and/or JWT tokens)
+
+In our Shared GitOps instance each workshop team, and thus user, has their own Project to manage access and restrictions for their Applications. To
+view your teams project, use the CLI to run the following command:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+argocd proj list
+----
+
+Notice that a single project is listed:
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+---
+NAME   DESCRIPTION    DESTINATIONS    SOURCES  CLUSTER-RESOURCE-WHITELIST  NAMESPACE-RESOURCE-BLACKLIST  SIGNATURE-KEYS  ORPHANED-RESOURCES
+team{user}  team{user} project  5 destinations  *        <none>                      <none>                        <none>          disabled
+---
+
+A detailed view of the project is retrieved by using the `get` command:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+argocd proj get team{user}
+----
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+---
+Name:                        team{user}
+Description:                 team{user} project
+Destinations:                ,user{user}-argocd
+                             ,user{user}-dev
+                             ,user{user}-stage
+                             ,user{user}-prod
+                             ,user{user}-cicd
+Repositories:                *
+Scoped Repositories:         <none>
+Allowed Cluster Resources:   <none>
+Scoped Clusters:             <none>
+Denied Namespaced Resources: /Namespace
+                             /ResourceQuota
+                             /LimitRange
+                             operators.coreos.com/*
+                             operator.openshift.io/*
+                             storage.k8s.io/*
+                             machine.openshift.io/*
+                             machineconfiguration.openshift.io/*
+                             compliance.openshift.io/*
+Signature keys:              <none>
+Orphaned Resources:          disabled
+---
+
 
 
 
