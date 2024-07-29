@@ -156,7 +156,8 @@ using the `--sso` switch to login using Keycloak.
 argocd login --sso --grpc-web argocd-server-gitops.{openshift_cluster_ingress_domain}
 ----
 
-[Note] The `--sso` switch starts a local web server on localhost:8085 that is used to handle the callback from
+[Note]
+The `--sso` switch starts a local web server on localhost:8085 that is used to handle the callback from
 Keycloak. The `--grpc-web` switch tells Argo CD to tunnel GRPC calls over the web since Argo CD is being
 accessed via an OpenShift Route.
 
@@ -174,13 +175,13 @@ a successful login.
 
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
----
+----
 Opening browser for authentication
 Performing authorization_code flow login: https://keycloak.{openshift_cluster_ingress_domain}/realms/openshift/protocol/openid-connect/auth?access_type=offline&client_id=argocd&code_challenge=hKfv93CDiHNQDoNYG7WJy94I5s0HHwc1jHyOeZAREjE&code_challenge_method=S256&redirect_uri=http%3A%2F%2Flocalhost%3A8085%2Fauth%2Fcallback&response_type=code&scope=openid+profile+email+groups+offline_access&state=IgTnVDmglRtmzysjAqoRSiwE
 Authentication successful
 'user{user}@workshop.com' logged in successfully
 Context 'argocd-server-gitops.{openshift_cluster_ingress_domain}' updated
----
+----
 
 Once logged in, the Argo CD CLI can be used to view the Applications that were shown in the user interface:
 
@@ -194,10 +195,10 @@ The following output will be provided showing the application name, the sync and
 
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
----
+----
 NAME                    CLUSTER     NAMESPACE   PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                        PATH                              TARGET
 user1-argocd/dev-tools  in-cluster  user1-cicd  user1    Synced  Healthy  Auto        <none>      https://github.com/AdvancedDevSecOpsWorkshop/bootstrap.git  infra/dev-tools/overlays/default  HEAD
----
+----
 
 A detailed view of the Application can be retrieved by using the `get` command:
 
@@ -211,7 +212,7 @@ Various details of the Application are shown including a list of resources that 
 
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
----
+----
 Name:               user{user}-argocd/dev-tools
 Project:            user{user}
 Server:             in-cluster
@@ -241,7 +242,7 @@ batch               Job                    user{user}-cicd   configure-sonarqube
 route.openshift.io  Route                  user{user}-cicd   nexus                      Synced  Healthy        route.route.openshift.io/nexus created
 apps.openshift.io   DeploymentConfig       user{user}-cicd   postgresql-sonarqube       Synced  Healthy        deploymentconfig.apps.openshift.io/postgresql-sonarqube created
 route.openshift.io  Route                  user{user}-cicd   sonarqube                  Synced  Healthy        route.route.openshift.io/sonarqube created
----
+----
 
 In addition to retrieving information about the Application, various tasks can be performed via the CLI including syncing, refreshing and modifying the Application. We
 will look at these in more depth in subsequent sections.
@@ -271,10 +272,10 @@ Notice that a single project is listed:
 
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
----
+----
 NAME   DESCRIPTION    DESTINATIONS    SOURCES  CLUSTER-RESOURCE-WHITELIST  NAMESPACE-RESOURCE-BLACKLIST  SIGNATURE-KEYS  ORPHANED-RESOURCES
 team{user}  team{user} project  5 destinations  *        <none>                      <none>                        <none>          disabled
----
+----
 
 A detailed view of the project is retrieved by using the `get` command:
 
@@ -286,7 +287,7 @@ argocd proj get team{user}
 
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
----
+----
 Name:                        team{user}
 Description:                 team{user} project
 Destinations:                ,user{user}-argocd
@@ -309,12 +310,12 @@ Denied Namespaced Resources: /Namespace
                              compliance.openshift.io/*
 Signature keys:              <none>
 Orphaned Resources:          disabled
----
-
-
+----
 
 
 == Role Based Access Control
+
+aaa
 
 == Apps in Any Namespace
 
@@ -328,15 +329,17 @@ This problem arises because Argo CD RBAC is only enforced when using the Argo UI
 
 The Apps in Any Namespace feature avoids this issue by requiring the platform team to bind a specific Argo CD Project to the instance.
 
-There
-is a subtle indication that thsi
+There is a subtle indication that Apps in Any Namespace is being used
 
 == Deploying Applications
 
-
+aaa
 
 
 == Conclusion
 
-A
+aaa
+
 == More Information:
+
+aaa
