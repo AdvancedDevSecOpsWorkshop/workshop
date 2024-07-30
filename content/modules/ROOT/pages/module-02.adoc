@@ -337,6 +337,25 @@ Roles and permissions can be defined in two places, globally or on a per Project
 roles and permissions be defined in the Project and global roles be reserved for Argo CD administrators and managing
 globally scoped resources.
 
+As a user of the workshop you do not have access to view the global configuration, however this is what is defined:
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+  policy.csv: |
+    p, role:none, *, *, */*, deny
+    g, system:cluster-admins, role:admin
+    g, cluster-admins, role:admin
+    p, role:developers, clusters, get, *, allow
+    p, role:developers, repositories, get, *, allow
+    p, role:developers, projects, get, global, allow
+    g, developers, role:developers
+  policy.default: role:none
+  scopes: '[accounts,groups,email]'
+----
+
+
+
 === Apps in Any Namespace
 
 The answer is that we are using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace[Apps in Any Namespace,window='_blank'] feature. Traditionally,
