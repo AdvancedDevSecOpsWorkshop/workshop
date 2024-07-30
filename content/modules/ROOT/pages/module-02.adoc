@@ -165,9 +165,9 @@ commands:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-ARGOCD_AUTH_TOKEN=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_AUTH_TOKEN}" | base64 -d)
-ARGOCD_SERVER=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_SERVER}" | base64 -d)
-ARGOCD_USERNAME=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_USERNAME}" | base64 -d)
+export ARGOCD_AUTH_TOKEN=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_AUTH_TOKEN}" | base64 -d)
+export ARGOCD_SERVER=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_SERVER}" | base64 -d)
+export ARGOCD_USERNAME=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_USERNAME}" | base64 -d)
 ----
 
 The Argo CD CLI will use this environment variables automatically and not require an explicit login.
