@@ -305,9 +305,37 @@ Signature keys:              <none>
 Orphaned Resources:          disabled
 ----
 
+Some resources, such as clusters and repositories, can be scoped globally or at a Project level. Scoping resources
+at a Project level can be useful in cases where the Argo CD administrator would like to enable self-service
+for application teams. In this workshop these resources are defined globally however if you would like to learn
+more about this capability the Argo CD documentation covers this topic in depth.
+
+link:https://argo-cd.readthedocs.io/en/stable/user-guide/projects/#project-scoped-repositories-and-clusters[Project scoped Repositories and Clusters,window="_blank"]
+
 === Role Based Access Control
 
-aaa
+Argo CD has it's own Role Based Access Control (RBAC) that is separate and distinct from Kubernetes RBAC. When users interact
+with Argo CD via the Argo CD UI, CLI or API the Argo CD RBAC is enforced. If users interact with Argo CD resources directly
+using the OpenShift Console or kubectl/oc then only the Kubernetes RBAC is used.
+
+Additionally the application-controller in Argo CD, as shown previously in the GitOps Architecture, interacts with the
+Kubernetes API and is governed by Kubernetes RBAC. Argo CD can only deploy and manage the Kubernetes resources that
+the application-controller has been given permission to use in Kubernetes RBAC,
+
+This relationship is shown in the following diagram:
+
+image::argocd-rbac.png[]
+
+The Argo CD RBAC is implemented using the link:https://casbin.org/docs/overview[Casbin, window="_blank"] library. Permissions
+are defined by creating roles and then assigning those roles to groups, or individual users, as needed. Argo CD includes
+two roles out of the box:
+
+* role:readonly - provides read-only access to all resources
+* role:admin - allows unrestricted access to all resources
+
+Roles and permissions can be defined in two places, globally or on a per Project basis. It is recommended that tenant
+roles and permissions be defined in the Project and global roles be reserved for Argo CD administrators and managing
+globally scoped resources.
 
 === Apps in Any Namespace
 
