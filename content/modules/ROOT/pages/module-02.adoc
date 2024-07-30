@@ -149,43 +149,34 @@ We are going to look at this and RBAC in more depth in the subsequent sections.
 
 === Argo CD CLI
 
-We wil use the ArgoCD CLI to explore the Shared GitOps in more detail. To do this login into Argo CD as follows
-using the `--sso` switch to login using Keycloak.
+We wil use the ArgoCD CLI to explore the Shared GitOps in more detail. A secret has been pre-created in the `user{user}-argocd`
+namespace called `argocd-cli` that provides the credentials needed to login into Argo CD.
+
+[Note]
+Normally when using Argo CD with OIDC the login would be done with using the `--sso` switch
+which starts up a local web server to handle the OIDC callback on localhost. However since
+our terminal is running in OpenShift a local account, `user{user}-cli` has been pre-created
+with identical permissions to the SSO user. Normally local accounts in Argo CD should only
+be used for automation not for users.
+
+To provision secret into the terminal as exported environment variables run the following
+commands:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-argocd login --sso --grpc-web argocd-server-gitops.{openshift_cluster_ingress_domain}
+ARGOCD_AUTH_TOKEN=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_AUTH_TOKEN}" | base64 -d)
+ARGOCD_SERVER=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_SERVER}" | base64 -d)
+ARGOCD_USERNAME=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_USERNAME}" | base64 -d)
 ----
+
+The Argo CD CLI will use this environment variables automatically and not require an explicit login.
 
 [Note]
-The `--sso` switch starts a local web server on localhost:8085 that is used to handle the callback from
-Keycloak. The `--grpc-web` switch tells Argo CD to tunnel GRPC calls over the web since Argo CD is being
-accessed via an OpenShift Route.
+If you restart the terminal interface you may need to run the above commands again in order to access Argo CD
+from the command line.
 
-If not logged into Keycloak already the login page will be presented to enter
-credentials:
-
-image::gitops/keycloak-login.png[]
-
-Once the logged into Keycloak the following screen indicating a successful login will be displayed:
-
-image::gitops/argocd-login-success.png[]
-
-Once the login is confirmed, or when already logged into Keycloak, the following output will be displayed indicating
-a successful login.
-
-[.console-output]
-[source,bash,subs="attributes+,+macros"]
-----
-Opening browser for authentication
-Performing authorization_code flow login: https://keycloak.{openshift_cluster_ingress_domain}/realms/openshift/protocol/openid-connect/auth?access_type=offline&client_id=argocd&code_challenge=hKfv93CDiHNQDoNYG7WJy94I5s0HHwc1jHyOeZAREjE&code_challenge_method=S256&redirect_uri=http%3A%2F%2Flocalhost%3A8085%2Fauth%2Fcallback&response_type=code&scope=openid+profile+email+groups+offline_access&state=IgTnVDmglRtmzysjAqoRSiwE
-Authentication successful
-'user{user}@workshop.com' logged in successfully
-Context 'argocd-server-gitops.{openshift_cluster_ingress_domain}' updated
-----
-
-Once logged in, the Argo CD CLI can be used to view the Applications that were shown in the user interface:
+Test the variables are set by using the Argo CD CLI to view the Applications that were shown in the user interface:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
