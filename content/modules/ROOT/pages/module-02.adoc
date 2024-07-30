@@ -206,8 +206,8 @@ Various details of the Application are shown including a list of resources that 
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
 ----
-Name:               user{user}-argocd/dev-tools
-Project:            user{user}
+Name:               {user}-argocd/dev-tools
+Project:            {user}
 Server:             in-cluster
 Namespace:          user{user}-cicd
 URL:                https://argocd-server-gitops.apps.cluster-wvcx7.sandbox1429.opentlc.com/applications/dev-tools
@@ -221,20 +221,20 @@ Sync Status:        Synced to HEAD (482bc44)
 Health Status:      Healthy
 
 GROUP               KIND                   NAMESPACE    NAME                       STATUS  HEALTH   HOOK  MESSAGE
-                    Secret                 user{user}-cicd   sonarqube-admin            Synced                 secret/sonarqube-admin created
-                    PersistentVolumeClaim  user{user}-cicd   nexus                      Synced  Healthy        persistentvolumeclaim/nexus created
-                    PersistentVolumeClaim  user{user}-cicd   sonarqube-data             Synced  Healthy        persistentvolumeclaim/sonarqube-data created
-                    PersistentVolumeClaim  user{user}-cicd   postgresql-sonarqube-data  Synced  Healthy        persistentvolumeclaim/postgresql-sonarqube-data created
-                    Service                user{user}-cicd   sonarqube                  Synced  Healthy        service/sonarqube created
-                    Service                user{user}-cicd   nexus                      Synced  Healthy        service/nexus created
-                    Service                user{user}-cicd   postgresql-sonarqube       Synced  Healthy        service/postgresql-sonarqube created
-apps                Deployment             user{user}-cicd   nexus                      Synced  Healthy        deployment.apps/nexus created
-apps                Deployment             user{user}-cicd   sonarqube                  Synced  Healthy        deployment.apps/sonarqube created
-batch               Job                    user{user}-cicd   configure-nexus            Synced  Healthy        job.batch/configure-nexus created
-batch               Job                    user{user}-cicd   configure-sonarqube        Synced  Healthy        job.batch/configure-sonarqube created
-route.openshift.io  Route                  user{user}-cicd   nexus                      Synced  Healthy        route.route.openshift.io/nexus created
-apps.openshift.io   DeploymentConfig       user{user}-cicd   postgresql-sonarqube       Synced  Healthy        deploymentconfig.apps.openshift.io/postgresql-sonarqube created
-route.openshift.io  Route                  user{user}-cicd   sonarqube                  Synced  Healthy        route.route.openshift.io/sonarqube created
+                    Secret                 {user}-cicd   sonarqube-admin            Synced                 secret/sonarqube-admin created
+                    PersistentVolumeClaim  {user}-cicd   nexus                      Synced  Healthy        persistentvolumeclaim/nexus created
+                    PersistentVolumeClaim  {user}-cicd   sonarqube-data             Synced  Healthy        persistentvolumeclaim/sonarqube-data created
+                    PersistentVolumeClaim  {user}-cicd   postgresql-sonarqube-data  Synced  Healthy        persistentvolumeclaim/postgresql-sonarqube-data created
+                    Service                {user}-cicd   sonarqube                  Synced  Healthy        service/sonarqube created
+                    Service                {user}-cicd   nexus                      Synced  Healthy        service/nexus created
+                    Service                {user}-cicd   postgresql-sonarqube       Synced  Healthy        service/postgresql-sonarqube created
+apps                Deployment             {user}-cicd   nexus                      Synced  Healthy        deployment.apps/nexus created
+apps                Deployment             {user}-cicd   sonarqube                  Synced  Healthy        deployment.apps/sonarqube created
+batch               Job                    {user}-cicd   configure-nexus            Synced  Healthy        job.batch/configure-nexus created
+batch               Job                    {user}-cicd   configure-sonarqube        Synced  Healthy        job.batch/configure-sonarqube created
+route.openshift.io  Route                  {user}-cicd   nexus                      Synced  Healthy        route.route.openshift.io/nexus created
+apps.openshift.io   DeploymentConfig       {user}-cicd   postgresql-sonarqube       Synced  Healthy        deploymentconfig.apps.openshift.io/postgresql-sonarqube created
+route.openshift.io  Route                  {user}-cicd   sonarqube                  Synced  Healthy        route.route.openshift.io/sonarqube created
 ----
 
 In addition to retrieving information about the Application, various tasks can be performed via the CLI including syncing, refreshing and modifying the Application. We
@@ -267,7 +267,7 @@ Notice that a single project is listed:
 [source,bash,subs="attributes+,+macros"]
 ----
 NAME   DESCRIPTION    DESTINATIONS    SOURCES  CLUSTER-RESOURCE-WHITELIST  NAMESPACE-RESOURCE-BLACKLIST  SIGNATURE-KEYS  ORPHANED-RESOURCES
-team{user}  team{user} project  5 destinations  *        <none>                      <none>                        <none>          disabled
+{user}  {user} project  5 destinations  *        <none>                      <none>                        <none>          disabled
 ----
 
 A detailed view of the project is retrieved by using the `get` command:
@@ -281,13 +281,13 @@ argocd proj get team{user}
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
 ----
-Name:                        team{user}
-Description:                 team{user} project
-Destinations:                ,user{user}-argocd
-                             ,user{user}-dev
-                             ,user{user}-stage
-                             ,user{user}-prod
-                             ,user{user}-cicd
+Name:                        {user}
+Description:                 {user} project
+Destinations:                .{user}-argocd
+                             ,{user}-dev
+                             ,{user}-stage
+                             ,{user}-prod
+                             ,{user}-cicd
 Repositories:                *
 Scoped Repositories:         <none>
 Allowed Cluster Resources:   <none>
@@ -304,7 +304,6 @@ Denied Namespaced Resources: /Namespace
 Signature keys:              <none>
 Orphaned Resources:          disabled
 ----
-
 
 === Role Based Access Control
 
