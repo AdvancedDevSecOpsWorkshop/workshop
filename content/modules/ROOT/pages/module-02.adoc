@@ -397,7 +397,7 @@ Now look at the `admin` role:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-argocd proj role get user1 admin
+argocd proj role get {user} admin
 ----
 
 [.console-output]
@@ -428,13 +428,44 @@ permissions to roles.
 it is scoped to Project `user1` and the role `admin`.
 3. Then the resource type for which we are giving permissions to, in this case `projects`. Many
 Argo CD resource types are supported including `applications`, `clusters`, and
-link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[more, window="_blank"]
+link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[more, window="_blank"].
 4. After resource we define the actions for the policy, in this case a single action of `get`. Many
-different link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[actions, window="_blank"] are available.
-5. Next is the specific resource, this can be a wildcard or a named resource such as `user` in this case
+different link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[actions, window="_blank"] are available. A
+wildcard of `*` indicates all actions.
+5. Next is the specific resource, this can be a wildcard like `*` for all resources or a named resource such as `user1` in this case
 indicating the `user1` Project. For resources like Applications that are scoped to Projects a notation of
 `<Project>/<Application>` can be used as shown in subsequent lines.
 6. Finally whether we are allowing or denying the permission.
+
+Once we have defined our role via policies we can then assign the policy to a group, this is indicated
+by a `g` at the start of the line. For example, the line `g, team1, proj:user1:admin` indicates we
+are assigning the project scoped role `admin` to the group `team1`.
+
+Note that what is considered a `group` for matching purposes is controlled by the `scope` that was
+reviewed earlier. While `groups` is the most commonly set scope, having scopes like `email`
+allows you to match roles to individual users.
+
+So let's test this policy, as discussed we only have the ability to view this basic project but
+we cannot modify or delete. Let's try it anyway:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+argocd proj delete {user}
+----
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+FATA[0000] rpc error: code = PermissionDenied desc = permission denied: projects, delete, user1, sub: user1-cli, iat: 2024-07-30T17:14:43Z
+----
+
+As expected we were denied permission to delete the Project. Again as a reminder the Argo RBAC is only used when you interact with
+Argo CD via its UI or CLI. If you have permissions on the `AppProject` kind in the Argo CD namespace you could delete the resource
+with `oc delete appproject user1 -n gitops` and the Argo CD RBAC would never be checked,
+
+This is a challenge when you want to give users the ability to declaratively manage Applications instead of managing them with the UI or CLI, fortunately
+Argo CD has you covered as we will see in the next module.
 
 === Apps in Any Namespace
 
