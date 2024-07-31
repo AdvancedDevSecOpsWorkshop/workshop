@@ -168,9 +168,12 @@ commands:
 export ARGOCD_AUTH_TOKEN=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_AUTH_TOKEN}" | base64 -d)
 export ARGOCD_SERVER=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_SERVER}" | base64 -d)
 export ARGOCD_USERNAME=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_USERNAME}" | base64 -d)
+alias argocd='f(){ argocd "$@" --grpc-web;  unset -f f; }; f'
 ----
 
-The Argo CD CLI will use this environment variables automatically and not require an explicit login.
+The Argo CD CLI will use the specified environment variables automatically and not require an explicit login. Additionally
+the alias command at the end will ensure that when the `argocd` is called the parameter `--grpc-web` is automatically added. since
+we are routing commands through the OpenShift Route this parameter is needed to avoid superfluous warnings.
 
 [Note]
 If you restart the terminal interface you may need to run the above commands again in order to access Argo CD
@@ -348,11 +351,21 @@ As a user of the workshop you do not have access to view the global configuratio
     g, cluster-admins, role:admin
     p, role:developers, clusters, get, *, allow
     p, role:developers, repositories, get, *, allow
-    p, role:developers, projects, get, global, allow
     g, developers, role:developers
   policy.default: role:none
   scopes: '[accounts,groups,email]'
 ----
+
+A few items to note about this global configuration:
+* We are defining an explicit role, `role:none`, that denies all permissions.
+* Users in the `cluster-admins` group are assigned to the `admin` role.
+* We define a role for developers that grants read access to global resources like clusters and repositories.
+* We assign the `developers` role to the `developers` group.
+* We set the `policy.default` to `role:none` so that users are denied access to resources by default with permissions needing to be explicitly enabled.
+
+[Note]
+You can also set the `policy.default` to an empty string however the author of this workshop personally
+prefers defining a role to minimize possible confusion with regards to intent.
 
 
 
