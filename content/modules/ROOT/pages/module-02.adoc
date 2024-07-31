@@ -278,7 +278,7 @@ A detailed view of the project is retrieved by using the `get` command:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-argocd proj get team{user}
+argocd proj get {user}
 ----
 
 [.console-output]
@@ -336,7 +336,7 @@ two roles out of the box:
 * role:readonly - provides read-only access to all resources
 * role:admin - allows unrestricted access to all resources
 
-Roles and permissions can be defined in two places, globally or on a per Project basis. It is recommended that tenant
+Roles and permissions can be defined in two places, globally and on a per Project basis. It is recommended that tenant
 roles and permissions be defined in the Project and global roles be reserved for Argo CD administrators and managing
 globally scoped resources.
 
@@ -358,17 +358,83 @@ As a user of the workshop you do not have access to view the global configuratio
 
 A few items to note about this global configuration:
 
-* We are defining an explicit role, `role:none`, that denies all permissions.
-* Users in the `cluster-admins` group are assigned to the `admin` role.
-* We define a role for developers that grants read access to global resources like clusters and repositories.
-* We assign the `developers` role to the `developers` group.
-* We set the `policy.default` to `role:none` so that users are denied access to resources by default with permissions needing to be explicitly enabled.
+* The first section is policies where we define roles and matching groups
+** We are defining an explicit role, `role:none`, that denies all permissions.
+** Users in the `cluster-admins` group are assigned to the `admin` role.
+** We define a role for developers that grants read access to global resources like clusters and repositories.
+** We assign the `developers` role to the `developers` group.
+* Next the `policy.default` is set to `role:none` so that users are denied access to resources by default with permissions needing to be explicitly enabled.
+* Scopes are set to include accounts, groups and email. Argo CD uses OIDC for authentication and this
+matches OIDC link:https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims[scopes, window="_blank"], scopes selected
+here can be used to match groups in the policy section.
 
 [Note]
 You can also set the `policy.default` to an empty string however the author of this workshop personally
 prefers defining a role to minimize possible confusion with regards to intent.
 
+Now let's look at the RBAC defined in the Project that has been setup for your team and user:
 
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+argocd proj role list {user}
+----
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+ROLE-NAME  DESCRIPTION
+admin      Team1 admins
+pipeline   Pipeline accounts
+----
+
+This shows that two roles are defined, `admin` and `pipeline`. The `admin` role is intended for
+users who will administer Applications in this Project. The `pipeline` role is intended
+for automation tools and will be used by OpenShift Pipelines in a later module.
+
+Now look at the `admin` role:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+argocd proj role get user1 admin
+----
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+Role Name:     admin
+Description:   Team1 admins
+Policies:
+p, proj:user1:admin, projects, get, {user}, allow
+p, proj:user1:admin, applications, *, {user}/*, allow
+p, proj:user1:admin, exec, create, {user}/*, allow
+g, team1, proj:{user}:admin
+g, user1-cli, proj:{user}:admin
+p, proj:{user}:pipeline, projects, get, {user}, allow
+p, proj:{user}:pipeline, applications, get, {user}/*, allow
+p, proj:{user}:pipeline, applications, sync, {user}/*, allow
+g, {user}-pipeline, proj:{user}:pipeline
+----
+
+Here we can see information about the role including policies, let's break
+down the first policy into it's constituent parts to understand how it is defined.
+
+image::gitops/argocd-policy.png[]
+
+1. The letter `p` indicates that a policy is being defined, this is how we assign
+permissions to roles.
+2. Next is the role of which this policy will be part of. In this case
+it is scoped to Project `user1` and the role `admin`.
+3. Then the resource type for which we are giving permissions to, in this case `projects`. Many
+Argo CD resource types are supported including `applications`, `clusters`, and
+link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[more, window="_blank"]
+4. After resource we define the actions for the policy, in this case a single action of `get`. Many
+different link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[actions, window="_blank"] are available.
+5. Next is the specific resource, this can be a wildcard or a named resource such as `user` in this case
+indicating the `user1` Project. For resources like Applications that are scoped to Projects a notation of
+`<Project>/<Application>` can be used as shown in subsequent lines.
+6. Finally whether we are allowing or denying the permission.
 
 === Apps in Any Namespace
 
