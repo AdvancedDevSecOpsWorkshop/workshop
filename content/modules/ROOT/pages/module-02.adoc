@@ -357,6 +357,7 @@ As a user of the workshop you do not have access to view the global configuratio
 ----
 
 A few items to note about this global configuration:
+
 * We are defining an explicit role, `role:none`, that denies all permissions.
 * Users in the `cluster-admins` group are assigned to the `admin` role.
 * We define a role for developers that grants read access to global resources like clusters and repositories.
