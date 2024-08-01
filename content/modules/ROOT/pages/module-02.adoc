@@ -426,12 +426,12 @@ image::gitops/argocd-policy.png[]
 permissions to roles.
 2. Next is the role of which this policy will be part of. In this case
 it is scoped to Project `user1` and the role `admin`.
-3. Then the resource type for which we are giving permissions to, in this case `projects`. Many
+3. Then the resource type for which we are giving permissions to, in this case `projects`. Various
 Argo CD resource types are supported including `applications`, `clusters`, and
 link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[more, window="_blank"].
 4. After resource we define the actions for the policy, in this case a single action of `get`. Many
-different link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[actions, window="_blank"] are available. A
-wildcard of `*` indicates all actions.
+different link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[actions, window="_blank"]
+are available. A wildcard of `*` can be used which indicates all actions.
 5. Next is the specific resource, this can be a wildcard like `*` for all resources or a named resource such as `user1` in this case
 indicating the `user1` Project. For resources like Applications that are scoped to Projects a notation of
 `<Project>/<Application>` can be used as shown in subsequent lines.
@@ -445,8 +445,8 @@ Note that what is considered a `group` for matching purposes is controlled by th
 reviewed earlier. While `groups` is the most commonly set scope, having scopes like `email`
 allows you to match roles to individual users.
 
-So let's test this policy, as discussed we only have the ability to view this basic project but
-we cannot modify or delete. Let's try it anyway:
+As discussed, the ability to view this basic project has been granted but
+not to modify or delete it. To confirm that, try deleting the Project:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
@@ -469,7 +469,28 @@ Argo CD has you covered as we will see in the next module.
 
 === Apps in Any Namespace
 
-The answer is that we are using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace[Apps in Any Namespace,window='_blank'] feature. Traditionally,
+You may have noticed a subtle difference between the Cluster and Shared instancs of GitOps in that
+the Application names in the shared instance are prefixed with a namespace where as the Cluster Applications
+are not.
+
+Run the following command again:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+argocd app list
+----
+
+The following output will be provided, notice that the Application name consists of two parts using the format `<Namespace>/<Application Name>`:
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+NAME                    CLUSTER     NAMESPACE   PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                        PATH                              TARGET
+{user}-argocd/dev-tools  in-cluster  {user}-cicd  {user}    Synced  Healthy  Auto        <none>      https://github.com/AdvancedDevSecOpsWorkshop/bootstrap.git  infra/dev-tools/overlays/default  HEAD
+----
+
+The reason why is that we are using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace[Apps in Any Namespace,window='_blank'] feature. Traditionally,
 Argo CD requires that Application resources be in the same namespace as the Argo CD installation. Apps in Any Namespace allow applications to exist in other
 namespaces and is very useful when using multi-tenant Argo CD.
 
@@ -479,7 +500,51 @@ This problem arises because Argo CD RBAC is only enforced when using the Argo UI
 
 The Apps in Any Namespace feature avoids this issue by requiring the platform team to bind a specific Argo CD Project to the instance.
 
-There is a subtle indication that Apps in Any Namespace is being used
+The namespace being included as part of the Application name is a subtle indication that Apps in Any Namespace is being used
+
+To configure Apps in Any Namespace there are two places where the source namespaces for Applications must be configurd. The
+first is as a startup parameter for the Argo CD instance, with the OpenShift GitOps operator this is the `sourceNamespaces`
+field in the ArgoCD CR. Use the following command to see additional information about the field:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+oc explain argocd.spec.sourceNamespaces
+----
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+GROUP:      argoproj.io
+KIND:       ArgoCD
+VERSION:    v1beta1
+
+FIELD: sourceNamespaces <[]string>
+
+DESCRIPTION:
+    SourceNamespaces defines the namespaces application resources are allowed to
+    be created in
+----
+
+This field takes an array of namespaces however wildcards can be used to reduce management effort. It is highly
+recommended when considering using Apps in Any Namespace to select a naming pattern for these namespaces that
+is amenable to using with wildcards.
+
+[Note]
+The intent of this recommendation is so that this field can be set once and not need to be constantly
+updated as new tenants and users are on-boarded into the Shared instance.
+
+The second place to configure `sourceNamespaces` is in the Argo CD Project. This determines which
+namespaces, and correspondingly the Applications in that namespace, are associated with which Project.
+This ensures that when a user creates or modifies an Application in namespace X that it is always
+associated with Project Y even if the user tries to bypass security and select a different Project.
+
+At the moment the Argo CD CLI does not support displaying the sourceNamespaces however they can be
+viewed in the UI. Switch to the Argo CD UI and navigate to "Settings > Projects" and select
+project {user}. You should see the sourceNamespaces defined as follows:
+
+image::gitops/argocd-appproject-sourcenamespaces.png[]
+
 
 === Deploying Applications
 
