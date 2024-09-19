@@ -99,7 +99,7 @@ Once you have logged in you will see a page with a link `Display Token`, click
 the link to view the token. Copy the oc login command as per below and paste
 it into the terminal.
 
-image::ocp-app/copy_login_command.png[width=80%]
+image::ocp-app/oc_login_command.png[width=80%]
 
 [NOTE]
 In later versions of OpenShift you can avoid this process by using `oc login --web <openshift-api-url>`. This
