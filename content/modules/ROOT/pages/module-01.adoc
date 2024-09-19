@@ -29,7 +29,7 @@ Fig 1. The image shows an Overview of OpenShift as an Application Platform.
 
 == Exploring OpenShift as an Application Platform from the OpenShift console
 
-In this section we will explore some of the capabilities discussed such as *Image Build, *Runtimes*, *Serverless* and *CI/CD*. 
+In this section we will explore some of the capabilities discussed such as *Image Build, *Runtimes*, *Serverless* and *CI/CD*.
 
 *Red Hat OpenShift* allows you to use the *Developer perspective* to build applications and associated components and services, define how they work together, and monitor their health over time.
 
@@ -59,7 +59,7 @@ The serverless cloud computing model provides developers with a modern, cloud-na
 image::ocp-app/serverless_types.png[width=100%]
 
 
-* https://docs.openshift.com/serverless/latest/about/about-knative-serving.html[Knative Serving^] allows you to create Knative services and functions on your cluster. It also allows you to use additional functionality such as autoscaling and networking options for your applications. 
+* https://docs.openshift.com/serverless/latest/about/about-knative-serving.html[Knative Serving^] allows you to create Knative services and functions on your cluster. It also allows you to use additional functionality such as autoscaling and networking options for your applications.
 
 * With https://docs.openshift.com/serverless/latest/about/about-knative-eventing.html[Knative Eventing^] you can create Knative components such as event sources, brokers, and channels and then use them to send events to applications or external systems.
 
@@ -83,10 +83,29 @@ image::ocp-app/serverless_serving.png[width=100%]
 
 * Log in the OpenShift using the terminal:
 
-[source,sh,subs="attributes",role=execute]
-----
-{login_command}
-----
+Since we are using Keycloak SSO you will need to copy the CLI login
+command from the console. To do so, click on your user name in
+the upper right corner and select `Copy login command`:
+
+image::ocp-app/copy_login_command.png[width=80%]
+
+This will redirect you to Keycloak to login with your credentials:
+
+* user: {user}
+
+* password: openshift
+
+Once you have logged in you will see a page with a link `Display Token`, click
+the link to view the token. Copy the oc login command as per below and paste
+it into the terminal.
+
+image::ocp-app/copy_login_command.png[width=80%]
+
+[NOTE]
+In later versions of OpenShift you can avoid this process by using `oc login --web <openshift-api-url>`. This
+will start a web server running on localhost to handle the OIDC redirect process. Unfortunately since
+we are running the terminal inside a pod there is no way for Keycloak to redirect back to the terminal
+in the pod hence we use the "Copy login command" flow in this workshop.
 
 * Create a new project to deploy the {app_name}. Run the following command in the terminal:
 
@@ -149,11 +168,22 @@ The Topology view in the Developer perspective of the web console provides a vis
 ----
 * Copy the console URL in your web browser.
 
-* Use your OpenShift credentials to login in the Web Console.
+You will see a login screen with two options, select the Keycloak option.
+
+image::ocp-app/openshift_login.png[width=80%]
+
+[NOTE]
+If you accidentally login with the other one then you will not be
+able to login to OpenShift with Keycloak. Please ask your instructor
+to correct it by deleting the OpenShift user and identity.
+
+You will be redirected to Keycloak, use your credentials to login:
 
 * user: {user}
 
-* password: {password}
+* password: openshift
+
+Once you have logged in you will be redirected back to the OpenShift Console.
 
 ** Click on *Topology* to access the Developer's Perspective
 
@@ -167,7 +197,7 @@ As you can see, everything is there except the UI and the catalog. In the next s
 
 === Import the application
 
-In this section, you will move the UI source code into OpenShift using the Developer Perspective. 
+In this section, you will move the UI source code into OpenShift using the Developer Perspective.
 
 1. Access Developer Perspective by clicking on *Developer* on the left menu.
 2. Click on *+Add*
@@ -254,16 +284,16 @@ In this section, you will move the catalog Java Spring Boot application into Ope
 
 === *CI/CD with OpenShift Pipelines*
 
-Red Hat OpenShift Pipelines is a cloud-native, continuous integration and continuous delivery (CI/CD) solution based on Kubernetes resources. It uses Tekton building blocks to automate deployments across multiple platforms by abstracting away the underlying implementation details. Tekton introduces a number of standard custom resource definitions (CRDs) for defining CI/CD pipelines that are portable across Kubernetes distributions. 
+Red Hat OpenShift Pipelines is a cloud-native, continuous integration and continuous delivery (CI/CD) solution based on Kubernetes resources. It uses Tekton building blocks to automate deployments across multiple platforms by abstracting away the underlying implementation details. Tekton introduces a number of standard custom resource definitions (CRDs) for defining CI/CD pipelines that are portable across Kubernetes distributions.
 
 
 https://docs.openshift.com/pipelines/latest/about/understanding-openshift-pipelines.html[OpenShift Pipelines^] provides a Kubernetes-native CI/CD framework to design and run each step of the CI/CD pipeline in its own container. It can scale independently to meet the on-demand pipelines with predictable outcomes.
 
 === OpenShift Pipeline Concepts
 
-* *Task* resources are the building blocks of a pipeline and consist of sequentially executed steps. It is essentially a function of inputs and outputs. 
+* *Task* resources are the building blocks of a pipeline and consist of sequentially executed steps. It is essentially a function of inputs and outputs.
 
-* *Steps* are a series of commands that are sequentially executed by the task and achieve a specific goal, such as building an image. 
+* *Steps* are a series of commands that are sequentially executed by the task and achieve a specific goal, such as building an image.
 
 * *Task Run* An invocation of a task with inputs and outputs
 
@@ -380,4 +410,3 @@ With the Developer Perspective, you can create, build, and manage applications o
 * https://docs.openshift.com/pipelines/latest/about/about-pipelines.html[Pipelines^]
 
 * https://docs.openshift.com/container-platform/latest/cicd/index.html[Builds^]
-
