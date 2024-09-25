@@ -70,7 +70,6 @@ image::ocp-app/serverless_serving.png[width=100%]
 
 == Modernize applications using OpenShift Web Console
 
-
 === Application Overview
 
 - *Web NodeJS*: The application recently created is the UI enabling users to interact with the coolstore.
@@ -79,9 +78,37 @@ image::ocp-app/serverless_serving.png[width=100%]
 - *Catalog*: A Java-based application built with Spring Boot that connects with the Catalog Database to provide all the catalog information. The catalog data will not be visible in the UI without this service.
 
 == Building a Serverless application with the OpenShift Application Platform
-=== Create your project
 
-* Log in the OpenShift using the terminal:
+=== Access the OpenShift Web Console
+
+* Obtain the console URL:
+
+[source,sh,subs="attributes",role=execute]
+----
+{openshift_console_url}
+----
+* Copy the console URL in your web browser.
+
+** Log in the OpenShift using the console:
+
+You will see a login screen with two options, select the Keycloak option.
+
+image::ocp-app/openshift_login.png[width=80%]
+
+[NOTE]
+If you accidentally login with the `htpasswd_provider` option then you will not be
+able to login to OpenShift with Keycloak. Please ask your instructor
+to correct it by deleting the OpenShift user and identity.
+
+You will be redirected to Keycloak, use your credentials to login:
+
+* user: {user}
+
+* password: openshift
+
+Once you have logged in you will be redirected back to the OpenShift Console.
+
+=== Log in the OpenShift using the terminal:
 
 Since we are using Keycloak SSO you will need to copy the CLI login
 command from the console. To do so, click on your user name in
@@ -103,9 +130,11 @@ image::ocp-app/oc_login_command.png[width=80%]
 
 [NOTE]
 In later versions of OpenShift you can avoid this process by using `oc login --web <openshift-api-url>`. This
-will start a web server running on localhost to handle the OIDC redirect process. Unfortunately since
-we are running the terminal inside a pod there is no way for Keycloak to redirect back to the terminal
-in the pod hence we use the "Copy login command" flow in this workshop.
+will start a web server running on localhost to handle the OIDC redirect process. Unfortunately in this
+workshop since we are running the terminal inside a pod there is no way for Keycloak to redirect back to
+the terminal in the pod hence we use the "Copy login command" flow in this workshop.
+
+=== Create your project
 
 * Create a new project to deploy the {app_name}. Run the following command in the terminal:
 
@@ -157,33 +186,6 @@ output:
 The Topology view in the Developer perspective of the web console provides a visual representation of all the applications within a project, their build status, and the associated components and services.
 
 ==== Review the set of microservices that composed the Coolstore application
-
-** Access the OpenShift Web Console
-
-* Obtain the console URL:
-
-[source,sh,subs="attributes",role=execute]
-----
-{openshift_console_url}
-----
-* Copy the console URL in your web browser.
-
-You will see a login screen with two options, select the Keycloak option.
-
-image::ocp-app/openshift_login.png[width=80%]
-
-[NOTE]
-If you accidentally login with the other one then you will not be
-able to login to OpenShift with Keycloak. Please ask your instructor
-to correct it by deleting the OpenShift user and identity.
-
-You will be redirected to Keycloak, use your credentials to login:
-
-* user: {user}
-
-* password: openshift
-
-Once you have logged in you will be redirected back to the OpenShift Console.
 
 ** Click on *Topology* to access the Developer's Perspective
 
