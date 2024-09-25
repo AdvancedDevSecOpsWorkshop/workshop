@@ -13,7 +13,7 @@ can be automatically reverted back to what is in git.
 In this way GitOps provides a powerful way to manage state in Kubernetes clusters while addressing common issues like
 configuration drift, change management and auditing.
 
-OpenShift GitOps is provided with OpenShift at no additional cost, it provides a fully supported GitOps engine
+OpenShift GitOps is included with a standard OpenShift or OpenShift Platform Plus subscription, it provides a fully supported GitOps engine
 using the upstream link:https://argoproj.github.io/cd[Argo CD,window='_blank'] project. Argo CD is a popular
 GitOps engine for Kubernetes that provides a variety of features to manage a GitOps environment including
 the engine, a comprehensive user interface, etc.
@@ -24,6 +24,7 @@ In this section we will do a brief overview of the OpenShift GitOps architecture
 
 image::gitops/argocd-architecture.png[]
 
+[NOTE]
 In the diagram above, everything contained within the dotted is running in OpenShift whereas outside the line are external
 dependencies or interactions.
 
@@ -31,8 +32,8 @@ The OpenShift GitOps operator is used to deploy, manage and upgrade an installat
 specified namespace. The Argo CD installation contains several components, running as individual deployments,
 which are as follows:
 
-1. *Application Controller*. This component is responsible for deploying and monitoring Kubernetes resources,
-as a result it interacts with the Kubernetes API.
+1. *Application Controller*. This component is responsible for deploying Kubernetes resources and watching the resources for change,
+to do so it interacts with the Kubernetes API.
 2. *Repo Server*. This component manages access to the manifests via a git repository, it is responsible for
 fetching the manifests (i.e. yaml files). These manifests can be built from raw yaml, helm or kustomize but
 additional tools can be used via a plugin architecture. For improved performance, it caches these manifests
@@ -48,12 +49,12 @@ directories in git, clusters, etc.
 
 In this workshop, two GitOps instances have been deployed as follows:
 
-1. Cluster GitOps. This is used by the platform team to manage cluster configuration as well as
-cluster-scoped tenant resources (i.e. Namespaces, Quotas, Networkpolicy, Operators, etc). It has cluster-admin
+1. *Cluster GitOps*. This is used by the platform team to manage cluster configuration as well as
+cluster-scoped tenant resources (i.e. Namespaces, Quotas, NetworkPolicy, Operators, etc). It has cluster-admin
 level Kubernetes privileges in order to manage cluster configuration.
 
-2. Shared GitOps. This instance is used by application teams to deploy their applications. This is a shared
-GitOps environment with multiple application teams accessing it. As a result Argo CD Role Based Access Controls (RBAC) has been
+2. *Shared GitOps*. This instance is used by application teams to deploy their applications. This is a shared
+GitOps environment with multiple application teams accessing it. As a result Argo CD Role Based Access Controls (RBAC) have been
 configured to manage access so that users from different teams cannot view or modify other teams applications. Additionally
 it has much less Kubernetes privileges then the Cluster GitOps instance possesses.
 
@@ -81,7 +82,7 @@ image::gitops/argocd-cluster-users.png[]
 Notice how you can view all of the user projects (user1, user2, user3, etc), this is because we have used Argo CD RBAC
 to provide users in the `developers` group with limited access to the Argo CD Project that these applications are tied to.
 
-[Note]
+[NOTE]
 It is uncommon for developers to have any access to the cluster scoped instance which is typically managed by the platform
 team, we are providing it here for illustrative purposes. In situations where it is beneficial for high performing
 developer teams to have limited access typically that access would be limited to Applications that are specific
@@ -99,29 +100,32 @@ cluster.
 
 image::gitops/cluster-argocd-user-app.png[]
 
-You can view the groups associated with your logged in user by clicking on the user button, note the `developers`
-group that is shown along with the team, `teamX`, that your user is associated with. In our scenario user1 is on
-team 1, user2 on team2, etc. The `developers` group is a catch all group that all of the users belong to.
+You can view the groups associated with your logged in user by clicking on the user button.
+
+[Todo]Insert screenshot here
+
+Note the `developers` group that is shown along with the user specific team, `teamX`, that your user is associated with. In our scenario user1 is on
+team 1, user2 on team2, etc. The `developers` group is a generic group that all of the application developers belong to.
 
 These groups are provisioned in Keycloak and made available to Argo CD when you logged into the application.
 
 In the next section we will review the Shared Argo CD instance and do a deeper dive afterwards on how Argo CD RBAC is configured
-to determine the access that users have to resources in Argo CD. For now know that you have limited permissions
-on the Applications in the `Users` project, only Get and Sync permissions have been enabled.
+to determine the access that users have to resources in Argo CD. For now know that you have very limited permissions
+on the Applications in the `Users` project as only Get and Sync permissions have been enabled.
 
-[Note]
-There is another Argo CD Project deployed here for cluster configuration for which the Developers group has no
-permissions, If at the end of the workshop you would like to see how the Workshop was configured using GitOps
+[NOTE]
+There is another Argo CD Project deployed here for cluster configuration for which the `developers` group has no
+permissions, If at the end of the workshop you would like to explore how the Workshop cluster was configured using GitOps
 you can ask the instructor to enable visibility.
-
 
 === Shared GitOps
 
-The Shared GitOps instance is the Argo CD instance that developer teams will interact with. Compared to the
-Cluster GitOps instance it has much less privileges on the cluster and are more aligned with developer
+The Shared GitOps instance is the multi-tenant Argo CD instance that developer teams, i.e. you,
+will interact with to deploy applications and resources. Compared to the
+Cluster GitOps instance it has much less privileges on the cluster to align with developer
 team responsibilities around deploying applications.
 
-[Note]
+[NOTE]
 While technically a single Argo CD instance can be used for both cluster configuration and developer deployments
 by leveraging Argo CD RBAC, it is recommended that these use cases be in separate instances to minimize the possibilities
 of privilege escalation. Privilege escalation can occur if there is a hole in the Argo CD RBAC configuration enabling
@@ -138,12 +142,12 @@ image::gitops/shared-gitops-apps.png[]
 
 Note in the Shared GitOps, unlike the Cluster GitOps instance, you can only view Applications that are specific to your user.
 
-We have a single `dev-tools` Application deployed which has deployed Sonarqube and Nexus which will be used in the Pipelines
+We have a single `dev-tools` Application to deploy team specific Sonarqube and Nexus instances which will be used in the Pipelines
 module of this workshop. If you check with your neighbors, assuming they have reached this section, you will note that
 every person has their own dev-tools Application which is unique to that workshop user. How can we have an Application
 with the same name multiple times in the same Argo CD instance?
 
-We are going to look at this and RBAC in more depth in the subsequent sections.
+To understand this, we are going to look at this and Argo CD RBAC in more depth in the subsequent sections.
 
 == Deep Dive
 
@@ -152,10 +156,10 @@ We are going to look at this and RBAC in more depth in the subsequent sections.
 We wil use the ArgoCD CLI to explore the Shared GitOps in more detail. A secret has been pre-created in the `user{user}-argocd`
 namespace called `argocd-cli` that provides the credentials needed to login into Argo CD.
 
-[Note]
+[NOTE]
 Normally when using Argo CD with OIDC the login would be done with using the `--sso` switch
 which starts up a local web server to handle the OIDC callback on localhost. However since
-our terminal is running in OpenShift a local account, `user{user}-cli` has been pre-created
+our terminal is running in a pod in OpenShift this is not possible. Therefore a local account, `user{user}-cli`, has been pre-created
 with identical permissions to the SSO user. Normally local accounts in Argo CD should only
 be used for automation not for users.
 
@@ -172,10 +176,10 @@ alias argocd='f(){ argocd "$@" --grpc-web;  unset -f f; }; f'
 ----
 
 The Argo CD CLI will use the specified environment variables automatically and not require an explicit login. Additionally
-the alias command at the end will ensure that when the `argocd` is called the parameter `--grpc-web` is automatically added. since
+the alias command at the end will ensure that when the `argocd` is called the parameter `--grpc-web` is automatically added. Since
 we are routing commands through the OpenShift Route this parameter is needed to avoid superfluous warnings.
 
-[Note]
+[IMPORTANT]
 If you restart the terminal interface you may need to run the above commands again in order to access Argo CD
 from the command line.
 
@@ -246,14 +250,21 @@ will look at these in more depth in subsequent sections.
 === Argo CD Projects
 
 Argo CD link:https://argo-cd.readthedocs.io/en/stable/user-guide/projects/[Projects,window='_blank'] are used to group Applications together as well as manage
-permissions to the Applications and other Project scoped resources. They are basically useful when managing a multi-tenant Argo CD as the Project not
-only determines the user permissions but also the permissions of the Applications it is managing in terms of Kubernetes access. As per the
+permissions to the Applications and other Project scoped resources. Keep in mind that an Argo CD Project is different then an OpenShift Project despite using
+the same terminology. An OpenShift Project is represented by `kind: Project` in Kubernetes whereas an Argo CD Project is represented by `kind: AppProject`.
+
+While every Application in Argo CD must be associated with a Project, they are particularly useful when managing a multi-tenant Argo CD as the Project not
+only determines the user permissions but can also restrict what Applications associated with the Project can do. As per the
 documentation, an Argo CD Project can:
 
 * restrict what may be deployed (trusted Git source repositories)
 * restrict where apps may be deployed to (destination clusters and namespaces)
 * restrict what kinds of objects may or may not be deployed (e.g. RBAC, CRDs, DaemonSets, NetworkPolicy etc...)
 * defining project roles to provide application RBAC (bound to OIDC groups and/or JWT tokens)
+
+[IMPORTANT]
+Argo CD includes a `default` project when it is installed, it is strongly recommend that this never be used and administrators create
+Projects as needed to support their specific use cases.
 
 In our Shared GitOps instance each workshop team, and thus user, has their own Project to manage access and restrictions for their Applications. To
 view your teams project, use the CLI to run the following command:
@@ -340,7 +351,7 @@ Roles and permissions can be defined in two places, globally and on a per Projec
 roles and permissions be defined in the Project and global roles be reserved for Argo CD administrators and managing
 globally scoped resources.
 
-As a user of the workshop you do not have access to view the global configuration, however this is what is defined:
+As a developer, i.e. user of the workshop, you do not have access to view the global configuration, however this is what is defined:
 
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
@@ -368,9 +379,14 @@ A few items to note about this global configuration:
 matches OIDC link:https://openid.net/specs/openid-connect-core-1_0.html#ScopeClaims[scopes, window="_blank"], scopes selected
 here can be used to match groups in the policy section.
 
-[Note]
-You can also set the `policy.default` to an empty string however the author of this workshop personally
-prefers defining a role to minimize possible confusion with regards to intent.
+[IMPORTANT]
+Any permissions given in the `policy:default` cannot be removed by additional roles using a `deny` permission hence why we
+set a role with no permissions.
+
+[NOTE]
+You can also set the `policy.default` to an empty string to accomplish
+the same effect as defining `role:none` however the author of this workshop personally prefers defining an explicit
+role to minimize possible confusion with regards to intent.
 
 Now let's look at the RBAC defined in the Project that has been setup for your team and user:
 
@@ -424,18 +440,18 @@ image::gitops/argocd-policy.png[]
 
 1. The letter `p` indicates that a policy is being defined, this is how we assign
 permissions to roles.
-2. Next is the role of which this policy will be part of. In this case
-it is scoped to Project `user1` and the role `admin`.
+2. Next is the role this policy will be part of. In this case
+it is the `admin` role which is scoped to Project `user1`.
 3. Then the resource type for which we are giving permissions to, in this case `projects`. Various
 Argo CD resource types are supported including `applications`, `clusters`, and
 link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[more, window="_blank"].
 4. After resource we define the actions for the policy, in this case a single action of `get`. Many
 different link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[actions, window="_blank"]
 are available. A wildcard of `*` can be used which indicates all actions.
-5. Next is the specific resource, this can be a wildcard like `*` for all resources or a named resource such as `user1` in this case
+5. Next is the specific Argo CD resource, this can be a wildcard like `*` for all resources or a named resource such as `user1` in this case
 indicating the `user1` Project. For resources like Applications that are scoped to Projects a notation of
 `<Project>/<Application>` can be used as shown in subsequent lines.
-6. Finally whether we are allowing or denying the permission.
+6. Finally whether we `allow` or `deny` the permission.
 
 Once we have defined our role via policies we can then assign the policy to a group, this is indicated
 by a `g` at the start of the line. For example, the line `g, team1, proj:user1:admin` indicates we
@@ -443,7 +459,8 @@ are assigning the project scoped role `admin` to the group `team1`.
 
 Note that what is considered a `group` for matching purposes is controlled by the `scope` that was
 reviewed earlier. While `groups` is the most commonly set scope, having scopes like `email`
-allows you to match roles to individual users.
+allows you to match roles to individual users. In a nutshell, when adding additional scopes, like `email`, these
+are treated as groups by Argo CD for matching purposes.
 
 As discussed, the ability to view this basic project has been granted but
 not to modify or delete it. To confirm that, try deleting the Project:
@@ -492,18 +509,19 @@ NAME                    CLUSTER     NAMESPACE   PROJECT  STATUS  HEALTH   SYNCPO
 
 The reason why is that we are using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/app-any-namespace[Apps in Any Namespace,window='_blank'] feature. Traditionally,
 Argo CD requires that Application resources be in the same namespace as the Argo CD installation. Apps in Any Namespace allow applications to exist in other
-namespaces and is very useful when using multi-tenant Argo CD.
+namespaces and provides a mechanism to isolate team's Applications in a multi-tenant Argo CD instance.
 
-This is because when Applications are in the same namespace as Argo CD users cannot be allowed to declaratively manage their Application resources. if permitted to do so, they
-could easily bypass the security provided by Argo CD Projects simply by assigning any Project to the Application by creating or modifying it using Kubernetes (i.e. oc apply, oc edit).
+This addresses an important limitation of having all Applications in the same namespace where users cannot be allowed to declaratively manage their Application resources. If they were permitted to do so, they
+could easily bypass the security provided by Argo CD Projects simply by assigning any Project to the Application by creating or modifying it using Kubernetes APIs (i.e. oc apply, oc edit).
 This problem arises because Argo CD RBAC is only enforced when using the Argo UI or CLI, it is not enforced by Kubernetes.
 
-The Apps in Any Namespace feature avoids this issue by requiring the platform team to bind a specific Argo CD Project to the instance.
+The Apps in Any Namespace feature avoids this issue by requiring the platform team to bind a specific Argo CD Project to each specific namespace
+where Applications reside. In this workshop this means the `user1-argocd` namespace is automatically bound to Project `team1`, `user2-argocd` namespace to `team2`, etc.
 
 The namespace being included as part of the Application name is a subtle indication that Apps in Any Namespace is being used
 
 To configure Apps in Any Namespace there are two places where the source namespaces for Applications must be configurd. The
-first is as a startup parameter for the Argo CD instance, with the OpenShift GitOps operator this is the `sourceNamespaces`
+first is as a startup parameter for the Argo CD instance, with the OpenShift GitOps operator this is determined by the `sourceNamespaces`
 field in the ArgoCD CR. Use the following command to see additional information about the field:
 
 [.console-input]
@@ -527,10 +545,10 @@ DESCRIPTION:
 ----
 
 This field takes an array of namespaces however wildcards can be used to reduce management effort. It is highly
-recommended when considering using Apps in Any Namespace to select a naming pattern for these namespaces that
-is amenable to using with wildcards.
+recommended when using Apps in Any Namespace to select a consistent naming pattern for these namespaces that
+is amenable to wildcards.
 
-[Note]
+[NOTE]
 The intent of this recommendation is so that this field can be set once and not need to be constantly
 updated as new tenants and users are on-boarded into the Shared instance.
 

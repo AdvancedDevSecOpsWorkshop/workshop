@@ -95,10 +95,11 @@ You will see a login screen with two options, select the Keycloak option.
 
 image::ocp-app/openshift_login.png[width=80%]
 
-[NOTE]
+[IMPORTANT]
 If you accidentally login with the `htpasswd_provider` option then you will not be
 able to login to OpenShift with Keycloak. Please ask your instructor
-to correct it by deleting the OpenShift user and identity.
+to correct it by deleting the OpenShift user and identity before logging in again
+with Keycloak.
 
 You will be redirected to Keycloak, use your credentials to login:
 
