@@ -1,0 +1,239 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: app-globex-ui-pipeline
+spec:
+  params:
+  - name: REPO_HOST
+    type: string
+  - name: COMMIT_SHA
+    type: string
+  - name: TLSVERIFY
+    type: string
+  - name: BUILD_EXTRA_ARGS
+    type: string
+  - name: IMAGE_REPO
+    type: string
+  - name: IMAGE_TAG
+    type: string
+  - name: MANIFEST_FILE
+    type: string
+  - name: MANIFEST_FILE_PROD
+    type: string
+  - name: MANIFEST_REPO
+    type: string
+  - name: MANIFEST_REPO_NAME
+    type: string
+  - name: GIT_REF
+    type: string
+  - name: COMMIT_DATE
+    type: string
+  - name: COMMIT_AUTHOR
+    type: string
+  - name: COMMIT_MESSAGE
+    type: string
+  - name: GIT_REPO
+    type: string
+  - name: SONARQUBE_HOST_URL
+    type: string
+  - name: SONARQUBE_PROJECT_KEY
+    type: string
+  - name: SONARQUBE_PROJECT_SECRET
+    type: string
+  - name: CYCLONEDX_HOST_URL
+    type: string
+  tasks:
+  - name: fetch-source
+    params:
+    - name: url
+      value: $(params.GIT_REPO)
+    - name: revision
+      value: $(params.GIT_REF)
+    - name: deleteExisting
+      value: "true"
+    taskRef:
+      kind: ClusterTask
+      name: git-clone
+    workspaces:
+    - name: output
+      workspace: shared-data
+  - name: scan-source
+    params:
+    - name: sonarqubeHostUrl
+      value: $(params.SONARQUBE_HOST_URL)
+    - name: sonarqubeProjectKey
+      value: $(params.SONARQUBE_PROJECT_KEY)
+    - name: sonarqubeProjectSecret
+      value: $(params.SONARQUBE_PROJECT_SECRET)
+    runAfter:
+    - fetch-source
+    taskRef:
+      kind: Task
+      name: scan-code
+    workspaces:
+    - name: repository
+      workspace: shared-data
+  - name: verify-source
+    runAfter:
+    - fetch-source
+    taskRef:
+      kind: Task
+      name: verify-source-code
+    workspaces:
+    - name: repository
+      workspace: shared-data
+    - name: secrets
+      workspace: secrets
+  - name: build-sign-image
+    retries: 1
+    params:
+    - name: IMAGE
+      value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    - name: COMMIT_SHA
+      value: $(params.COMMIT_SHA)
+    runAfter:
+    - scan-source
+    - verify-source
+    taskRef:
+      kind: Task
+      name: buildah
+    workspaces:
+    - name: source
+      workspace: shared-data
+  - name: acs-image-check
+    params:
+    - name: rox_central_endpoint
+      value: stackrox-endpoint
+    - name: rox_api_token
+      value: stackrox-secret
+    - name: image
+      value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    - name: insecure-skip-tls-verify
+      value: "true"
+    runAfter:
+    - build-sign-image
+    taskRef:
+      kind: Task
+      name: acs-image-check
+  - name: acs-image-scan
+    params:
+    - name: rox_central_endpoint
+      value: stackrox-endpoint
+    - name: rox_api_token
+      value: stackrox-secret
+    - name: image
+      value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    - name: insecure-skip-tls-verify
+      value: "true"
+    runAfter:
+    - build-sign-image
+    taskRef:
+      kind: Task
+      name: acs-image-scan
+  - name: scan-export-sbom
+    params:
+    - name: cyclonedxHostUrl
+      value: $(params.CYCLONEDX_HOST_URL)
+    - name: image
+      value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    runAfter:
+    - build-sign-image
+    taskRef:
+      kind: Task
+      name: scan-export-sbom
+    workspaces:
+    - name: repository
+      workspace: shared-data
+  - name: update-dev-manifest
+    params:
+    - name: image
+      value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    - name: configuration_file
+      value: $(params.MANIFEST_FILE)
+    - name: repository
+      value: $(params.MANIFEST_REPO)
+    - name: git_user_name
+      value: $(params.COMMIT_AUTHOR)
+    runAfter:
+    - acs-image-check
+    - acs-image-scan
+    - scan-export-sbom
+    taskRef:
+      kind: Task
+      name: update-manifest
+  - name: acs-deploy-check
+    params:
+      - name: rox_central_endpoint
+        value: stackrox-endpoint
+      - name: rox_api_token
+        value: stackrox-secret
+      - name: gitRepositoryUrl
+        value: $(params.MANIFEST_REPO)
+      - name: gitRepositoryRevision
+        value: main
+      - name: insecure-skip-tls-verify
+        value: 'true'
+    runAfter:
+      - update-dev-manifest
+    taskRef:
+      kind: Task
+      name: acs-deploy-check
+  - name: verify-tlog-signature
+    params:
+      - name: registrySecret
+        value: image-registry-secret
+      - name: cosignSecret
+        value: cosign-secret
+      - name: image
+        value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    runAfter:
+    - update-dev-manifest
+    taskRef:
+      kind: Task
+      name: rekor-verify
+  - name: create-prod-manifest-branch
+    params:
+    - name: image
+      value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    - name: configuration_file
+      value: $(params.MANIFEST_FILE_PROD)
+    - name: repository
+      value: $(params.MANIFEST_REPO)
+    - name: git_user_name
+      value: $(params.COMMIT_AUTHOR)
+    - name: target-branch
+      value: feature-for-$(params.COMMIT_SHA)
+    runAfter:
+    - acs-deploy-check
+    - verify-tlog-signature
+    taskRef:
+      kind: Task
+      name: pr-manifest
+  - name: issue-prod-pull-request
+    params:
+    - name: GITHUB_HOST_URL
+      value: $(params.REPO_HOST)
+    - name: API_PATH_PREFIX
+      value: /api/v1
+    - name: GITHUB_TOKEN_SECRET_NAME
+      value: gitea-token
+    - name: REPO_FULL_NAME
+      value: $(params.MANIFEST_REPO_NAME)
+    - name: HEAD
+      value: feature-for-$(params.COMMIT_SHA)
+    - name: BASE
+      value: main
+    - name: BODY
+      value: Update prod image for $(params.COMMIT_MESSAGE)
+    - name: TITLE
+      value: 'Production update: $(params.COMMIT_MESSAGE)'
+    runAfter:
+    - create-prod-manifest-branch
+    taskRef:
+      kind: Task
+      name: gitea-open-pull-request
+  workspaces:
+  - name: shared-data
+  - name: maven-settings
+  - name: signature
+  - name: secrets

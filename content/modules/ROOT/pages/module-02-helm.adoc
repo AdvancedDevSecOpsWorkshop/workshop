@@ -1,0 +1,341 @@
+= Helm
+include::_attributes.adoc[]
+
+link:https://helm.sh/[Helm] is a package and install manager that standardises and
+simplifies packaging and deployment of containerized applications with Kubernetes. Unlike Kustomize, which
+uses a patching approach, Helm uses templating to enable users to tailor the deployed manifests
+as required.
+
+[#exploring-helm]
+== Exploring Helm
+
+The principles of 'Helm' are as follows:
+
+* A package manager for Kubernetes with applications packaged as charts
+* Uses templates to enable applications to be configured per installation
+* Parameters for the chart are held in a `values.yaml` file and consumed by the templates
+
+image::gitops-apps/helm-logo.png[Helm Logo]
+
+[#exploring-helm-cli]
+== Exploring the Helm CLI
+
+Similar to Kustomize from the previous lab, the `helm` CLI should have been installed as part of the lab
+setup. Verify that it has been installed.
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+helm version --short
+----
+
+This should display the version, it should look something like this.
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+{v3.9.0+3.el8+ge09b16a}
+----
+
+Helm as a package manager can be used to install a Helm chart into a kubernetes cluster
+and can then manage the lifecycle of the application including upgrades and uninstalling the
+application. However Helm can also render the chart as pure yaml without installing the
+application in a cluster.
+
+Argo CD follows a philosophy of managing manifests and as a result it interacts with Helm by
+having Helm templating the chart. It does not install the chart in a Kubernetes cluster. The
+lifecycle of a Helm chart in Argo CD is managed by updating the version of the chart Argo CD is
+using and having Argo CD render the new version of the chart.
+
+As a result for the purpose of this workshop we will be focusing on the `helm template`
+command rather than `helm install`.
+
+[#exploring-helm-charts]
+== Exploring Helm Charts
+
+In this section we will explore the chart that we will be deploying into the cluster using GitOps.
+This chart will be used to deploy the same application we did previously with Kustomize. We will work
+with a chart in the
+`content/modules/ROOT/files/gitops/helm/globex-ui` directory within the
+repository you cloned.
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cd 
+cd ~/workshop/content/modules/ROOT/files/gitops/helm/globex-ui
+----
+
+Next if you run the `ls` command you should see two files: `Chart.yaml` and `values.yaml`, as well
+as a directory called templates. Let's have a look at these in more detail.
+
+.link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/files/gitops/helm/globex-ui/Chart.yaml[Chart.yaml,window='_blank']
+[source,yaml,subs="+macros,attributes+"]
+----
+include::ROOT:example$globex-ui/Chart.yaml[]
+----
+
+This file is the link:https://helm.sh/docs/topics/charts/#the-chartyaml-file[chart definition] which specifies name, version and other characteristics of the chart.
+
+.link:https://github.com/OpenShiftDemos/openshift-gitops-workshop/blob/master/documentation/modules/ROOT/examples/bgd-helm-chart/values.yaml[values.yaml,window='_blank']
+[source,yaml,subs="+macros,attributes+"]
+----
+include::ROOT:example$globex-ui/values.yaml[]
+----
+
+The `values.yaml` file is the default set of values that will be used by the chart. When templating or installing the chart
+you can provide your own values.yaml to override some or all of these defaults as needed for a specific use case.
+
+Notice that since this is a yaml file parameters can be hierarchical which enables grouping related parameters together as shown
+by the `gitea` section.
+
+The templates/ directory is where template files reside. When Helm assesses a chart, it processes all files in the templates/ directory using the template rendering engine. The results of these templates are then gathered and forwarded to Kubernetes.You can learn more about templating link:https://helm.sh/docs/chart_template_guide/getting_started/[here].
+
+[#helm-template]
+== Helm Template
+
+In this section, we will explore how to use the `helm template` command to generate Kubernetes manifests from a Helm chart. This command is a fundamental tool for understanding how Helm charts work and for visualising the resources they create.
+
+==== Step 1: Run the Helm template Command
+
+Execute the following command to render the chart template from your local directory and display the output on the screen:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+helm template globex-ui ~/workshop/content/modules/ROOT/files/gitops/helm/globex-ui
+----
+
+==== Step 2: View the Output
+
+
+After running the command, you will see the output of the `helm template` command, which represents the generated Kubernetes manifest files. Below is an example of what you can expect to see:
+
+You will see the output of the `helm template`, which is lengthy, so this is just an excerpt:
+
+[.console-output]
+[source,yaml,subs="attributes+,+macros"]
+----
+# Source: globex-ui-pipeline/templates/task-scan-code.yaml
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: scan-code
+spec:
+  params:
+  - default: docker.io/sonarsource/sonar-scanner-cli:10.0
+    name: scanImage
+    type: string
+  - default: https://sonarqube-sonarqube.apps.cluster-tpn6s.sandbox2653.opentlc.com/
+    name: sonarqubeHostUrl
+    type: string
+  - default: object-detection-rest
+    name: sonarqubeProjectKey
+    type: string
+  - default: object-detection-rest-sonarqube-secret
+    name: sonarqubeProjectSecret
+    type: string
+  - default: "true"
+    name: verbose
+    type: string
+  steps:
+  - env:
+    - name: SONAR_TOKEN_WEB_UI
+      valueFrom:
+        secretKeyRef:
+          key: token
+          name: $(params.sonarqubeProjectSecret)
+    image: $(params.scanImage)
+    name: scan-code
+    script: |
+      set -x
+      echo $(ls -a)
+      sonar-scanner -X -Dsonar.projectKey=$(params.sonarqubeProjectKey) -Dsonar.sources=./ -Dsonar.host.url=$(params.sonarqubeHostUrl) -Dsonar.login=$SONAR_TOKEN_WEB_UI
+    workingDir: /workspace/repository
+  workspaces:
+  - name: repository
+----
+
+[#helm-charts-deploy-applications]
+== Using Helm charts to deploy applications in Argo CD
+
+In this section, we will utilise Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the BGD app. This file contains essential configuration details such as the destination, source, project, and sync policy.
+
+==== Step 1: View the Argo CD Application Configuration
+
+
+To view the YAML configuration file for the Argo CD Application, execute the following command:
+
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cat ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app.yaml
+----
+
+You should see the following output:
+
+
+.link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/documentation/modules/ROOT/examples/pipeline-helm-app.yaml[pipeline-helm-app.yaml,window='_blank']
+[source,yaml,subs="+macros,attributes+"]
+----
+include::ROOT:example$pipeline-helm-app.yaml[]
+----
+
+This YAML configuration defines an Argo CD Application named "pipeline-helm" that deploys a Helm chart from a specific Git repository to the "user%USERNUM%-cicd" namespace.
+
+==== Step 2: Deploy/Observe the Argo CD Application
+
+
+Apply the configuration in the file to create the Argo CD Application in the namespace user%USERNUM%-argocd. This application will deploy the Helm chart for the pipeline app:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+oc apply -f ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app.yaml -n user%USERNUM%-argocd
+----
+
+In the ArgoCD interface you should see the successful deployment of the "pipeline-helm" application.
+
+image::gitops-helm/pipeline-helm-app.png[]
+
+Now click on the "bgd-helm" application. We will explore its deployment. You can tell by the icon that it's deployed via a Helm chart from a Git repository. Although you could deploy it through a Helm repository, we're using a Git repository for this demonstration.
+
+Access the application details by clicking on the "App Details" option.
+
+image::gitops-helm/pipeline-helm-app2.png[]
+
+Next, click on "Parameters." You will notice that there is no separate values file as the application is deployed directly from the Helm chart.
+
+All the files are now deployed in the user%USERNUM%-cicd namespace, and you can see the full pipeline by accessing Pipelines -> pipelines in the console, as shown below:
+
+image::gitops-helm/pipeline-view.png[]
+
+[#custom-values-files]
+== Custom values files
+
+In this section we explore the use of custom values files with Helm charts. These allow you to tailor deployments to your specific needs. Custom values files offer the flexibility to override default settings without modifying the chart directly.
+
+==== Step 1: Explore the Custom Values Configuration
+
+
+Begin by examining a YAML file named "pipeline-helm-app-custom.yaml." This file closely resembles the previous configuration but introduces a critical difference: it references a custom values file stored in the same Git repository as the Helm chart.
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cat ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app-custom.yaml
+----
+
+You will notice a section in this YAML file that defines the name and path of the custom values file responsible for adjusting the Helm chart's default settings:
+
+[.console-output]
+[source,yaml,subs="attributes+,+macros"]
+----
+
+    helm:
+      valueFiles:
+        - custom_values_1/values.yaml
+----
+
+This configuration specifies how Helm accesses and uses the custom values file to modify the Helm chart's behaviour.
+
+==== Step 2: Explore the Custom Values File
+
+
+Examine the custom values file that is being referenced:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cat ~/workshop/content/modules/ROOT/examples/globex-ui/custom_values_1/values.yaml
+----
+
+You should see that it defines specific values for some of the parameters in the chart, using this specific values file.
+
+==== Step 3: Apply the Custom Values
+
+Now, apply the custom values file to the initial application using Argo CD:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml -n user%USERNUM%-argocd
+----
+
+==== Step 4: Verify the Changes
+
+
+Return to ArgoCD and click on "App Details," then navigate to the "Parameters" section, where you previously made changes. You’ll notice that the custom value file has been successfully added, and it has updated the values to display the animated balls in green.
+
+
+image::gitops-helm/custom-values.png[]
+
+Using ArgoCD to deploy a Helm chart with custom values files offers the advantage of tailoring and overriding the chart’s default settings, all without needing to alter the chart directly. This flexibility enables you to deploy the chart with different configurations to suit various environments or specific use cases.
+
+[#parameter_values]
+== Argo CD Application with Parameter Values
+
+In this section, we'll explore a YAML file where parameter values are embedded directly within the Application, eliminating the need for separate values files.
+
+==== Step 1: Examine the Parameterised Configuration
+
+Begin by examining the YAML file named "pipeline-helm-app-para.yaml." This file, similar to the previous configurations, defines an Argo CD Application for deploying a Helm chart. However, a notable difference is the inclusion of all desired parameter values directly within the YAML file:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cat ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml
+----
+
+.link:https://github.com/OpenShiftDemos/openshift-gitops-workshop/blob/main/documentation/modules/ROOT/examples/bgd-app-helm-para.yaml[bgd-app-helm-para.yaml,window='_blank']
+[source,yaml,subs="+macros,attributes+"]
+----
+include::ROOT:example$pipeline-helm-app-para.yaml[]
+----
+
+In the 'parameters' section of the YAML, you will notice that we have included all the desired values direcly within the chart.
+
+This approach allows us to apply these settings directly to Argo CD without relying on external values files.
+
+==== Step 2: Apply the Parameterised Configuration
+
+Apply this parameterised configuration to Argo CD:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml -n user%USERNUM%-argocd
+----
+
+Return to the ArgoCD interface and navigate to the 'App Details' section. Click on 'Parameters.' You will notice that the custom values file, which was present in the previous example, has been successfully removed from the ArgoCD Application.
+
+
+image::gitops-helm/helm-parameters.png[]
+
+Deploying a Helm chart through ArgoCD with integrated parameters allows you to customise default settings without modifying the chart itself or relying on external values files. This centralises configuration management across different environments.
+
+
+==== Step 4: Make Further Adjustments
+
+
+To make changes to the parameters, simply click on the 'Edit' button. Feel free to explore and make adjustments as desired during the workshop.
+
+[#helm-conclusion]
+== Conclusion: Helm on ArgoCD
+
+In this module we learned how to deploy Helm charts using Argo CD and we looked at the different ways in Argo CD to pass parameters to the Helm chart. A brief summary of the Pros and Cons of the approaches we examined can be summarised as follows:
+
+|===
+|*Custom Values File - Pros* | *Built-in Parameters - Pros*
+|Customise Configurations:Create a separate values.yaml file to tailor configurations for different environments. Override default values in the chart’s values.yaml file with your specific settings.|Environment-specific YAML: Manage YAML configurations for each environment using branches or tags.
+| Rapid Modification: External values files provide an advantage over managing multiple Helm charts with individual values.
+Facilitates quick modification of multiple values through a single file change.|No reliance on external values files makes local testing and debugging with `helm template` and `helm lint` easier.
+|*Custom Values File - Cons*|*Built-in Parameters - Cons*
+|Manual Updates: Requires manual updates to the values file, deviating from the default Helm charts behaviour.|Customisation Limitations: Limited customisation options due to YAML file constraints.
+|Potential for errors or inconsistencies if the values file and chart configurations do not align.|Necessitates a separate chart for each environment, potentially leading to redundancy.
+|===
+
+You can read more about the patterns for deploying Helm charts with Argo CD link:https://developers.redhat.com/articles/2023/05/25/3-patterns-deploying-helm-charts-argocd[here].
+
+In conclusion, this module introduced Helm as a Kubernetes package manager with templating capabilities. We explored its usage in ArgoCD, focusing on rendering Helm charts as pure YAML and customising deployments with custom values and parameter values for flexible configuration management. This approach streamlines the deployment process and enables customised configurations without altering the Helm chart directly.

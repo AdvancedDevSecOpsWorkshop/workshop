@@ -1,0 +1,8 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: pipeline
+secrets:
+  - name: image-registry-secret
+imagePullSecrets:
+  - name: image-registry-secret

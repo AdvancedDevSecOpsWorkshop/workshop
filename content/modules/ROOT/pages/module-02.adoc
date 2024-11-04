@@ -563,16 +563,3 @@ project {user}. You should see the sourceNamespaces defined as follows:
 
 image::gitops/argocd-appproject-sourcenamespaces.png[]
 
-
-=== Deploying Applications
-
-aaa
-
-
-== Conclusion
-
-aaa
-
-== More Information:
-
-aaa

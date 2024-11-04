@@ -1,0 +1,67 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: rekor-verify
+spec:
+  params:
+    - default: image-registry-secret
+      name: registrySecret
+      type: string
+    - default: cosign-secret
+      name: cosignSecret
+      type: string
+    - default: >-
+        quay-8hvtv.apps.cluster-8hvtv.8hvtv.sandbox2411.opentlc.com/quayadmin/globex-ui:main-e39ea4710cfe0639f5343ef62695dae5f310d566
+      name: image
+      type: string
+  steps:
+    - env:
+        - name: REGISTRY_SECRET
+          valueFrom:
+            secretKeyRef:
+              key: .dockerconfigjson
+              name: $(params.registrySecret)
+        - name: COSIGN_PUBLIC_KEY
+          valueFrom:
+            secretKeyRef:
+              key: cosign.pub
+              name: $(params.cosignSecret)
+      image: quay.io/redhat-gpte/cosign
+      name: cosign-verify-image
+      resources: {}
+      script: >
+        echo "${REGISTRY_SECRET}" > /home/cosign/.docker/config.json
+
+        echo "${COSIGN_PUBLIC_KEY}" > /workspace/cosign.pub
+
+        cosign verify --key /workspace/cosign.pub $(params.image) --output-file
+        /workspace/cosign.verify
+    - image: quay.io/redhat-gpte/jq
+      name: extract-signature-details
+      resources: {}
+      script: >
+        cat /workspace/cosign.verify | jq --raw-output '.[0] | .critical | .image | .["docker-manifest-digest"]' >
+        /workspace/cosign.sha
+    - image: quay.io/redhat-gpte/rekor-cli
+      name: rekor-search-sha
+      resources: {}
+      script: >
+        rekor-cli search --sha $(cat /workspace/cosign.sha) --format json >
+        /workspace/rekor.search
+    - image: quay.io/redhat-gpte/jq
+      name: rekor-extract-uuid
+      resources: {}
+      script: >
+        cat /workspace/rekor.search | jq '.UUIDs[0]' | sed 's/\"//g' >
+        /workspace/rekor.uuid
+    - image: quay.io/redhat-gpte/rekor-cli
+      name: rekor-get-with-uuid
+      resources: {}
+      script: >
+        rekor-cli get --uuid $(cat /workspace/rekor.uuid) --format json >
+        /workspace/rekor.get
+    - image: quay.io/redhat-gpte/jq
+      name: verify-attestation
+      resources: {}
+      script: |
+        cat /workspace/rekor.get | jq -r .Attestation
