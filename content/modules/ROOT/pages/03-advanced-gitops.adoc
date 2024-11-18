@@ -1,23 +1,10 @@
-= The Power of GitOps with OpenShift GitOps(60 mins)
+= Advanced OpenShift GitOps(30 mins)
 
-In this module you will understand how GitOps is used to manage cluster configuration and application deployments. This module
-assumes you have some familiarity with Argo CD.
+In this module we will review advanced GitOps topics that Platform teams must be
+familiar with and Developers should be aware of. Topics will include items like Argo CD Architecture, Command Line Interface,
+Role Based Access Controls (RBAC), AppProjects and Apps in Any Namespace.
 
-== Introduction
-
-GitOps is the process that is used to deploy and manage cluster configuration and application deployments. In GitOps, git
-as the source of truth and the GitOps engine, OpenShift GitOps, reconciles what is stored in git with the state of the cluster.
-This process is two-way, changes to git can be automatically reconciled to the cluster and direct, manual changes in the cluster
-can be automatically reverted back to what is in git.
-
-In this way GitOps provides a powerful way to manage state in Kubernetes clusters while addressing common issues like
-configuration drift, change management and auditing.
-
-OpenShift GitOps is included with a standard OpenShift or OpenShift Platform Plus subscription, it provides a fully supported GitOps engine
-using the upstream link:https://argoproj.github.io/cd[Argo CD,window='_blank'] project. Argo CD is a popular
-GitOps engine for Kubernetes that provides a variety of features to manage a GitOps environment including
-the engine, a comprehensive user interface, etc.
-
+[#openshift-gitops-architecture]
 == OpenShift GitOps Architecture
 
 In this section we will do a brief overview of the OpenShift GitOps architecture which is depicted in the diagram below.
@@ -45,6 +32,7 @@ are authenticating directly against Keycloak.
 are used to generate Applications using generators. These generators can create Applications based on Pull Requests,
 directories in git, clusters, etc.
 
+[#workshop-architecture]
 == Workshop Architecture
 
 In this workshop, two GitOps instances have been deployed as follows:
@@ -149,7 +137,8 @@ with the same name multiple times in the same Argo CD instance?
 
 To understand this, we are going to look at this and Argo CD RBAC in more depth in the subsequent sections.
 
-== Deep Dive
+[#argocd-deep-dive]
+== Argo CD Deep Dive
 
 === Argo CD CLI
 
@@ -562,4 +551,3 @@ viewed in the UI. Switch to the Argo CD UI and navigate to "Settings > Projects"
 project {user}. You should see the sourceNamespaces defined as follows:
 
 image::gitops/argocd-appproject-sourcenamespaces.png[]
-

@@ -1,4 +1,4 @@
-= Observability and Monitoring (30 mins)
+= Conclusion (15 Minutes)
 
 In this module
 
@@ -10,4 +10,3 @@ I
 
 A
 == More Information:
-

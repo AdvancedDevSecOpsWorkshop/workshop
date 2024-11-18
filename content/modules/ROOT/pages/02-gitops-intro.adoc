@@ -1,4 +1,211 @@
-= Helm
+= The Power of GitOps with OpenShift GitOps(60 mins)
+
+In this module you will understand how GitOps is used to manage cluster configuration and application deployments. This module
+assumes you have some familiarity with Argo CD.
+
+[#introduction]
+== Introduction
+
+In this module we will deploy the Coolstore Application followed by the Pipeline using a GitOps methodology.
+
+GitOps is the process that is used to deploy and manage cluster configuration and application deployments. In GitOps, git
+as the source of truth and the GitOps engine, OpenShift GitOps, reconciles what is stored in git with the state of the cluster.
+This process is two-way, changes to git can be automatically reconciled to the cluster and direct, manual changes in the cluster
+can be automatically reverted back to what is in git.
+
+In this way GitOps provides a powerful way to manage state in Kubernetes clusters while addressing common issues like
+configuration drift, change management and auditing.
+
+OpenShift GitOps is included with a standard OpenShift or OpenShift Platform Plus subscription, it provides a fully supported GitOps engine
+using the upstream link:https://argoproj.github.io/cd[Argo CD,window='_blank'] project. Argo CD is a popular
+GitOps engine for Kubernetes that provides a variety of features to manage a GitOps environment including
+the engine, a comprehensive user interface, etc.
+
+[#deploying-application]
+== Deploying Coolstore Application
+
+In this section we will cover the basics of deploying an application with argocd using manifests in a git repository.
+
+We will deploy the same coolstore application as previously, but this time we will do that using a GitOps approach.
+
+=== Deploy Application with Manifests
+
+A managed collection of manifests is known as an `Application` within Argo CD.
+Therefore, you must define it as such using an
+link:https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#applications[Application
+CR (CustomResource)^] in order to have Argo CD apply these manifests in your
+cluster.
+
+Let's review the `Application` manifest used to deploy this application (found link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/files/gitops/coolstore-gitops.yaml[here,window="_blank"])
+and break this down a bit:
+
+.link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/files/gitops/coolstore-gitops.yaml[coolstore-gitops.yaml,window="_blank"]
+[source,yaml,subs="+macros,attributes+"]
+----
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: coolstore-app
+spec:
+  destination:
+    namespace: user1-cicd
+    name: in-cluster <1>
+  project: user1 <2>
+  source: <3>
+    path: content/modules/ROOT/files/module-01
+    repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
+    targetRevision: HEAD
+  syncPolicy: <4>
+    automated:
+      prune: true
+      selfHeal: true
+----
+<1> The destination server is API endpoint for the cluster where Argo CD is
+  running -- in this case, using the locally-resolveable URL for the cluster
+<2> Here you're installing the application in Argo CD's `default` project
+  (`.spec.project`).
+[NOTE]
+Argo CD's concept of a `Project` is different than OpenShift's. Here you're
+installing the application in Argo CD's `default` project (`.spec.project`).
+*NOT* OpenShift's default project.
+<3> The manifest repo, and the path within it where the YAML resides.
+<4> The `syncPolicy` is set to `automated`. It will automatically prune
+  resources that have been removed from the Git repo, but will not automatically
+  correct resources that deviate from the definition stored in the repo, i.e
+  manual changes made using `oc` or `kubectl` will not be "healed".
+
+You will create an Application by slightly modifying the provided example inline
+using the command below:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+sed 's/$USERNUM/%USERNUM%/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops.yaml | oc apply -n user%USERNUM%-argocd -f -
+----
+
+The newly created Application appears as a tile with the title `bgd-app` in the
+Argo CD UI.
+
+image::gitops-apps/coolstore-app.png[SampleApp]
+
+Clicking on this tile takes you to the application details page. You may see it
+as still progressing or fully synced.
+
+image::gitops-apps/coolstore-app2.png[SampleApp]
+
+At this point the application should be up and running. Verify that the
+resources were created:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+oc get all -n user%USERNUM%-cicd
+----
+
+The output should list several things:
+
+[.console-output]
+[source,bash,subs="attributes+,+macros"]
+----
+NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/catalog-database    1/1     1            1           16m
+deployment.apps/gateway-vertx       1/1     1            1           16m
+deployment.apps/inventory-quarkus   1/1     1            1           16m
+deployment.apps/nexus               1/1     1            1           26h
+deployment.apps/sonarqube           1/1     1            1           26h
+
+NAME                                           DESIRED   CURRENT   READY   AGE
+replicaset.apps/catalog-database-57b4b4f4bc    1         1         1       16m
+replicaset.apps/gateway-vertx-5f6b554664       1         1         1       16m
+replicaset.apps/inventory-quarkus-64f5b79fc8   1         1         1       16m
+replicaset.apps/nexus-85ffd9f685               1         1         1       26h
+replicaset.apps/sonarqube-66c4694b89           1         1         1       26h
+
+NAME                            COMPLETIONS   DURATION   AGE
+job.batch/configure-nexus       1/1           79s        26h
+job.batch/configure-sonarqube   1/1           2m10s      26h
+----
+
+
+**Extra Credit:** Do you know why you have a ReplicaSet?
+
+Wait for the rollout of the new pods to happen in the deployment:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+oc rollout status deploy/inventory-quarkus -n user%USERNUM%-cicd
+----
+
+If it is successful, you can now visit the deployed application in the browser.
+
+From the OpenShift web console, select *user%USERNUM%-cicd* Project from
+drop-down menu, and use the _Topology_ view to find the link as you did with
+the Argo CD console.
+
+image::gitops-apps/coolstore-topology.png[coolstore App]
+
+Alternatively, get the app Route from the CLI:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+oc get route gateway-vertx -n user%USERNUM%-cicd -o jsonpath='{"http://"}{.spec.host}{"\n"}'
+----
+
+WARNING: This route is only available via HTTP. If you try to visit via HTTPS,
+you will get an _Application not available_ error. Do you know why that is?
+
+=== Addressing Configuration Drift
+
+Let's introduce a change in the application environment! Patch the live
+Deployment manifest to change the color of the bubbles in the application from
+blue to green:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+
+----
+oc -n user%USERNUM%-cicd scale deploy inventory-quarkus --replicas=4
+----
+
+You can see that the pods will start to get created, but instantly get deleted again. This is because OpenShift GitOps is automatically setting the replicas number to 1, as specified in the application manifest for the quarkus-inventory deployment.
+
+You can set up Argo CD to automatically correct drift by setting the `selfHeal`
+property of the `Application` manifest to do so. Using the example from link:#_deploy_the_application[above]:
+
+[.console-input]
+[source,yaml,subs="attributes+,+macros"]
+----
+# coolstore-gitops.yaml
+...
+spec:
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true # Set this to true
+----
+
+You can also manually sync your app via the Argo CD by:
+
+* First clicking `SYNC`
+* Then clicking `SYNCHRONIZE`
+
+image::gitops-apps/coolstore-manual-sync.png[Manually Sync the application]
+
+After the sync process is done, the Argo CD UI should mark the application as in
+sync.
+
+Or, as in our case, after the fact by running the following command:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+oc patch application/coolstore-app -n user%USERNUM%-argocd --type=merge -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+----
+
+[#helm]
+== Helm
 include::_attributes.adoc[]
 
 link:https://helm.sh/[Helm] is a package and install manager that standardises and
@@ -7,7 +214,7 @@ uses a patching approach, Helm uses templating to enable users to tailor the dep
 as required.
 
 [#exploring-helm]
-== Exploring Helm
+=== Exploring Helm
 
 The principles of 'Helm' are as follows:
 
@@ -18,7 +225,7 @@ The principles of 'Helm' are as follows:
 image::gitops-apps/helm-logo.png[Helm Logo]
 
 [#exploring-helm-cli]
-== Exploring the Helm CLI
+=== Exploring the Helm CLI
 
 Similar to Kustomize from the previous lab, the `helm` CLI should have been installed as part of the lab
 setup. Verify that it has been installed.
@@ -51,7 +258,7 @@ As a result for the purpose of this workshop we will be focusing on the `helm te
 command rather than `helm install`.
 
 [#exploring-helm-charts]
-== Exploring Helm Charts
+=== Deploying Application with Helm
 
 In this section we will explore the chart that we will be deploying into the cluster using GitOps.
 This chart will be used to deploy the same application we did previously with Kustomize. We will work
@@ -62,7 +269,7 @@ repository you cloned.
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-cd 
+cd
 cd ~/workshop/content/modules/ROOT/files/gitops/helm/globex-ui
 ----
 
@@ -92,7 +299,7 @@ by the `gitea` section.
 The templates/ directory is where template files reside. When Helm assesses a chart, it processes all files in the templates/ directory using the template rendering engine. The results of these templates are then gathered and forwarded to Kubernetes.You can learn more about templating link:https://helm.sh/docs/chart_template_guide/getting_started/[here].
 
 [#helm-template]
-== Helm Template
+=== Helm Template
 
 In this section, we will explore how to use the `helm template` command to generate Kubernetes manifests from a Helm chart. This command is a fundamental tool for understanding how Helm charts work and for visualising the resources they create.
 
@@ -157,7 +364,7 @@ spec:
 ----
 
 [#helm-charts-deploy-applications]
-== Using Helm charts to deploy applications in Argo CD
+=== Using Helm charts to deploy applications in Argo CD
 
 In this section, we will utilise Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the BGD app. This file contains essential configuration details such as the destination, source, project, and sync policy.
 
@@ -212,7 +419,7 @@ All the files are now deployed in the user%USERNUM%-cicd namespace, and you can 
 image::gitops-helm/pipeline-view.png[]
 
 [#custom-values-files]
-== Custom values files
+=== Custom values files
 
 In this section we explore the use of custom values files with Helm charts. These allow you to tailor deployments to your specific needs. Custom values files offer the flexibility to override default settings without modifying the chart directly.
 
@@ -274,7 +481,7 @@ image::gitops-helm/custom-values.png[]
 Using ArgoCD to deploy a Helm chart with custom values files offers the advantage of tailoring and overriding the chart’s default settings, all without needing to alter the chart directly. This flexibility enables you to deploy the chart with different configurations to suit various environments or specific use cases.
 
 [#parameter_values]
-== Argo CD Application with Parameter Values
+=== Argo CD Application with Parameter Values
 
 In this section, we'll explore a YAML file where parameter values are embedded directly within the Application, eliminating the need for separate values files.
 
@@ -322,7 +529,7 @@ Deploying a Helm chart through ArgoCD with integrated parameters allows you to c
 To make changes to the parameters, simply click on the 'Edit' button. Feel free to explore and make adjustments as desired during the workshop.
 
 [#helm-conclusion]
-== Conclusion: Helm on ArgoCD
+=== Conclusion: Helm on ArgoCD
 
 In this module we learned how to deploy Helm charts using Argo CD and we looked at the different ways in Argo CD to pass parameters to the Helm chart. A brief summary of the Pros and Cons of the approaches we examined can be summarised as follows:
 
