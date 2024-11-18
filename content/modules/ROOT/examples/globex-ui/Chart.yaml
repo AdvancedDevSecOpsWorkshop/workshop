@@ -1,0 +1,7 @@
+apiVersion: v2
+name: globex-ui-pipeline
+description: A Helm chart to deploy Globex UI pipeline resources for Kubernetes
+type: application
+
+version: 0.1.0
+appVersion: 0.1.16

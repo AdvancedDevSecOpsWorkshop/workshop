@@ -1,0 +1,19 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: verify-source-code
+spec:
+  description: This task verifies the latest commit and signature against the gpg public key
+  steps:
+  - image: alpine/git:latest
+    name: git-verify
+    script: |
+      set -x
+      apk add gpg-agent
+      gpg --import /workspace/secrets/public.key
+      git config --global --add safe.directory /workspace/repository
+      git verify-commit HEAD || (echo "Unable to verify commit at HEAD!" && exit 1)
+    workingDir: /workspace/repository
+  workspaces:
+  - name: repository
+  - name: secrets

@@ -1,0 +1,54 @@
+apiVersion: tekton.dev/v1beta1
+kind: Task
+metadata:
+  name: scan-export-sbom
+spec:
+  params:
+  - default: https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-rrcp2.rrcp2.sandbox2991.opentlc.com
+    name: cyclonedxHostUrl
+    type: string
+  - default:
+    name: image
+    type: string
+  results:
+    - description: The url location of the generate SBOM
+      name: sbomUrl
+  steps:
+    - name: get-sbom
+      image: quay.io/redhat-appstudio/cosign:v2.1.1
+      args:
+        - download
+        - sbom
+        - $(params.image)
+        - --output-file
+        - bom.json
+      workingDir: /workspace/repository
+    - image: 'quay.io/redhat-gpte/grype:0.65.2'
+      name: scan-sbom
+      resources:
+        requests:
+          memory: 1Gi
+      script: >
+        set -x
+
+        grype sbom:./bom.json -o table
+      workingDir: /workspace/repository
+    - image: 'ubi9/ubi'
+      name: export-sbom
+      resources:
+        requests:
+          memory: 1Gi
+      script: >
+        set +x
+
+        curl -X POST $(params.cyclonedxHostUrl)/v1/bom -H "Content-Type: application/vnd.cyclonedx+json; version=1.4" -H "Accept: */*" -d @bom.json -D /tmp/header.txt > /dev/null
+
+        LOCATION=$(cat /tmp/header.txt | grep location: | awk '{print $2}' | sed 's|http:|https:|g')
+
+        echo $LOCATION
+
+        printf "%s" "$LOCATION" > "$(results.sbomUrl.path)"
+
+      workingDir: /workspace/repository
+  workspaces:
+  - name: repository

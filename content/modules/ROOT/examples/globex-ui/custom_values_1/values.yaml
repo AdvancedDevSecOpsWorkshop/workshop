@@ -1,0 +1,24 @@
+#ODF Chart Values
+
+globex:
+  registry:
+    imageRepo: "custom-image-repo"
+    dockerConfigJson: ""
+  gitea:
+    manifestRepo: ""
+    manifestFile: ""
+    manifestFileProd: ""
+    manifestRepoName: ""
+    gitRepoHost: ""
+    manifestFileFail: ""
+    webhookSecretKey: ""
+    token: ""
+  sonarqube:
+    hostUrl: "custom-sonarqube-url"
+  cosign:
+    privateKey: ""
+    password: ""
+    publicKey: ""
+  cyclonedx:
+    hostUrl: ""
+

@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pipeline-helm
+spec:
+  destination:
+    namespace: user1-cicd
+    name: in-cluster
+  source:
+    path: content/modules/ROOT/examples/globex-ui
+    repoURL: 'https://github.com/AdvancedDevSecOpsWorkshop/workshop.git'
+    targetRevision: main
+  sources: []
+  project: user1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: false

@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: pipeline-helm
+spec:
+  destination:
+    namespace: user1-cicd
+    name: in-cluster
+  source:
+    path: globex-ui
+    repoURL: 'https://github.com/jchraibi/helm-chart.git'
+    targetRevision: main
+  sources: []
+  project: user1
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
