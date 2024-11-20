@@ -80,7 +80,7 @@ using the command below:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USERNUM/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops.yaml | oc apply -n {user}-argocd -f -
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops.yaml | oc apply -n {user}-argocd -f -
 ----
 
 The newly created Application appears as a tile with the title `bgd-app` in the
