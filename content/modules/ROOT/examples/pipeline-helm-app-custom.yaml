@@ -4,7 +4,7 @@ metadata:
   name: pipeline-helm-custom-values
 spec:
   destination:
-    namespace: user1-cicd
+    namespace: $USER-cicd
     name: in-cluster
   source:
     path: content/modules/ROOT/examples/globex-ui
@@ -14,7 +14,7 @@ spec:
       valueFiles:
         - custom_values_1/values.yaml
   sources: []
-  project: user1
+  project: $USER
   syncPolicy:
     automated:
       prune: true

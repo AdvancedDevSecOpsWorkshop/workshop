@@ -4,7 +4,7 @@ metadata:
   name: pipeline-helm-params
 spec:
   destination:
-    namespace: user1-cicd
+    namespace: $USER-cicd
     name: in-cluster
   source:
     path: content/modules/ROOT/examples/globex-ui
@@ -17,7 +17,7 @@ spec:
         - name: sonarqube.hostUrl
           value: 'custom-sonar-host'
   sources: []
-  project: user1
+  project: $USER
   syncPolicy:
     automated:
       prune: true
