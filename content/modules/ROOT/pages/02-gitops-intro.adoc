@@ -467,14 +467,12 @@ Now, apply the custom values file to the initial application using Argo CD:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml | oc apply -f - -n {user}-argocd
 ----
 
 ==== Step 4: Verify the Changes
 
-
 Return to ArgoCD and click on "App Details," then navigate to the "Parameters" section, where you previously made changes. You’ll notice that the custom value file has been successfully added, and it has updated the values to display the animated balls in green.
-
 
 image::gitops-helm/custom-values.png[]
 
@@ -512,19 +510,16 @@ Apply this parameterised configuration to Argo CD:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml | oc apply -f - -n {user}-argocd
 ----
 
 Return to the ArgoCD interface and navigate to the 'App Details' section. Click on 'Parameters.' You will notice that the custom values file, which was present in the previous example, has been successfully removed from the ArgoCD Application.
-
 
 image::gitops-helm/helm-parameters.png[]
 
 Deploying a Helm chart through ArgoCD with integrated parameters allows you to customise default settings without modifying the chart itself or relying on external values files. This centralises configuration management across different environments.
 
-
 ==== Step 4: Make Further Adjustments
-
 
 To make changes to the parameters, simply click on the 'Edit' button. Feel free to explore and make adjustments as desired during the workshop.
 
