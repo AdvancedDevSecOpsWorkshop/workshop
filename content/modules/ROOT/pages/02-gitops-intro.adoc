@@ -80,7 +80,7 @@ using the command below:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USERNUM/%USERNUM%/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops.yaml | oc apply -n user%USERNUM%-argocd -f -
+sed 's/$USERNUM/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops.yaml | oc apply -n {user}-argocd -f -
 ----
 
 The newly created Application appears as a tile with the title `bgd-app` in the
@@ -99,7 +99,7 @@ resources were created:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc get all -n user%USERNUM%-cicd
+oc get all -n {user}-cicd
 ----
 
 The output should list several things:
@@ -134,12 +134,12 @@ Wait for the rollout of the new pods to happen in the deployment:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc rollout status deploy/inventory-quarkus -n user%USERNUM%-cicd
+oc rollout status deploy/inventory-quarkus -n {user}-cicd
 ----
 
 If it is successful, you can now visit the deployed application in the browser.
 
-From the OpenShift web console, select *user%USERNUM%-cicd* Project from
+From the OpenShift web console, select *{user}-cicd* Project from
 drop-down menu, and use the _Topology_ view to find the link as you did with
 the Argo CD console.
 
@@ -150,7 +150,7 @@ Alternatively, get the app Route from the CLI:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc get route gateway-vertx -n user%USERNUM%-cicd -o jsonpath='{"http://"}{.spec.host}{"\n"}'
+oc get route gateway-vertx -n {user}-cicd -o jsonpath='{"http://"}{.spec.host}{"\n"}'
 ----
 
 WARNING: This route is only available via HTTP. If you try to visit via HTTPS,
@@ -166,7 +166,7 @@ blue to green:
 [source,bash,subs="attributes+,+macros"]
 
 ----
-oc -n user%USERNUM%-cicd scale deploy inventory-quarkus --replicas=4
+oc -n {user}-cicd scale deploy inventory-quarkus --replicas=4
 ----
 
 You can see that the pods will start to get created, but instantly get deleted again. This is because OpenShift GitOps is automatically setting the replicas number to 1, as specified in the application manifest for the quarkus-inventory deployment.
@@ -201,7 +201,7 @@ Or, as in our case, after the fact by running the following command:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc patch application/coolstore-app -n user%USERNUM%-argocd --type=merge -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+oc patch application/coolstore-app -n {user}-argocd --type=merge -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
 ----
 
 [#helm]
@@ -389,17 +389,17 @@ You should see the following output:
 include::ROOT:example$pipeline-helm-app.yaml[]
 ----
 
-This YAML configuration defines an Argo CD Application named "pipeline-helm" that deploys a Helm chart from a specific Git repository to the "user%USERNUM%-cicd" namespace.
+This YAML configuration defines an Argo CD Application named "pipeline-helm" that deploys a Helm chart from a specific Git repository to the "{user}-cicd" namespace.
 
 ==== Step 2: Deploy/Observe the Argo CD Application
 
 
-Apply the configuration in the file to create the Argo CD Application in the namespace user%USERNUM%-argocd. This application will deploy the Helm chart for the pipeline app:
+Apply the configuration in the file to create the Argo CD Application in the namespace {user}-argocd. This application will deploy the Helm chart for the pipeline app:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc apply -f ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app.yaml -n user%USERNUM%-argocd
+oc apply -f ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app.yaml -n {user}-argocd
 ----
 
 In the ArgoCD interface you should see the successful deployment of the "pipeline-helm" application.
@@ -414,7 +414,7 @@ image::gitops-helm/pipeline-helm-app2.png[]
 
 Next, click on "Parameters." You will notice that there is no separate values file as the application is deployed directly from the Helm chart.
 
-All the files are now deployed in the user%USERNUM%-cicd namespace, and you can see the full pipeline by accessing Pipelines -> pipelines in the console, as shown below:
+All the files are now deployed in the {user}-cicd namespace, and you can see the full pipeline by accessing Pipelines -> pipelines in the console, as shown below:
 
 image::gitops-helm/pipeline-view.png[]
 
@@ -467,7 +467,7 @@ Now, apply the custom values file to the initial application using Argo CD:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml -n user%USERNUM%-argocd
+oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml -n {user}-argocd
 ----
 
 ==== Step 4: Verify the Changes
@@ -512,7 +512,7 @@ Apply this parameterised configuration to Argo CD:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml -n user%USERNUM%-argocd
+oc apply -f ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml -n {user}-argocd
 ----
 
 Return to the ArgoCD interface and navigate to the 'App Details' section. Click on 'Parameters.' You will notice that the custom values file, which was present in the previous example, has been successfully removed from the ArgoCD Application.
