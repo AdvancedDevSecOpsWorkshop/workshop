@@ -4,14 +4,14 @@ metadata:
   name: pipeline-helm
 spec:
   destination:
-    namespace: user1-cicd
+    namespace: ${USER}-cicd
     name: in-cluster
   source:
     path: globex-ui
     repoURL: 'https://github.com/jchraibi/helm-chart.git'
     targetRevision: main
   sources: []
-  project: user1
+  project: ${USER}
   syncPolicy:
     automated:
       prune: true

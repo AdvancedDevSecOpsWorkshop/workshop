@@ -4,14 +4,14 @@ metadata:
   name: pipeline-helm
 spec:
   destination:
-    namespace: user1-cicd
+    namespace: $USER-cicd
     name: in-cluster
   source:
     path: content/modules/ROOT/examples/globex-ui
     repoURL: 'https://github.com/AdvancedDevSecOpsWorkshop/workshop.git'
     targetRevision: main
   sources: []
-  project: user1
+  project: $USER
   syncPolicy:
     automated:
       prune: true

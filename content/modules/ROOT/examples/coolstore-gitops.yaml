@@ -4,9 +4,9 @@ metadata:
   name: coolstore-app
 spec:
   destination:
-    namespace: user1-cicd
+    namespace: $USER-cicd
     name: in-cluster
-  project: user1
+  project: $USER
   source:
     path: content/modules/ROOT/files/module-01
     repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
