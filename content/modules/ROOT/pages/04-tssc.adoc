@@ -9,43 +9,172 @@ DevSecOps stands for Development, Security and Operations, and is a hollistic ap
 
 Let's examine all the components involved in such a DevSecOps pipeline to deploy our e-commerce application named Globex.
 
-== The DevSecOps pipeline
+
+== The advanced DevSecOps pipeline - in-depth look
 
 In this section, we will have a look at the end-to-end DevSecOps pipeline and explore the security gates that are provided in it.
 
 * Login to the openshift console using user *admin* and password *{password}* using this URL: https://{openshift_console_url}
 
-* In the openshift console left menu, Select the Administrator View, then click on *Pipelines -> Pipelines*, select Project *"ci"*, as shown in the screenshot below.
+* In the openshift console left menu, Select the Administrator View, then click on *Pipelines -> Pipelines*, select Project *"{user}-cicd"*, as shown in the screenshot below.
 
 image::/devsecops/pipelines.png[width=80%]
 
-*  Select the *PipelineRuns* tab, as shown below.
+*  Let's have a look at the more advanced devsecops pipeline called "app-globex-ui-pipeline". Click on the pipeline name to get a graphical view.
 
-image::/devsecops/pipelineruns.png[width=100%]
+image::/devsecops/pipeline-view.png[width=100%]
 
-Let's look why the first pipeline has failed. Click on the pipeline with the failed status. This should take you to the detailed view of the last execution, as shown below:
+* From the left side menu, select Pipelines -> Pipelines. In the right-side window, select the "PipelineRuns" tab and click on the pipelineRun with a "Succeeded" status.
 
-image::/devsecops/pipelinerun-error.png[]
+image::/devsecops/advanced-devsecops-pipelinerun.png[]
 
-The "Log Snippet" section on the bottom-right side shows a quick overview of the reasons why the pipeline has failed. Let's explore more details.
+We see that the pipeline hasn't been run yet, so let's trigger it using a "pipelineRun".
 
-* Click on the failed task named *"acs-image-check"* highlighted in red in the pipeline diagram.
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+sed 's/$USER/{user}/;s/$WORKSHOP_NUM/workshop{usernum}/' ~/workshop/content/modules/ROOT/examples/devsecops-pipelinerun.yaml | oc apply -f - -n {user}-cicd
+----
 
-image::/devsecops/pipelinerun-error-detail.png[]
+Let's review the content of the pipelineRun:
 
-We can now see that a security policy has failed the check and stopped the pipeline execution:
+[source,yaml,subs="+macros,attributes+"]
+----
+apiVersion: tekton.dev/v1
+kind: PipelineRun
+metadata:
+  generateName: app-globex-ui-pipeline-
+spec:
+  params:
+    - name: REPO_HOST
+      value: gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com
+    - name: GIT_REPO
+      value: 'https://gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/web-nodejs.git'
+    - name: TLSVERIFY
+      value: 'false'
+    - name: BUILD_EXTRA_ARGS
+      value: $(tt.params.build_extra_args)
+    - name: IMAGE_REPO
+      value: registry-quay-quay-operator.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$WORKSHOP_NUM/globex-ui
+    - name: IMAGE_TAG
+      value: main-b183894cabd3eebaa5844143d5ac60dc9863fb57
+    - name: MANIFEST_FILE
+      value: globex/overlays/dev/kustomization.yaml
+    - name: MANIFEST_FILE_PROD
+      value: globex/overlays/prod/kustomization.yaml
+    - name: MANIFEST_REPO
+      value: 'https://4fdb9ba7a4dbf754b9f06b744f06510874282bd1@gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops'
+    - name: MANIFEST_REPO_NAME
+      value: $USER/gitops
+    - name: COMMIT_SHA
+      value: b183894cabd3eebaa5844143d5ac60dc9863fb57
+    - name: GIT_REF
+      value: main
+    - name: COMMIT_DATE
+      value: '2024-11-03T22:04:11Z'
+    - name: COMMIT_AUTHOR
+      value: $USER
+    - name: COMMIT_MESSAGE
+      value: |
+        Updates for starting scenario.
+    - name: SONARQUBE_HOST_URL
+      value: 'https://sonarqube-$USER-cicd.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
+    - name: SONARQUBE_PROJECT_KEY
+      value: globex-ui
+    - name: SONARQUBE_PROJECT_SECRET
+      value: sonarqube-admin
+    - name: CYCLONEDX_HOST_URL
+      value: 'https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
+  pipelineRef:
+    name: app-globex-ui-pipeline
+  taskRunTemplate:
+    serviceAccountName: pipeline
+  timeouts:
+    pipeline: 1h0m0s
+  workspaces:
+    - name: shared-data
+      volumeClaimTemplate:
+        metadata:
+          creationTimestamp: null
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 3Gi
+        status: {}
+    - emptyDir: {}
+      name: maven-settings
+----
 
-* *"0-Trusted Signature Policy"*: this means that the container image that has been built hasn't been signed by an appropriate signature, and has a "High" severity, thus it is not trustworty to get into production. This is indicated by the "Breaks Build" column with an "X" mark.
+This will take you to a diagram with the last pipeline execution. Let's now examine the different steps, and focus on the tasks that provide an extra layer of security.
 
-This policy is actually implemented in Red Hat Advanced Cluster Security (ACS), and the "acs-image-check" task uses the ACS CLI named roxctl to check the validity of these policies for the currently running pipeline. This is how these steps act as security gates that prevent untrusted content to go further away in the pipeline.
+image::/devsecops/pipeline-group1.png[]
+
+In the early stages of the pipeline, we do a traditional source clone, then we verify the code using SonarQube.
+
+Now, in the next stages, this is where we have implemented additional security layers that will be detailed below.
+
+image::/devsecops/pipeline-group2.png[]
+
+* *"Build-sign-image"*:
+
+Enhancing Security with Tekton Chains
+
+This task is responsible for building a container image based from our source code, including any changes that were committed. The built container image, along with a new tag and a generated Software Bill of Materials (SBOM) is then pushed to our private quay registry on successful completion. An SBOM is a machine-readable, formally structured complete list of all the components, including modules and libraries, used/required to build a software solution. So, in simple words, a software bill of materials offers an insight into the makeup of an application developed using third-party commercial tools and open-source software.
+
+This task also uses Tekton Chains, a Kubernetes Custom Resource Definition (CRD) controller, that is crucial in augmenting the supply chain security within our OpenShift Pipelines. This tool’s capacity to automatically sign task runs, and its adoption of advanced attestation formats like in-toto, bring a higher degree of trust and verification to our processes.
+
+This task is responsible for emitting two important TaskResults i.e. IMAGE_URL and IMAGE_DIGEST. Those parameters are very important because they are the ones that trigger Tekton Chains to create a digital signature for your container image.
+
+Now let's have a look at the following tasks:
+
+image::/devsecops/pipeline-group3.png[]
+
+* *acs-image-check*: this task uses the roxctl CLI to check build-time violations of your security policies in your image. In this demo, we have set up a policy that verifies signatures on your container image. If this policy is enabled and your container image is unsigned or signed by non trusted source, the pipeline will fail. If the signature is available and is trusted, this pipeline task will complete successfully.
+
+* *acs-image-scan*: The acs-image-scan uses the roxctl CLI to return the components and vulnerabilities found in the image . Any vulnerabilities that exist in packages embedded in the image will be reported.
+
+* *scan-export-sbom*: This task is responsible for scanning any vulnerabilities that exist in our SBOM and exports our SBOM to a externally accessible repository. For scanning, this task uses a 3rd-party tool called Grype which is a vulnerability scanner for container images and filesystems.
+
+That's it! You now have a deeper understanding of the Security capabilities that provide a Trusted Software Supply Chain (or DevSecOps approach), using OpenShift Pipelines (tekton chains), and Red Hat Advanced Cluster Security (Red Hat ACS).
+
+
+== Using a Trusted image registry to store signed images
+
+Red Hat Quay is a trusted, geo-replicated, security enabled container registry that allows to scan container image for vulnerabitilies, but also store the signed images with all their metadata, such as the generated SBOM files and the signatures. These assets can be used later on in the pipelines for verification and validation purposes, like we have seen in the previous pipeline.
+
+Let's now have a look at container image in Quay, and verify that it has indeed been signed by the pipeline.
+
+* In a new tab, Open the Quay URL: https://registry-quay-quay-operator.{openshift_cluster_ingress_domain}
+
+* Select "Sign in with Keycloak" and login as user *"{user}"* and password *{password}*. 
+
+Next, click the *"workshopX/globex-ui"* repository, and click on 'Tags' on the left side menu (replace workshopX with you current user, for example workshop1 for user1).
+
+image::/devsecops/quay-tags.png[]
+
+We can now see all the history of that container image, with all tags, and the associated metadata. We can particularily see that this container image has a small checkmark next to it, hover it to check that it has been correctly signed by Tekton Chains with the DevSecOps pipeline was last run. 
+
+You can also click on the *"Show signatures"* button on the top-right side to reveal additional information about the image.
+
+image::/devsecops/quay-image-signed.png[]
+
+Quay also provides a summary of the vulnerabilities of the container image, but since we've already seen that with Red Hat ACS, let's skip to the next section.
+
+That's it, you now have a better understanding of Quay capabilities to store the signed container images, along with the metadata such as SBOMs, signatures etc.
+
 
 == Defining security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
-Now let's have a more detailed look at those policies directly in Red Hat Advanced Cluster Security.
 
 * In a new tab, open the Red Hat ACS console at https://central-stackrox.{openshift_cluster_ingress_domain} 
 
-* Login as user *"admin"* and password *{password}*.
+* Choose the "Keycloak" auth provider as shown below:
+
+image::/devsecops/acs-keycloak.png[]
+
+* Login with Keycloak: username *"clusteradmin"* and password *{password}*.
 
 * Once you are on the Red Hat ACS console, select "Platform Configuration -> Policy Management" from the left-side menu. This should take you to the policies page.
 
@@ -53,7 +182,7 @@ image::/devsecops/acs-policies.png[]
 
 Red Hat ACS provides about 85 out-of-the-box policies to help implement security best practices and sageguards across your fleets of clusters, you can explore some of them by scrolling through the list of policies.
 
-* Let's now look at the "Trusted Image Signature" policy that was triggered in the pipeline previously. In the "Filter policies" section, type "Policy" then hit enter, then type "Trusted Signature".
+* Let's now look at the "Trusted Image Signature" policy. In the "Filter policies" section, type "Policy" then hit enter, then type "Trusted Signature".
 
 image::/devsecops/acs-trusted-signature-policy.png[]
 
@@ -101,76 +230,9 @@ image::/devsecops/acs-image-details.png[]
 That's it! You now have a better understanding of how Red Hat ACS allows you to define security policies that can in turn be used within the DevSecOps pipeline as security gates to prevent untrusted / undesirable content from getting into your production environments, and also continuous monitor the security of your multiple clusters and applications across all environments.
 
 
-== The advanced DevSecOps pipeline - in-depth look
-
-Now that we are familiar with how the previous pipeline was integrated with Red Hat ACS to implement security gates, let's have a look at the more advanced devsecops pipeline called "app-globex-ui-pipeline".
-
-* Go back to the OpenShift Console: https://{openshift_console_url}
-
-* From the left side menu, select Pipelines -> Pipelines. In the right-side window, select the "PipelineRuns" tab and click on the pipelineRun with a "Succeeded" status.
-
-image::/devsecops/advanced-devsecops-pipelinerun.png[]
-
-This will take you to a diagram with the last pipeline execution. Let's now examine the different steps, and focus on the tasks that provide an extra layer of security.
-
-image::/devsecops/pipeline-group-1.png[]
-
-In the early stages of the pipeline, we do a traditional source clone, then we verify the code using SonarQube and verify the source code commits, to make sure the code is legitimate.
-
-Now, in the next stages, this is where we have implemented additional security layers that will be detailed below.
-
-image::/devsecops/pipeline-group-2.png[]
-
-* *"Build-image"*:
-
-Enhancing Security with Tekton Chains
-
-This task is responsible for building a container image based from our source code, including any changes that were committed. The built container image, along with a new tag and a generated Software Bill of Materials (SBOM) is then pushed to our private quay registry on successful completion. An SBOM is a machine-readable, formally structured complete list of all the components, including modules and libraries, used/required to build a software solution. So, in simple words, a software bill of materials offers an insight into the makeup of an application developed using third-party commercial tools and open-source software.
-
-This task also uses Tekton Chains, a Kubernetes Custom Resource Definition (CRD) controller, that is crucial in augmenting the supply chain security within our OpenShift Pipelines. This tool’s capacity to automatically sign task runs, and its adoption of advanced attestation formats like in-toto, bring a higher degree of trust and verification to our processes.
-
-This task is responsible for emitting two important TaskResults i.e. IMAGE_URL and IMAGE_DIGEST. Those parameters are very important because they are the ones that trigger Tekton Chains to create a digital signature for your container image.
-
-Now let's have a look at the following tasks:
-
-image::/devsecops/pipeline-group-3.png[]
-
-* *acs-image-check*: this task uses the roxctl CLI to check build-time violations of your security policies in your image. In this demo, we have set up a policy that verifies signatures on your container image. If this policy is enabled and your container image is unsigned or signed by non trusted source, the pipeline will fail. If the signature is available and is trusted, this pipeline task will complete successfully.
-
-* *acs-image-scan*: The acs-image-scan uses the roxctl CLI to return the components and vulnerabilities found in the image . Any vulnerabilities that exist in packages embedded in the image will be reported.
-
-* *scan-export-sbom*: This task is responsible for scanning any vulnerabilities that exist in our SBOM and exports our SBOM to a externally accessible repository. For scanning, this task uses a 3rd-party tool called Grype which is a vulnerability scanner for container images and filesystems.
-
-* *acs-deploy-check*: This task uses the roxctl CLI to check the deployment YAML files for any security issues or bad practices, such as running a container image as root, or not defining health checks etc. It scans the YAML file that is stored in the git repository and used for a gitops approach to deploy the application. We will talk about this in the "Adopting a GitOps approach for deployments across multiple clusters" section.
-
-That's it! You now have a deeper understanding of the Security capabilities that provide a Trusted Software Supply Chain (or DevSecOps approach), using OpenShift Pipelines (tekton chains), and Red Hat Advanced Cluster Security (Red Hat ACS).
-
-
-== Using a Trusted image registry to store signed images
-
-Red Hat Quay is a trusted, geo-replicated, security enabled container registry that allows to scan container image for vulnerabitilies, but also store the signed images with all their metadata, such as the generated SBOM files and the signatures. These assets can be used later on in the pipelines for verification and validation purposes, like we have seen in the previous pipeline.
-
-Let's now have a look at container image in Quay, and verify that it has indeed been signed by the pipeline.
-
-* In a new tab, Open the Quay URL: https://quay-{guid}.{openshift_cluster_ingress_domain}
-
-* Login as user *"quayadmin"* and password *{password}*. Next, click the *"quayadmin/globex-ui"* repository, and click on 'Tags' on the left side menu
-
-image::/devsecops/quay-tags.png[]
-
-We can now see all the history of that container image, with all tags, and the associated metadata. We can particularily see that this container image has a small checkmark next to it, hover it to check that it has been correctly signed by Tekton Chains with the DevSecOps pipeline was last run. 
-
-You can also click on the *"Show signatures"* button on the top-right side to reveal additional information about the image.
-
-image::/devsecops/quay-image-signed.png[]
-
-Quay also provides a summary of the vulnerabilities of the container image, but since we've already seen that with Red Hat ACS, let's skip to the next section.
-
-That's it, you now have a better understanding of Quay capabilities to store the signed container images, along with the metadata such as SBOMs, signatures etc.
-
 == Adopting a GitOps approach for deployments across multiple clusters
 
-As mentioned in the application architecture section, in a typical multicluster scenario, our "Globex" application would be deployed across multiple clusters using a OpenShift GitOps (based on argocd). There is one argocd instance per cluster, and a shared gitops repository that contains the deployment manifests (yaml files), that gets updated by the pipeline whenever there is a new update to the soure code.
+As mentioned in the application architecture section, in a typical multicluster scenario, our "Globex" application would be deployed across multiple clusters using a OpenShift GitOps.
 
 Let's explore this step in the pipeline, then have a look at argocd to understand how it uses the manifests to target the desired cluster.
 
@@ -178,44 +240,60 @@ Let's explore this step in the pipeline, then have a look at argocd to understan
 
 image::/devsecops/pipeline-group-4.png[]
 
-* *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a standard approach when using tools like OpenShift GitOps (based on argocd). Let's have a look at the yaml file in Gitea.
+* *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a standard approach when using tools like OpenShift GitOps. Let's have a look at the yaml file in Gitea.
 
 * In a new tab, open Gitea's URL: https://gitea.{openshift_cluster_ingress_domain}
 
-* Login using the provided credentials: username: *dev-user*, password: *openshift*.
+* Login using the provided credentials: username: *{user}*, password: *openshift*.
 
 * Click on the last commit id, as shown in the screenshot below:
 
 image::/devsecops/gitea-commit-id.png[]
 
-* Take a look at the changes about the container image tag, as seen below. Because OpenShift GitOps is constantly monitoring that GitOps repository, any update to the yaml file triggers a reconciliation with the target DEV cluster, meaning the application gets redeployed.
+* Take a look at the changes about the container image tag, as seen below. Because OpenShift GitOps is constantly monitoring that GitOps repository, any update to the yaml file triggers a reconciliation with the target DEV environment, namely the {user}-dev namespace, where the application get re-deployed.
 
 image::/devsecops/gitea-updated-manifest.png[]
 
-Let's now switch to OpenShift GitOps to see how the application gets deployed in the DEV cluster using argocd.
+Let's now switch to OpenShift GitOps to see how the application gets deployed in the DEV namespace.
 
-* Open the OpenShift GitOps URL: https://openshift-gitops-server-openshift-gitops.{openshift_cluster_ingress_domain}
+* Open the OpenShift GitOps URL: https://argocd-server-gitops.{openshift_cluster_ingress_domain}
 
-* Login as user *"admin"* with password *{password}*
+* Select Login via Keycloak, and login as user *"{user}"* with password *openshift*
 
-* OpenShift GitOps uses a concept of an *"Application"* as a group of manifests stored in a git repository that need to be deployed altogether. Select the "Globex" application in the main page to access the details.
+* OpenShift GitOps uses a concept of an *"Application"* as a group of manifests stored in a git repository that need to be deployed altogether. 
+image::/devsecops/argocd-applications.png[]
 
-image::/devsecops/gitops-application-globex.png[]
+
+== Using overlays and Kustomize in the DevSecOps pipeline
+
+A common pattern when deploying an application to multiple environments is to have a a repository that contains the following structure:
+ - base: the common assets that we want to deploy
+ - overlays
+    |_dev: specific values that will override the ones in the base for the "dev" environment
+    |_prod: specific values that will override the ones in the base for the "prod" environment
+
+Select the "app-dev" application in the main page to access the details.
 
 * On the top-left side, click on *"App details"* to access the information about the application, such as the git repository, the branch where the files are located, the target cluster and namespace where the application is deployed, etc.
 
-image::/devsecops/gitops-app-details-more.png[]
+If we pay closer attention, there are 3 items worth mentioning to understand the multi-environment management:
+- REPO_URL: the git repository where our the resources we want to deploy are defined
+- TARGET REVISION: the branch to use
+- PATH: the folder that contains the specific values for that environment. Here for example, for the "DEV" environment, we use the file located in "globex/overlays/dev".
+
+You can see more details by opening the "gitops" repository in gitea, and navigating to "globex" folder. 
+
+image::/devsecops/app-details-dev.png[]
 
 * Close the application details window, and explore the application page to see all the kubernetes resources that are deployed by OpenShift GitOps to the target cluster / namespace, such as the deployments, the services, etc.
 
-* Let's see the same resources deployed in the application namespace *"globex"* with this URL: https://{openshift_console_url}/topology/ns/globex?view=graph
+* Let's see the same resources deployed in the application namespace *{user}-dev* with this URL: https://{openshift_console_url}/topology/ns/{user}-dev?view=graph
 
 image::/devsecops/globex-app.png[]
 
-* Let's open the application to verify that it is running as expected: https://globex-ui-globex.{openshift_cluster_ingress_domain}/products
+* Let's open the application to verify that it is running as expected: 
 
 image::/devsecops/globex-ui.png[]
-
 
 That's it, you now have a better understanding of how the DevSecOps pipeline is combined with OpenShift GitOps for a multicluster deployment of the "Globex" application. 
 

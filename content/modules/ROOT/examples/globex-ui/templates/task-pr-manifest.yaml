@@ -40,7 +40,7 @@ spec:
 
       cd $TMPDIR
       git clone $(params.repository)
-      cd securing-software-supply-chain
+      cd gitops
       git checkout -b $(params.target-branch)
 
       # Set to the short commit value passed as parameter.

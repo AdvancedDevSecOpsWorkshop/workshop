@@ -73,17 +73,6 @@ spec:
     workspaces:
     - name: repository
       workspace: shared-data
-  - name: verify-source
-    runAfter:
-    - fetch-source
-    taskRef:
-      kind: Task
-      name: verify-source-code
-    workspaces:
-    - name: repository
-      workspace: shared-data
-    - name: secrets
-      workspace: secrets
   - name: build-sign-image
     retries: 1
     params:
@@ -93,7 +82,6 @@ spec:
       value: $(params.COMMIT_SHA)
     runAfter:
     - scan-source
-    - verify-source
     taskRef:
       kind: Task
       name: buildah
@@ -103,9 +91,9 @@ spec:
   - name: acs-image-check
     params:
     - name: rox_central_endpoint
-      value: stackrox-endpoint
+      value: roxsecrets
     - name: rox_api_token
-      value: stackrox-secret
+      value: roxsecrets
     - name: image
       value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
     - name: insecure-skip-tls-verify
@@ -118,9 +106,9 @@ spec:
   - name: acs-image-scan
     params:
     - name: rox_central_endpoint
-      value: stackrox-endpoint
+      value: roxsecrets
     - name: rox_api_token
-      value: stackrox-secret
+      value: roxsecrets
     - name: image
       value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
     - name: insecure-skip-tls-verify
@@ -164,9 +152,9 @@ spec:
   - name: acs-deploy-check
     params:
       - name: rox_central_endpoint
-        value: stackrox-endpoint
+        value: roxsecrets
       - name: rox_api_token
-        value: stackrox-secret
+        value: roxsecrets
       - name: gitRepositoryUrl
         value: $(params.MANIFEST_REPO)
       - name: gitRepositoryRevision
@@ -181,7 +169,7 @@ spec:
   - name: verify-tlog-signature
     params:
       - name: registrySecret
-        value: image-registry-secret
+        value: quay
       - name: cosignSecret
         value: cosign-secret
       - name: image
@@ -216,7 +204,7 @@ spec:
     - name: API_PATH_PREFIX
       value: /api/v1
     - name: GITHUB_TOKEN_SECRET_NAME
-      value: gitea-token
+      value: gitea-pull-token
     - name: REPO_FULL_NAME
       value: $(params.MANIFEST_REPO_NAME)
     - name: HEAD
@@ -236,4 +224,6 @@ spec:
   - name: shared-data
   - name: maven-settings
   - name: signature
+    optional: true
   - name: secrets
+    optional: true
