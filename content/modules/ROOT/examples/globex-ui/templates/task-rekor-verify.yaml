@@ -4,7 +4,7 @@ metadata:
   name: rekor-verify
 spec:
   params:
-    - default: image-registry-secret
+    - default: quay
       name: registrySecret
       type: string
     - default: cosign-secret

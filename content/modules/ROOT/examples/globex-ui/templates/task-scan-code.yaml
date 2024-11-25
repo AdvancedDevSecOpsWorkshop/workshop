@@ -21,17 +21,17 @@ spec:
     type: string
   steps:
   - env:
-    - name: SONAR_TOKEN_WEB_UI
+    - name: SONAR_PASSWORD
       valueFrom:
         secretKeyRef:
-          key: token
+          key: password
           name: $(params.sonarqubeProjectSecret)
     image: $(params.scanImage)
     name: scan-code
     script: |
       set -x
       echo $(ls -a)
-      sonar-scanner -X -Dsonar.projectKey=$(params.sonarqubeProjectKey) -Dsonar.sources=./ -Dsonar.host.url=$(params.sonarqubeHostUrl) -Dsonar.login=$SONAR_TOKEN_WEB_UI
+      sonar-scanner -X -Dsonar.projectKey=$(params.sonarqubeProjectKey) -Dsonar.sources=./ -Dsonar.host.url=$(params.sonarqubeHostUrl) -Dsonar.login='admin' -Dsonar.password=$SONAR_PASSWORD
     workingDir: /workspace/repository
   workspaces:
   - name: repository

@@ -28,6 +28,9 @@ In this section we will cover the basics of deploying an application with argocd
 
 We will deploy the same coolstore application as previously, but this time we will do that using a GitOps approach.
 
+We want to deploy that application to two namespaces: a "development" environment and a production environement, that we will later on update using the DevSecOps pipeline.
+
+
 === Deploy Application with Manifests
 
 A managed collection of manifests is known as an `Application` within Argo CD.
@@ -48,9 +51,9 @@ metadata:
   name: coolstore-app
 spec:
   destination:
-    namespace: user1-cicd
+    namespace: $USER-dev
     name: in-cluster <1>
-  project: user1 <2>
+  project: $USER <2>
   source: <3>
     path: content/modules/ROOT/files/module-01
     repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
@@ -75,15 +78,26 @@ installing the application in Argo CD's `default` project (`.spec.project`).
   manual changes made using `oc` or `kubectl` will not be "healed".
 
 You will create an Application by slightly modifying the provided example inline
-using the command below:
+using the command below.
+
+Let's first deploy the application to the {user}-dev environment:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops.yaml | oc apply -n {user}-argocd -f -
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops-dev.yaml | oc apply -n {user}-argocd -f -
 ----
 
-The newly created Application appears as a tile with the title `bgd-app` in the
+Let's then deploy the application to the {user}-prod environment:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops-prod.yaml | oc apply -n {user}-argocd -f -
+----
+
+
+The newly created Applications appears as a tile with the title `bgd-app` in the
 Argo CD UI.
 
 image::gitops-apps/coolstore-app.png[SampleApp]
@@ -99,7 +113,7 @@ resources were created:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc get all -n {user}-cicd
+oc get all -n {user}-dev
 ----
 
 The output should list several things:
@@ -127,30 +141,28 @@ job.batch/configure-sonarqube   1/1           2m10s      26h
 ----
 
 
-**Extra Credit:** Do you know why you have a ReplicaSet?
-
 Wait for the rollout of the new pods to happen in the deployment:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc rollout status deploy/inventory-quarkus -n {user}-cicd
+oc rollout status deploy/inventory-quarkus -n {user}-dev
 ----
 
 If it is successful, you can now visit the deployed application in the browser.
 
-From the OpenShift web console, select *{user}-cicd* Project from
+From the OpenShift web console, select *{user}-dev* Project from
 drop-down menu, and use the _Topology_ view to find the link as you did with
 the Argo CD console.
 
-image::gitops-apps/coolstore-topology.png[coolstore App]
+image::gitops-apps/gitops-userx-dev.png[coolstore App]
 
 Alternatively, get the app Route from the CLI:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc get route gateway-vertx -n {user}-cicd -o jsonpath='{"http://"}{.spec.host}{"\n"}'
+oc get route gateway-vertx -n {user}-dev -o jsonpath='{"http://"}{.spec.host}{"\n"}'
 ----
 
 WARNING: This route is only available via HTTP. If you try to visit via HTTPS,
@@ -166,7 +178,7 @@ blue to green:
 [source,bash,subs="attributes+,+macros"]
 
 ----
-oc -n {user}-cicd scale deploy inventory-quarkus --replicas=4
+oc -n {user}-dev scale deploy inventory-quarkus --replicas=4
 ----
 
 You can see that the pods will start to get created, but instantly get deleted again. This is because OpenShift GitOps is automatically setting the replicas number to 1, as specified in the application manifest for the quarkus-inventory deployment.

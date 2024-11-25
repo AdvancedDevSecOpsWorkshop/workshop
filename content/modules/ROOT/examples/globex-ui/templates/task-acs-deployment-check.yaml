@@ -65,7 +65,7 @@ spec:
 
         set -eu -o pipefail
 
-        cd repository/gitops/application/globex/overlays/dev
+        cd repository/globex/overlays/dev
 
         mkdir -p /workspace/repository/input
         mkdir -p /workspace/repository/output
