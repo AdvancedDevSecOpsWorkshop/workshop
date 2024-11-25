@@ -39,10 +39,10 @@ link:https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/
 CR (CustomResource)^] in order to have Argo CD apply these manifests in your
 cluster.
 
-Let's review the `Application` manifest used to deploy this application (found link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/files/gitops/coolstore-gitops.yaml[here,window="_blank"])
+Let's review the `Application` manifest used to deploy this application (found link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/examples/coolstore-gitops-dev.yaml[here,window="_blank"])
 and break this down a bit:
 
-.link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/files/gitops/coolstore-gitops.yaml[coolstore-gitops.yaml,window="_blank"]
+.link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/examples/coolstore-gitops-dev.yaml[coolstore-gitops-dev.yaml,window="_blank"]
 [source,yaml,subs="+macros,attributes+"]
 ----
 apiVersion: argoproj.io/v1alpha1
@@ -281,7 +281,6 @@ repository you cloned.
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-cd
 cd ~/workshop/content/modules/ROOT/files/gitops/helm/globex-ui
 ----
 

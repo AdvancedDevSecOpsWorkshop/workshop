@@ -285,11 +285,30 @@ You can see more details by opening the "gitops" repository in gitea, and naviga
 
 image::/devsecops/app-details-dev.png[]
 
+== Deploying to production using a Pull Request in Gitea
+
+We have deployed the same application to the "PROD" environment using the app-prod Application in OpenShift GitOps. The main difference is that the prod version is using "globex/overlays/prod" for the specific values required for production.
+
+Is it common to have a "manual approval" for deploying into a production environment, and in our case, we'll be using a Pull Request to approve the change to the PROD manifests located in "globex/overlays/prod".
+
+The pipeline execution has already created the pull request in the last steps, so let's review it in gitea and merge it to initiate the deployment in the "{user}-prod" namespace through GitOps.
+
+* Open Gitea, select the *gitops* repository and click on *Pull Requests* as seen below:
+
+image::/devsecops/gitea-pull-request.png[]
+
+Click on the pull request and then click on Create Merge Commit, and select create commit:
+
+image::/devsecops/gitea-merge-commit.png[]
+
+* In the Pull Request details, click on *Files Changed*, and you should see that we have updated the image pullspec for the prod environment, as seen below:
+
+image::/devsecops/gitea-merge-changes.png[]
+
+
 * Close the application details window, and explore the application page to see all the kubernetes resources that are deployed by OpenShift GitOps to the target cluster / namespace, such as the deployments, the services, etc.
 
-* Let's see the same resources deployed in the application namespace *{user}-dev* with this URL: https://{openshift_console_url}/topology/ns/{user}-dev?view=graph
-
-image::/devsecops/globex-app.png[]
+* Let's see the same resources deployed in the application namespace *{user}-prod* with this URL: https://{openshift_console_url}/topology/ns/{user}-prod?view=graph
 
 * Let's open the application to verify that it is running as expected: 
 
