@@ -366,7 +366,7 @@ Let's deploy these applications to two namespaces, {user}-dev and {user}-prod
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/web-nodejs-dev.yaml && 
+cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-dev.yaml && 
 sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
 ----
 
@@ -375,7 +375,7 @@ and now let's deploy the application in the {user}-prod namespace:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/web-nodejs-prod.yaml && 
+cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-prod.yaml && 
 sed 's/$USER/{user}/' ~/web-nodejs-prod.yaml | oc create -f - -n {user}-argocd
 ----
 
