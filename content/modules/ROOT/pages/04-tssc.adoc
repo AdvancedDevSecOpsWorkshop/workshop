@@ -14,7 +14,7 @@ Let's examine all the components involved in such a DevSecOps pipeline to deploy
 
 In this section, we will have a look at the end-to-end DevSecOps pipeline and explore the security gates that are provided in it.
 
-* Login to the openshift console using user *admin* and password *{password}* using this URL: https://{openshift_console_url}
+* Login to the openshift console using user *{user}* and password *{password}* using this URL: https://{openshift_console_url}
 
 * In the openshift console left menu, Select the Administrator View, then click on *Pipelines -> Pipelines*, select Project *"{user}-cicd"*, as shown in the screenshot below.
 
@@ -24,19 +24,85 @@ image::/devsecops/pipelines.png[width=80%]
 
 image::/devsecops/pipeline-view.png[width=100%]
 
-* From the left side menu, select Pipelines -> Pipelines. In the right-side window, select the "PipelineRuns" tab and click on the pipelineRun with a "Succeeded" status.
+* From the left side menu, select Pipelines -> Pipelines. In the right-side window, select the "PipelineRuns" tab, we can see that the pipeline hasn't been run yet.
 
-image::/devsecops/advanced-devsecops-pipelinerun.png[]
 
-We see that the pipeline hasn't been run yet, so let's trigger it using a "pipelineRun".
+Before we do that, let's setup the repositories in gitea that will be used by this pipeline to deploy the application using OpenShift GitOps.
+
+== Login to gitea to import the repositories
+
+* In a new tab, open Gitea's URL: https://gitea.{openshift_cluster_ingress_domain}
+
+* Login using the provided credentials: username: *{user}*, password: *openshift*.
+
+Once you're logged in, you'll need to migrate 2 repositories in your gitea.
+
+* On the top-right toolbar, click on '+' then select *New migration* as seen in the screenshot below:
+
+image::/devsecops/gitea-new-migration.png[]
+
+* Select "GIT" option, and then input this URL in the *"Migrate/Clone from ULR"* input, then click *Migrate Repository*: 
+
+[.console-input]
+[source,bash,subs="+attributes",role=execute]
+----
+https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
+----
+
+* Repeat the same procedure to import this other repository: 
+
+[.console-input]
+[source,bash,subs="+attributes",role=execute]
+----
+https://github.com/OpenShiftDemos/web-nodejs.git
+----
+
+== Create an API token in gitea
+We need to create an API token that will be used for the pipeline execution, be sure to copy-paste the token value once it's generated.
+
+* On the top-right toolbar in gitea, click on your profile icon and select *Settings* as shown below:
+
+image::/devsecops/gitea-settings.png[]
+
+* Select *Applications*, then input *gitea-pull-token* in the name and unfold the *select permissions* section by selecting the triange:
+
+- in *Repository* select *Read and Write* as shown below
+
+image::/devsecops/gitea-generate-token.png[]
+
+* Click generate token and *copy-paste the token value in the terminal for later use* now, as you can't access it later. The token value is in the blue blox on the top of the screen, as shown below
+
+image::/devsecops/gitea-token-value.png[]
+
+*If you clicked too fast, just re-generate a new token following the previous steps and copy-paste the value.*
+
+We now need to create a secret using that token value, using the following command, *replace the token value here before executing the command*
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/;s/$WORKSHOP_NUM/workshop{usernum}/' ~/workshop/content/modules/ROOT/examples/devsecops-pipelinerun.yaml | oc apply -f - -n {user}-cicd
+oc create secret -n {user}-cicd generic gitea-pull-token --from-literal=token=REPLACE_WITH_YOUR_TOKEN_VALUE
 ----
 
-Let's review the content of the pipelineRun:
+We see that the pipeline hasn't been run yet, so let's trigger it using a "pipelineRun".
+
+* in Gitea, go back to the main page, and select the *workshop* repository on the right-side, as shown below
+
+image::/devsecops/gitea-workshop-repo.png[]
+
+* Navigate to the file *content/module/ROOT/examples/devsecops-pipelinerun.yaml* and click on edit (the pen on the right side) to make changes. In the *params* section, look for *MANIFEST_REPO* and replace the *REPLACE_WITH_YOUR_TOKEN_VALUE* with the value you copy-pasted before.
+
+* Click on *Commit Changes*
+
+* Now run this command to trigger the pipeline execution, *but before running it in the terminal, replace WORKSHOP_XX with your workshop number in lower case, for example workshop49 for user49.*
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/devsecops-pipeline.yaml && 
+sed 's/$USER/{user}/;s/$WORKSHOP_NUM/WORKSHOP_XX/' ~/devsecops-pipelinerun.yaml | oc apply -f - -n {user}-cicd
+----
+
+Let's review the content of the pipelineRun. These are the main parameters that are used by the pipeline tasks to deploy the application:
 
 [source,yaml,subs="+macros,attributes+"]
 ----
@@ -63,7 +129,7 @@ spec:
     - name: MANIFEST_FILE_PROD
       value: globex/overlays/prod/kustomization.yaml
     - name: MANIFEST_REPO
-      value: 'https://4fdb9ba7a4dbf754b9f06b744f06510874282bd1@gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops'
+      value: 'https://REPLACE_WITH_YOUR_TOKEN_VALUE@gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops'
     - name: MANIFEST_REPO_NAME
       value: $USER/gitops
     - name: COMMIT_SHA
@@ -107,13 +173,23 @@ spec:
       name: maven-settings
 ----
 
-This will take you to a diagram with the last pipeline execution. Let's now examine the different steps, and focus on the tasks that provide an extra layer of security.
+* Let's observe the pipeline running. *Open the openshift URL, click on pipelines, then select PipelineRuns*
+
+This will take you to a diagram with the last pipeline execution. Let's now examine the different steps, and focus on the tasks that provide an extra layer of security. In you want more details, you can click on each task to see the logs.
 
 image::/devsecops/pipeline-group1.png[]
 
 In the early stages of the pipeline, we do a traditional source clone, then we verify the code using SonarQube.
 
-Now, in the next stages, this is where we have implemented additional security layers that will be detailed below.
+You can access your SonarQube instance to check the project using this URL:
+https://sonarqube-{user}-cicd.{openshift_cluster_ingress_domain}/projects
+
+* You should be able to see your project
+
+image::/devsecops/sonarqube-project.png[]
+
+
+* Go back to the pipelineRun view in OpenShift. Now, in the next stages, this is where we have implemented additional security layers that will be detailed below.
 
 image::/devsecops/pipeline-group2.png[]
 

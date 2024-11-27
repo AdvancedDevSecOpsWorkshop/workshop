@@ -76,6 +76,9 @@ installing the application in Argo CD's `default` project (`.spec.project`).
   correct resources that deviate from the definition stored in the repo, i.e
   manual changes made using `oc` or `kubectl` will not be "healed".
 
+
+OpenShift GitOps monitors your dedicated namespace {user}-argocd, where creating a resource of type *Application* creates an application in OpenShift GitOps.
+
 You will create an Application by slightly modifying the provided example inline
 using the command below.
 
@@ -103,11 +106,16 @@ Let's then deploy the application to the {user}-prod environment:
 sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-prod.yaml | oc apply -n {user}-argocd -f -
 ----
 
+Now let's login to OpenShift GitOps using this URL: https://argocd-server-gitops.{openshift_cluster_ingress_domain}
+
+You can also find the links by clicking on the mosaic icon on the top-right of the openshift console:
+
+image::devsecops/mosaic-links.png[ConsoleLinks]
 
 The newly created Applications appears as a tile with the title `bgd-app` in the
 Argo CD UI.
 
-image::gitops-apps/coolstore-app.png[SampleApp]
+image::devsecops/coolstore-app.png[SampleApp]
 
 Clicking on this tile takes you to the application details page. You may see it
 as still progressing or fully synced.
@@ -115,7 +123,7 @@ as still progressing or fully synced.
 image::gitops-apps/coolstore-app2.png[SampleApp]
 
 At this point the application should be up and running. Verify that the
-resources were created:
+resources were created by running this command in the right-side terminal:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
@@ -215,12 +223,12 @@ image::gitops-apps/coolstore-manual-sync.png[Manually Sync the application]
 After the sync process is done, the Argo CD UI should mark the application as in
 sync.
 
-Or, as in our case, after the fact by running the following command:
+You can also disable the Self-healing behavior by patching the application with this command:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-oc patch application/coolstore-app -n {user}-argocd --type=merge -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":true}}}}'
+oc patch application/coolstore-app-dev -n {user}-argocd --type=merge -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":false}}}}'
 ----
 
 [#helm]
@@ -280,8 +288,7 @@ command rather than `helm install`.
 === Deploying Application with Helm
 
 In this section we will explore the chart that we will be deploying into the cluster using GitOps.
-This chart will be used to deploy the same application we did previously with Kustomize. We will work
-with a chart in the
+This chart will be used to deploy the devsecops pipeline that will be used with the applications we did previously. We will work with a chart in the
 `content/modules/ROOT/files/gitops/helm/globex-ui` directory within the
 repository you cloned.
 
