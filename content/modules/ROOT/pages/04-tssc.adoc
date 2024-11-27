@@ -360,7 +360,28 @@ A common pattern when deploying an application to multiple environments is to ha
     |_dev: specific values that will override the ones in the base for the "dev" environment
     |_prod: specific values that will override the ones in the base for the "prod" environment
 
-Select the "app-dev" application in the main page to access the details.
+
+Let's deploy these applications to two namespaces, {user}-dev and {user}-prod
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/web-nodejs-dev.yaml && 
+sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
+----
+
+and now let's deploy the application in the {user}-prod namespace:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/web-nodejs-prod.yaml && 
+sed 's/$USER/{user}/' ~/web-nodejs-prod.yaml | oc create -f - -n {user}-argocd
+----
+
+We can verify that the applications have been created in OpenShift GitOps by checking the application tiles.
+
+* Go to OpenShift Gitops and select the "app-dev" application in the main page to access the details.
 
 * On the top-left side, click on *"App details"* to access the information about the application, such as the git repository, the branch where the files are located, the target cluster and namespace where the application is deployed, etc.
 
