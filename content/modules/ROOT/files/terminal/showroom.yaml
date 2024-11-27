@@ -1,0 +1,142 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: showroom
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: showroom
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: showroom
+    spec:
+      restartPolicy: Always
+      serviceAccountName: showroom
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30
+      securityContext: {}
+      containers:
+        - resources: {}
+          terminationMessagePath: /dev/termination-log
+          name: nginx
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+          ports:
+            - name: web
+              containerPort: 8080
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: content
+              mountPath: /data/www
+            - name: nginx-cache
+              mountPath: /var/cache/nginx
+            - name: nginx-pid
+              mountPath: /var/run
+          terminationMessagePolicy: File
+          image: 'quay.io/rhpds/nginx:1.25'
+        - resources: {}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8000
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          terminationMessagePath: /dev/termination-log
+          name: content
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 8000
+              scheme: HTTP
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: GIT_REPO_URL
+              value: 'https://github.com/AdvancedDevSecOpsWorkshop/workshop.git'
+            - name: GIT_REPO_REF
+              value: main
+            - name: ANTORA_PLAYBOOK
+              value: default-site.yml
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: user-data
+              mountPath: /user_data/
+            - name: showroom
+              mountPath: /showroom/
+          terminationMessagePolicy: File
+          image: 'ghcr.io/rhpds/showroom-content:latest'
+        - resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 50m
+              memory: 256Mi
+          terminationMessagePath: /dev/termination-log
+          name: terminal
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: GUID
+              value: 424xp
+          ports:
+            - containerPort: 7681
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: terminal-lab-user-home
+              mountPath: /home/lab-user
+          terminationMessagePolicy: File
+          image: 'quay.io/rhpds/openshift-showroom-terminal-ocp:latest'
+      serviceAccount: showroom
+      volumes:
+        - name: terminal-lab-user-home
+          persistentVolumeClaim:
+            claimName: showroom-terminal-lab-user-home
+        - name: showroom
+          emptyDir: {}
+        - name: user-data
+          configMap:
+            name: showroom-userdata
+            defaultMode: 420
+        - name: content
+          configMap:
+            name: showroom-index
+            defaultMode: 420
+        - name: nginx-config
+          configMap:
+            name: showroom-proxy-config
+            defaultMode: 420
+        - name: nginx-pid
+          emptyDir: {}
+        - name: nginx-cache
+          emptyDir: {}
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%
+  revisionHistoryLimit: 10
+  progressDeadlineSeconds: 600
