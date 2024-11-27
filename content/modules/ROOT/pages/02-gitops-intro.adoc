@@ -92,7 +92,7 @@ Now let's first deploy the application to the {user}-dev environment:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops-dev.yaml | oc apply -n {user}-argocd -f -
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-dev.yaml | oc apply -n {user}-argocd -f -
 ----
 
 Let's then deploy the application to the {user}-prod environment:
@@ -100,7 +100,7 @@ Let's then deploy the application to the {user}-prod environment:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/files/gitops/coolstore-gitops-prod.yaml | oc apply -n {user}-argocd -f -
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-prod.yaml | oc apply -n {user}-argocd -f -
 ----
 
 
