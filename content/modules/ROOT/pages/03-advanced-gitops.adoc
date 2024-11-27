@@ -73,7 +73,7 @@ to provide users in the `developers` group with limited access to the Argo CD Pr
 [NOTE]
 It is uncommon for developers to have any access to the cluster scoped instance which is typically managed by the platform
 team, we are providing it here for illustrative purposes. In situations where it is beneficial for high performing
-developer teams to have limited access typically that access would be limited to Applications that are specific
+developer teams to have access typically that access would be limited to Applications that are specific
 to that team. (i.e. user1 could only see the user1 application, etc)
 
 Select the app for your particular user called `{user}`. Depending on the number of users attending the workshop there
