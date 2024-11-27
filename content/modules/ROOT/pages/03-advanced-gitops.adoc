@@ -117,7 +117,7 @@ team responsibilities around deploying applications.
 While technically a single Argo CD instance can be used for both cluster configuration and developer deployments
 by leveraging Argo CD RBAC, it is recommended that these use cases be in separate instances to minimize the possibilities
 of privilege escalation. Privilege escalation can occur if there is a hole in the Argo CD RBAC configuration enabling
-a developer team member to leverage the higher kubernetes permissions a cluster configuration GitOps instance would have,
+a developer team member to leverage the higher kubernetes permissions a cluster configuration GitOps instance would have.
 
 Login into the Shared GitOps instance by using the link in the OpenShift application menu:
 
@@ -158,9 +158,9 @@ commands:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-export ARGOCD_AUTH_TOKEN=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_AUTH_TOKEN}" | base64 -d)
-export ARGOCD_SERVER=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_SERVER}" | base64 -d)
-export ARGOCD_USERNAME=$(oc get secret argocd-cli -n user1-argocd -o jsonpath="{.data.ARGOCD_USERNAME}" | base64 -d)
+export ARGOCD_AUTH_TOKEN=$(oc get secret argocd-cli -n {user}-argocd -o jsonpath="{.data.ARGOCD_AUTH_TOKEN}" | base64 -d)
+export ARGOCD_SERVER=$(oc get secret argocd-cli -n {user}-argocd -o jsonpath="{.data.ARGOCD_SERVER}" | base64 -d)
+export ARGOCD_USERNAME=$(oc get secret argocd-cli -n {user}-argocd -o jsonpath="{.data.ARGOCD_USERNAME}" | base64 -d)
 alias argocd='f(){ argocd "$@" --grpc-web;  unset -f f; }; f'
 ----
 
