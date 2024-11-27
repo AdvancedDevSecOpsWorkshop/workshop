@@ -78,7 +78,7 @@ image::ocp-app/serverless_serving.png[width=100%]
 - *Inventory*: A Java-based application built with Quarkus that provides the inventory information for each specific product. The data is shown in the UI as to how much quantity is available on each product.
 - *Catalog*: A Java-based application built with Spring Boot that connects with the Catalog Database to provide all the catalog information. The catalog data will not be visible in the UI without this service.
 
-[building_a_serverless_application_with_the_openshift_application_platform]
+[#building_a_serverless_application_with_the_openshift_application_platform]
 == Building a Serverless application with the OpenShift Application Platform
 
 === Access the OpenShift Web Console
@@ -216,7 +216,7 @@ https://github.com/OpenShiftDemos/web-nodejs.git
 ----
 +
 
-*Note*: Ignore the error "Danger alert: Import is not possible." You will be updating the Builder Option.
+*Note*: Ignore the error "Danger alert: Import is not possible." You will be updating the Builder Option.SECURE_COOLSTORE_GW_ENDPOINT
 
 5. Edit *Import Strategy* and select *Builder Image* (keep Node.js and Builder Image version: 18-ubi8)
 6. On Deploy -> Resource Type, select *Serverless Deployment*
