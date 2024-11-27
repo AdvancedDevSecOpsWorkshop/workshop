@@ -31,7 +31,7 @@ Before we do that, let's setup the repositories in gitea that will be used by th
 
 == Login to gitea to import the repositories
 
-* In a new tab, open Gitea's URL: https://gitea.{openshift_cluster_ingress_domain}
+* In a new tab, open Gitea's URL: https://gitea-gitea.{openshift_cluster_ingress_domain}
 
 * Login using the provided credentials: username: *{user}*, password: *openshift*.
 
@@ -318,7 +318,7 @@ image::/devsecops/pipeline-group-4.png[]
 
 * *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a standard approach when using tools like OpenShift GitOps. Let's have a look at the yaml file in Gitea.
 
-* In a new tab, open Gitea's URL: https://gitea.{openshift_cluster_ingress_domain}
+* In a new tab, open Gitea's URL: https://gitea-gitea.{openshift_cluster_ingress_domain}
 
 * Login using the provided credentials: username: *{user}*, password: *openshift*.
 
