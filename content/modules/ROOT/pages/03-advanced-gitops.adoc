@@ -76,7 +76,7 @@ team, we are providing it here for illustrative purposes. In situations where it
 developer teams to have limited access typically that access would be limited to Applications that are specific
 to that team. (i.e. user1 could only see the user1 application, etc)
 
-Select the app for your particular user called `user{user}`. Depending on the number of users attending the workshop there
+Select the app for your particular user called `{user}`. Depending on the number of users attending the workshop there
 could be a lot of Applications, you can find your application by using the filter bar:
 
 image::gitops/argocd-filter.png[]
@@ -90,7 +90,7 @@ image::gitops/cluster-argocd-user-app.png[]
 
 You can view the groups associated with your logged in user by clicking on the user button.
 
-[Todo]Insert screenshot here
+image::gitops/argocd-user-groups.png[]
 
 Note the `developers` group that is shown along with the user specific team, `teamX`, that your user is associated with. In our scenario user1 is on
 team 1, user2 on team2, etc. The `developers` group is a generic group that all of the application developers belong to.
