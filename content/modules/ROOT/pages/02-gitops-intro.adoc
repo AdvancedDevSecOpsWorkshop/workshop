@@ -424,7 +424,7 @@ Apply the configuration in the file to create the Argo CD Application in the nam
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app.yaml |  oc apply -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app.yaml |  oc create -f - -n {user}-argocd
 ----
 
 In the ArgoCD interface you should see the successful deployment of the "pipeline-helm" application.

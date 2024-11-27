@@ -1,4 +1,4 @@
-apiVersion: tekton.dev/v1beta1
+apiVersion: tekton.dev/v1
 kind: Pipeline
 metadata:
   name: app-globex-ui-pipeline
@@ -74,12 +74,12 @@ spec:
     - name: repository
       workspace: shared-data
   - name: build-sign-image
-    retries: 1
     params:
     - name: IMAGE
       value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
     - name: COMMIT_SHA
       value: $(params.COMMIT_SHA)
+    retries: 1
     runAfter:
     - scan-source
     taskRef:
@@ -149,31 +149,14 @@ spec:
     taskRef:
       kind: Task
       name: update-manifest
-  - name: acs-deploy-check
-    params:
-      - name: rox_central_endpoint
-        value: roxsecrets
-      - name: rox_api_token
-        value: roxsecrets
-      - name: gitRepositoryUrl
-        value: $(params.MANIFEST_REPO)
-      - name: gitRepositoryRevision
-        value: main
-      - name: insecure-skip-tls-verify
-        value: 'true'
-    runAfter:
-      - update-dev-manifest
-    taskRef:
-      kind: Task
-      name: acs-deploy-check
   - name: verify-tlog-signature
     params:
-      - name: registrySecret
-        value: quay
-      - name: cosignSecret
-        value: cosign-secret
-      - name: image
-        value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
+    - name: registrySecret
+      value: quay
+    - name: cosignSecret
+      value: cosign-secret
+    - name: image
+      value: $(params.IMAGE_REPO):$(params.IMAGE_TAG)
     runAfter:
     - update-dev-manifest
     taskRef:
@@ -192,8 +175,8 @@ spec:
     - name: target-branch
       value: feature-for-$(params.COMMIT_SHA)
     runAfter:
-    - acs-deploy-check
     - verify-tlog-signature
+    - update-dev-manifest
     taskRef:
       kind: Task
       name: pr-manifest

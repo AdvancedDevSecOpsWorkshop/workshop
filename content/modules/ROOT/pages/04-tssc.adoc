@@ -90,7 +90,9 @@ We see that the pipeline hasn't been run yet, so let's trigger it using a "pipel
 
 image::/devsecops/gitea-workshop-repo.png[]
 
-* Navigate to the file *content/module/ROOT/examples/devsecops-pipelinerun.yaml* and click on edit (the pen on the right side) to make changes. In the *params* section, look for *MANIFEST_REPO* and replace the *REPLACE_WITH_YOUR_TOKEN_VALUE* with the value you copy-pasted before.
+* Navigate to the file *content/module/ROOT/examples/devsecops-pipelinerun.yaml* and click on edit (the pen on the right side) to make these changes: 
+- In the *params* section, look for *MANIFEST_REPO* and replace the *REPLACE_WITH_YOUR_TOKEN_VALUE* with the value you copy-pasted before.
+- Look for *IMAGE_REPO* and in its value, replace $WORKSHOP_NUM with your workshop id, for example workshop1 if you are user1.
 
 * Click on *Commit Changes*
 
@@ -99,8 +101,8 @@ image::/devsecops/gitea-workshop-repo.png[]
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/devsecops-pipeline.yaml && 
-sed 's/$USER/{user}/;s/$WORKSHOP_NUM/WORKSHOP_XX/' ~/devsecops-pipelinerun.yaml | oc apply -f - -n {user}-cicd
+cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/devsecops-pipelinerun.yaml && 
+sed 's/$USER/{user}/' ~/devsecops-pipelinerun.yaml | oc apply -f - -n {user}-cicd
 ----
 
 Here's a look at the content of the pipelineRun used to trigger the pipeline. These are the main parameters that are used by the pipeline tasks to deploy the application:
