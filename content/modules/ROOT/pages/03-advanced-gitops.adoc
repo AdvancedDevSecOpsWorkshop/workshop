@@ -142,13 +142,13 @@ To understand this, we are going to look at this and Argo CD RBAC in more depth 
 
 === Argo CD CLI
 
-We wil use the ArgoCD CLI to explore the Shared GitOps in more detail. A secret has been pre-created in the `user{user}-argocd`
+We wil use the ArgoCD CLI to explore the Shared GitOps in more detail. A secret has been pre-created in the `{user}-argocd`
 namespace called `argocd-cli` that provides the credentials needed to login into Argo CD.
 
 [NOTE]
 Normally when using Argo CD with OIDC the login would be done with using the `--sso` switch
 which starts up a local web server to handle the OIDC callback on localhost. However since
-our terminal is running in a pod in OpenShift this is not possible. Therefore a local account, `user{user}-cli`, has been pre-created
+our terminal is running in a pod in OpenShift this is not possible. Therefore a local account, `{user}-cli`, has been pre-created
 with identical permissions to the SSO user. Normally local accounts in Argo CD should only
 be used for automation not for users.
 
