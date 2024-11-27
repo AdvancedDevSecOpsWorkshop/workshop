@@ -95,14 +95,15 @@ image::/devsecops/gitea-workshop-repo.png[]
 * Click on *Commit Changes*
 
 * Now run this command to trigger the pipeline execution, *but before running it in the terminal, replace WORKSHOP_XX with your workshop number in lower case, for example workshop49 for user49.*
+
 [.console-input]
-[source,bash,subs="attributes+,+macros"]
+[source,sh,subs="attributes",role=execute]
 ----
 cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/devsecops-pipeline.yaml && 
 sed 's/$USER/{user}/;s/$WORKSHOP_NUM/WORKSHOP_XX/' ~/devsecops-pipelinerun.yaml | oc apply -f - -n {user}-cicd
 ----
 
-Let's review the content of the pipelineRun. These are the main parameters that are used by the pipeline tasks to deploy the application:
+Here's a look at the content of the pipelineRun used to trigger the pipeline. These are the main parameters that are used by the pipeline tasks to deploy the application:
 
 [source,yaml,subs="+macros,attributes+"]
 ----

@@ -21,7 +21,7 @@ spec:
     - name: MANIFEST_FILE_PROD
       value: globex/overlays/prod/kustomization.yaml
     - name: MANIFEST_REPO
-      value: 'https://4fdb9ba7a4dbf754b9f06b744f06510874282bd1@gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops'
+      value: 'https://REPLACE_WITH_YOUR_TOKEN_VALUE@gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops'
     - name: MANIFEST_REPO_NAME
       value: $USER/gitops
     - name: COMMIT_SHA
