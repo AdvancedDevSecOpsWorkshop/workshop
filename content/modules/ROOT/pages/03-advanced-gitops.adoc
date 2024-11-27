@@ -205,7 +205,7 @@ Various details of the Application are shown including a list of resources that 
 Name:               {user}-argocd/dev-tools
 Project:            {user}
 Server:             in-cluster
-Namespace:          user{user}-cicd
+Namespace:          {user}-cicd
 URL:                https://argocd-server-gitops.apps.cluster-wvcx7.sandbox1429.opentlc.com/applications/dev-tools
 Source:
 - Repo:             https://github.com/AdvancedDevSecOpsWorkshop/bootstrap.git
@@ -476,9 +476,10 @@ FATA[0000] rpc error: code = PermissionDenied desc = permission denied: projects
 
 As expected we were denied permission to delete the Project. Again as a reminder the Argo RBAC is only used when you interact with
 Argo CD via its UI or CLI. If you have permissions on the `AppProject` kind in the Argo CD namespace you could delete the resource
-with `oc delete appproject user1 -n gitops` and the Argo CD RBAC would never be checked,
+with `oc delete appproject {user} -n gitops` and the Argo CD RBAC would never be checked,
 
-This is a challenge when you want to give users the ability to declaratively manage Applications instead of managing them with the UI or CLI, fortunately
+This inability to let users interact with resources in the Argo CD namespace is a challenge when you want to give users the ability to
+declaratively manage Applications instead of managing them imperatively via the UI or CLI, fortunately
 Argo CD has you covered as we will see in the next module.
 
 === Apps in Any Namespace
@@ -547,7 +548,9 @@ is amenable to wildcards.
 
 [NOTE]
 The intent of this recommendation is so that this field can be set once and not need to be constantly
-updated as new tenants and users are on-boarded into the Shared instance.
+updated as new tenants and users are on-boarded into the Shared instance. For example, avoid using
+`*-gitops` as your naming convention since this wildcard would also pickup the `openshift-gitops`
+namespace.
 
 The second place to configure `sourceNamespaces` is in the Argo CD Project. This determines which
 namespaces, and correspondingly the Applications in that namespace, are associated with which Project.
