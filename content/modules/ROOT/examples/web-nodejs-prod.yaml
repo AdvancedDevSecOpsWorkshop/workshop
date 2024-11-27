@@ -1,0 +1,17 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-prod
+  namespace: $USER-argocd
+spec:
+  destination:
+    name: in-cluster
+    namespace: $USER-prod
+  project: $USER
+  source:
+    path: globex/overlays/prod
+    repoURL: 'https://gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops.git'
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true

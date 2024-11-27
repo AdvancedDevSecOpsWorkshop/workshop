@@ -35,7 +35,7 @@ Before we do that, let's setup the repositories in gitea that will be used by th
 
 * Login using the provided credentials: username: *{user}*, password: *openshift*.
 
-Once you're logged in, you'll need to migrate 2 repositories in your gitea.
+Once you're logged in, you'll need to migrate 3 repositories in your gitea.
 
 * On the top-right toolbar, click on '+' then select *New migration* as seen in the screenshot below:
 
@@ -56,6 +56,15 @@ https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
 ----
 https://github.com/OpenShiftDemos/web-nodejs.git
 ----
+
+* Repeat the same procedure to import this other repository: 
+
+[.console-input]
+[source,bash,subs="+attributes",role=execute]
+----
+https://github.com/AdvancedDevSecOpsWorkshop/gitops.git
+----
+
 
 == Create an API token in gitea
 We need to create an API token that will be used for the pipeline execution, be sure to copy-paste the token value once it's generated.
@@ -102,7 +111,7 @@ image::/devsecops/gitea-workshop-repo.png[]
 [source,sh,subs="attributes",role=execute]
 ----
 cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/devsecops-pipelinerun.yaml && 
-sed 's/$USER/{user}/' ~/devsecops-pipelinerun.yaml | oc apply -f - -n {user}-cicd
+sed 's/$USER/{user}/' ~/devsecops-pipelinerun.yaml | oc create -f - -n {user}-cicd
 ----
 
 Here's a look at the content of the pipelineRun used to trigger the pipeline. These are the main parameters that are used by the pipeline tasks to deploy the application:
