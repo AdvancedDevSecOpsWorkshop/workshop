@@ -186,7 +186,7 @@ The following output will be provided showing the application name, the sync and
 [source,bash,subs="attributes+,+macros"]
 ----
 NAME                    CLUSTER     NAMESPACE   PROJECT  STATUS  HEALTH   SYNCPOLICY  CONDITIONS  REPO                                                        PATH                              TARGET
-user1-argocd/dev-tools  in-cluster  user1-cicd  user1    Synced  Healthy  Auto        <none>      https://github.com/AdvancedDevSecOpsWorkshop/bootstrap.git  infra/dev-tools/overlays/default  HEAD
+{user}-argocd/dev-tools  in-cluster  {user}-cicd  {user}    Synced  Healthy  Auto        <none>      https://github.com/AdvancedDevSecOpsWorkshop/bootstrap.git  infra/dev-tools/overlays/default  HEAD
 ----
 
 A detailed view of the Application can be retrieved by using the `get` command:
@@ -194,7 +194,7 @@ A detailed view of the Application can be retrieved by using the `get` command:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-argocd app get user{user}-argocd/dev-tools
+argocd app get {user}-argocd/dev-tools
 ----
 
 Various details of the Application are shown including a list of resources that the application is managing and their associated statuses.
@@ -252,7 +252,7 @@ documentation, an Argo CD Project can:
 * defining project roles to provide application RBAC (bound to OIDC groups and/or JWT tokens)
 
 [IMPORTANT]
-Argo CD includes a `default` project when it is installed, it is strongly recommend that this never be used and administrators create
+Argo CD includes a `default` project when it is installed, it is strongly recommended that this never be used and administrators create
 Projects as needed to support their specific use cases.
 
 In our Shared GitOps instance each workshop team, and thus user, has their own Project to manage access and restrictions for their Applications. To
@@ -308,7 +308,15 @@ Signature keys:              <none>
 Orphaned Resources:          disabled
 ----
 
-Some resources, such as clusters and repositories, can be scoped globally or at a Project level. Scoping resources
+Notice that your user's Applications are limited to deploying to a specific set of namespaces, the `{user}-*` namespaces.
+This limitation on destinations ensures that Applications in this Project cannot deploy resources to other namespaces
+even though the underlying Argo CD application-controller has permissions to do so.
+
+Also note that we are denying access to some types of resources. All cluster scoped resources, i.e. resources without a namespace,
+are denied. Also note that we are denying access to specific namespace scoped resources such as ResourceQuota and LimitRange because
+it is the purview of the platform team to manage these resources.
+
+Finally some Argo CD resources, such as clusters and repositories, can be scoped globally or at a Project level. Scoping resources
 at a Project level can be useful in cases where the Argo CD administrator would like to enable self-service
 for application teams. In this workshop these resources are defined globally however if you would like to learn
 more about this capability the Argo CD documentation covers this topic in depth.
@@ -319,7 +327,7 @@ link:https://argo-cd.readthedocs.io/en/stable/user-guide/projects/#project-scope
 
 Argo CD has it's own Role Based Access Control (RBAC) that is separate and distinct from Kubernetes RBAC. When users interact
 with Argo CD via the Argo CD UI, CLI or API the Argo CD RBAC is enforced. If users interact with Argo CD resources directly
-using the OpenShift Console or kubectl/oc then only the Kubernetes RBAC is used.
+using the OpenShift Console or `kubectl`/`oc` then only the Kubernetes RBAC is used.
 
 Additionally the application-controller in Argo CD, as shown previously in the GitOps Architecture, interacts with the
 Kubernetes API and is governed by Kubernetes RBAC. Argo CD can only deploy and manage the Kubernetes resources that
@@ -336,7 +344,7 @@ two roles out of the box:
 * role:readonly - provides read-only access to all resources
 * role:admin - allows unrestricted access to all resources
 
-Roles and permissions can be defined in two places, globally and on a per Project basis. It is recommended that tenant
+Roles and permissions can be defined in two places, globally and on a per Project basis. It is strongly recommended that tenant
 roles and permissions be defined in the Project and global roles be reserved for Argo CD administrators and managing
 globally scoped resources.
 
@@ -389,7 +397,7 @@ argocd proj role list {user}
 [source,bash,subs="attributes+,+macros"]
 ----
 ROLE-NAME  DESCRIPTION
-admin      Team1 admins
+admin      TeamX admins
 pipeline   Pipeline accounts
 ----
 
@@ -397,7 +405,7 @@ This shows that two roles are defined, `admin` and `pipeline`. The `admin` role 
 users who will administer Applications in this Project. The `pipeline` role is intended
 for automation tools and will be used by OpenShift Pipelines in a later module.
 
-Now look at the `admin` role:
+Now look at how the roles are defined:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
@@ -409,11 +417,11 @@ argocd proj role get {user} admin
 [source,bash,subs="attributes+,+macros"]
 ----
 Role Name:     admin
-Description:   Team1 admins
+Description:   TeamX admins
 Policies:
-p, proj:user1:admin, projects, get, {user}, allow
-p, proj:user1:admin, applications, *, {user}/*, allow
-p, proj:user1:admin, exec, create, {user}/*, allow
+p, proj:{user}:admin, projects, get, {user}, allow
+p, proj:{user}:admin, applications, *, {user}/*, allow
+p, proj:{user}:admin, exec, create, {user}/*, allow
 g, team1, proj:{user}:admin
 g, user1-cli, proj:{user}:admin
 p, proj:{user}:pipeline, projects, get, {user}, allow
@@ -430,21 +438,21 @@ image::gitops/argocd-policy.png[]
 1. The letter `p` indicates that a policy is being defined, this is how we assign
 permissions to roles.
 2. Next is the role this policy will be part of. In this case
-it is the `admin` role which is scoped to Project `user1`.
+it is the `admin` role which is scoped to Project `{user}`.
 3. Then the resource type for which we are giving permissions to, in this case `projects`. Various
 Argo CD resource types are supported including `applications`, `clusters`, and
 link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[more, window="_blank"].
 4. After resource we define the actions for the policy, in this case a single action of `get`. Many
 different link:https://argo-cd.readthedocs.io/en/stable/operator-manual/rbac/#rbac-resources-and-actions[actions, window="_blank"]
 are available. A wildcard of `*` can be used which indicates all actions.
-5. Next is the specific Argo CD resource, this can be a wildcard like `*` for all resources or a named resource such as `user1` in this case
-indicating the `user1` Project. For resources like Applications that are scoped to Projects a notation of
+5. Next is the specific Argo CD resource, this can be a wildcard like `*` for all resources or a named resource such as `{user}` in this case
+indicating the `{user}` Project. For resources like Applications that are scoped to Projects a notation of
 `<Project>/<Application>` can be used as shown in subsequent lines.
 6. Finally whether we `allow` or `deny` the permission.
 
 Once we have defined our role via policies we can then assign the policy to a group, this is indicated
-by a `g` at the start of the line. For example, the line `g, team1, proj:user1:admin` indicates we
-are assigning the project scoped role `admin` to the group `team1`.
+by a `g` at the start of the line. For example, the line `g, teamX, proj:{user}:admin` indicates we
+are assigning the project scoped role `admin` to the group `teamX`.
 
 Note that what is considered a `group` for matching purposes is controlled by the `scope` that was
 reviewed earlier. While `groups` is the most commonly set scope, having scopes like `email`
