@@ -9,7 +9,7 @@ assumes you have some familiarity with Argo CD.
 In this module we will deploy the Coolstore Application followed by the Pipeline using a GitOps methodology.
 
 GitOps is the process that is used to deploy and manage cluster configuration and application deployments. In GitOps, git
-as the source of truth and the GitOps engine, OpenShift GitOps, reconciles what is stored in git with the state of the cluster.
+is the source of truth and the GitOps engine, OpenShift GitOps, reconciles what is stored in git with the state of the cluster.
 This process is two-way, changes to git can be automatically reconciled to the cluster and direct, manual changes in the cluster
 can be automatically reverted back to what is in git.
 
@@ -28,8 +28,7 @@ In this section we will cover the basics of deploying an application with argocd
 
 We will deploy the same coolstore application as previously, but this time we will do that using a GitOps approach.
 
-We want to deploy that application to two namespaces: a "development" environment and a production environement, that we will later on update using the DevSecOps pipeline.
-
+We want to deploy that application to two namespaces: a "development" environment and a production environment, that we will later on update using the DevSecOps pipeline.
 
 === Deploy Application with Manifests
 
@@ -83,7 +82,15 @@ OpenShift GitOps monitors your dedicated namespace {user}-argocd, where creating
 You will create an Application by slightly modifying the provided example inline
 using the command below.
 
-Let's first deploy the application to the {user}-dev environment:
+Before deploying the application, ensure you are in your user's home directory:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+cd ~
+----
+
+Now let's first deploy the application to the {user}-dev environment:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
