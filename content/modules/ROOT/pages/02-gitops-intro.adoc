@@ -185,9 +185,7 @@ you will get an _Application not available_ error. Do you know why that is?
 
 === Addressing Configuration Drift
 
-Let's introduce a change in the application environment! Patch the live
-Deployment manifest to change the color of the bubbles in the application from
-blue to green:
+Let's introduce a change in the application environment! We will scale up the replicas, and see how OpenShift GitOps manages the drift in that case.
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
@@ -271,7 +269,7 @@ This should display the version, it should look something like this.
 {v3.9.0+3.el8+ge09b16a}
 ----
 
-Helm as a package manager can be used to install a Helm chart into a kubernetes cluster
+Helm is a package manager that can be used to install a Helm chart into a kubernetes cluster
 and can then manage the lifecycle of the application including upgrades and uninstalling the
 application. However Helm can also render the chart as pure yaml without installing the
 application in a cluster.
