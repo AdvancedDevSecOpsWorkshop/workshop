@@ -105,7 +105,7 @@ image::/devsecops/gitea-workshop-repo.png[]
 
 * Click on *Commit Changes*
 
-* Now run this command to trigger the pipeline execution, *but before running it in the terminal, replace WORKSHOP_XX with your workshop number in lower case, for example workshop49 for user49.*
+* Now run this command to trigger the pipeline execution:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
@@ -193,7 +193,7 @@ image::/devsecops/pipeline-group1.png[]
 
 In the early stages of the pipeline, we do a traditional source clone, then we verify the code using SonarQube.
 
-You can access your SonarQube instance to check the project using this URL:
+You can access your SonarQube instance to check the project using this URL below. If it's unresponsive just wait a bit longer and refresh, because sonarqube needs the projects to be created first:
 https://sonarqube-{user}-cicd.{openshift_cluster_ingress_domain}/projects
 
 * You should be able to see your project
@@ -386,9 +386,9 @@ We can verify that the applications have been created in OpenShift GitOps by che
 * On the top-left side, click on *"App details"* to access the information about the application, such as the git repository, the branch where the files are located, the target cluster and namespace where the application is deployed, etc.
 
 If we pay closer attention, there are 3 items worth mentioning to understand the multi-environment management:
-- REPO_URL: the git repository where our the resources we want to deploy are defined
-- TARGET REVISION: the branch to use
-- PATH: the folder that contains the specific values for that environment. Here for example, for the "DEV" environment, we use the file located in "globex/overlays/dev".
+* REPO_URL: the git repository where our the resources we want to deploy are defined
+* TARGET REVISION: the branch to use
+* PATH: the folder that contains the specific values for that environment. Here for example, for the "DEV" environment, we use the file located in "globex/overlays/dev".
 
 You can see more details by opening the "gitops" repository in gitea, and navigating to "globex" folder. 
 
