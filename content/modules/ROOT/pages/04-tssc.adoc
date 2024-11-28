@@ -14,7 +14,7 @@ Let's examine all the components involved in such a DevSecOps pipeline to deploy
 
 In this section, we will have a look at the end-to-end DevSecOps pipeline and explore the security gates that are provided in it.
 
-* Login to the openshift console using user *{user}* and password *{password}* using this URL: https://{openshift_console_url}
+* Login to the openshift console using user *{user}* and password *{password}* using this URL: {openshift_console_url}
 
 * In the openshift console left menu, Select the Administrator View, then click on *Pipelines -> Pipelines*, select Project *"{user}-cicd"*, as shown in the screenshot below.
 
@@ -101,7 +101,7 @@ image::/devsecops/gitea-workshop-repo.png[]
 
 * Navigate to the file *content/module/ROOT/examples/devsecops-pipelinerun.yaml* and click on edit (the pen on the right side) to make these changes: 
 - In the *params* section, look for *MANIFEST_REPO* and replace the *REPLACE_WITH_YOUR_TOKEN_VALUE* with the value you copy-pasted before.
-- Look for *IMAGE_REPO* and in its value, replace $WORKSHOP_NUM with your workshop id, for example workshop1 if you are user1.
+- Look for *IMAGE_REPO* and in its value, *replace $WORKSHOP_NUM with your workshop id, for example workshop1 if you are user1.*
 
 * Click on *Commit Changes*
 
@@ -417,7 +417,7 @@ image::/devsecops/gitea-merge-changes.png[]
 
 * Close the application details window, and explore the application page to see all the kubernetes resources that are deployed by OpenShift GitOps to the target cluster / namespace, such as the deployments, the services, etc.
 
-* Let's see the same resources deployed in the application namespace *{user}-prod* with this URL: https://{openshift_console_url}/topology/ns/{user}-prod?view=graph
+* Let's see the same resources deployed in the application namespace *{user}-prod* with this URL: {openshift_console_url}/topology/ns/{user}-prod?view=graph
 
 * Let's open the application to verify that it is running as expected: 
 

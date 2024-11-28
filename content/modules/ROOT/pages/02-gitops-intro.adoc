@@ -307,7 +307,7 @@ include::ROOT:example$globex-ui/Chart.yaml[]
 
 This file is the link:https://helm.sh/docs/topics/charts/#the-chartyaml-file[chart definition] which specifies name, version and other characteristics of the chart.
 
-.link:https://github.com/OpenShiftDemos/openshift-gitops-workshop/blob/master/documentation/modules/ROOT/examples/bgd-helm-chart/values.yaml[values.yaml,window='_blank']
+.link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/files/gitops/helm/globex-ui/values.yaml[values.yaml,window='_blank']
 [source,yaml,subs="+macros,attributes+"]
 ----
 include::ROOT:example$globex-ui/values.yaml[]
@@ -429,7 +429,7 @@ In the ArgoCD interface you should see the successful deployment of the "pipelin
 
 image::gitops-helm/pipeline-helm-app.png[]
 
-Now click on the "bgd-helm" application. We will explore its deployment. You can tell by the icon that it's deployed via a Helm chart from a Git repository. Although you could deploy it through a Helm repository, we're using a Git repository for this demonstration.
+Now click on the "pipeline-helm" application. We will explore its deployment. You can tell by the icon that it's deployed via a Helm chart from a Git repository. Although you could deploy it through a Helm repository, we're using a Git repository for this demonstration.
 
 Access the application details by clicking on the "App Details" option.
 
