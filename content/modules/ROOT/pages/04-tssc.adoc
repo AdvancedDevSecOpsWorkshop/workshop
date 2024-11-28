@@ -386,9 +386,12 @@ We can verify that the applications have been created in OpenShift GitOps by che
 * On the top-left side, click on *"App details"* to access the information about the application, such as the git repository, the branch where the files are located, the target cluster and namespace where the application is deployed, etc.
 
 If we pay closer attention, there are 3 items worth mentioning to understand the multi-environment management:
-* REPO_URL: the git repository where our the resources we want to deploy are defined
-* TARGET REVISION: the branch to use
-* PATH: the folder that contains the specific values for that environment. Here for example, for the "DEV" environment, we use the file located in "globex/overlays/dev".
+
+* *REPO_URL:* the git repository where our the resources we want to deploy are defined
+
+* *TARGET REVISION:* the branch to use
+
+* *PATH:* the folder that contains the specific values for that environment. Here for example, for the "DEV" environment, we use the file located in "globex/overlays/dev".
 
 You can see more details by opening the "gitops" repository in gitea, and navigating to "globex" folder. 
 
