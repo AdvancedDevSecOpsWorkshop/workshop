@@ -26,3 +26,9 @@ runtime:
 
 output:
   dir: ./www
+
+antora:
+  extensions:
+    - id: dev-mode
+      require: ./content/lib/dev-mode.js
+      enabled: false
