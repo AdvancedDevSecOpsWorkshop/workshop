@@ -27,162 +27,38 @@ image::/devsecops/pipeline-view.png[width=100%]
 * From the left side menu, select Pipelines -> Pipelines. In the right-side window, select the "PipelineRuns" tab, we can see that the pipeline hasn't been run yet.
 
 
-Before we do that, let's setup the repositories in gitea that will be used by this pipeline to deploy the application using OpenShift GitOps.
+Before we do that, let's review the repositories in gitea that will be used by this pipeline to deploy the application using OpenShift GitOps.
 
-== Login to gitea to import the repositories
+== Login to gitea to review the repositories
 
 * In a new tab, open Gitea's URL: https://gitea-gitea.{openshift_cluster_ingress_domain}
 
-* Login using the provided credentials: username: *{user}*, password: *openshift*.
+* Login using Keycloak SSO:
 
-Once you're logged in, you'll need to migrate 3 repositories in your gitea.
+image::/devsecops/gitea-login-with-sso.png
 
-* On the top-right toolbar, click on '+' then select *New migration* as seen in the screenshot below:
+* Select the `Link Account` tab, do not `Register New Account`. Link the existing account to Keycloak using the provided credentials: username: *{user}*, password: *openshift*.
 
-image::/devsecops/gitea-new-migration.png[]
-
-* Select "GIT" option, and then input this URL in the *"Migrate/Clone from ULR"* input, then click *Migrate Repository*: 
-
-[.console-input]
-[source,bash,subs="+attributes",role=execute]
-----
-https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
-----
-
-* Repeat the same procedure to import this other repository: 
-
-[.console-input]
-[source,bash,subs="+attributes",role=execute]
-----
-https://github.com/OpenShiftDemos/web-nodejs.git
-----
-
-* Repeat the same procedure to import this other repository: 
-
-[.console-input]
-[source,bash,subs="+attributes",role=execute]
-----
-https://github.com/AdvancedDevSecOpsWorkshop/gitops.git
-----
+image:;/devsecops/gitea-link-account.png
 
 
-== Create an API token in gitea
-We need to create an API token that will be used for the pipeline execution, be sure to copy-paste the token value once it's generated.
 
-* On the top-right toolbar in gitea, click on your profile icon and select *Settings* as shown below:
 
-image::/devsecops/gitea-settings.png[]
-
-* Select *Applications*, then input *gitea-pull-token* in the name and unfold the *select permissions* section by selecting the triange:
-
-- in *Repository* select *Read and Write* as shown below
-
-image::/devsecops/gitea-generate-token.png[]
-
-* Click generate token and *copy-paste the token value in the terminal for later use* now, as you can't access it later. The token value is in the blue blox on the top of the screen, as shown below
-
-image::/devsecops/gitea-token-value.png[]
-
-*If you clicked too fast, just re-generate a new token following the previous steps and copy-paste the value.*
-
-We now need to create a secret using that token value, using the following command, *replace the token value here before executing the command*
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
-----
-oc create secret -n {user}-cicd generic gitea-pull-token --from-literal=token=REPLACE_WITH_YOUR_TOKEN_VALUE
-----
+== Start the Pipeline
 
 We see that the pipeline hasn't been run yet, so let's trigger it using a "pipelineRun".
-
-* in Gitea, go back to the main page, and select the *workshop* repository on the right-side, as shown below
-
-image::/devsecops/gitea-workshop-repo.png[]
-
-* Navigate to the file *content/module/ROOT/examples/devsecops-pipelinerun.yaml* and click on edit (the pen on the right side) to make these changes: 
-- In the *params* section, look for *MANIFEST_REPO* and replace the *REPLACE_WITH_YOUR_TOKEN_VALUE* with the value you copy-pasted before.
-- Look for *IMAGE_REPO* and in its value, replace $WORKSHOP_NUM with your workshop id, for example workshop1 if you are user1.
-
-* Click on *Commit Changes*
-
-* Now run this command to trigger the pipeline execution, *but before running it in the terminal, replace WORKSHOP_XX with your workshop number in lower case, for example workshop49 for user49.*
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://gitea-gitea.{openshift_cluster_ingress_domain}/{user}/workshop/raw/branch/main/content/modules/ROOT/examples/devsecops-pipelinerun.yaml && 
-sed 's/$USER/{user}/' ~/devsecops-pipelinerun.yaml | oc create -f - -n {user}-cicd
+cat workshop/content/modules/ROOT/examples/devsecops-pipelinerun.yaml | sed 's/$USERNUM/workshop1/' | sed 's/$USER/user1/' | sed 's/$SUBDOMAIN/apps.cluster-gm7tc.gm7tc.sandbox2168.opentlc.com/' | oc create -f - -n {user}-cicd
 ----
 
 Here's a look at the content of the pipelineRun used to trigger the pipeline. These are the main parameters that are used by the pipeline tasks to deploy the application:
 
 [source,yaml,subs="+macros,attributes+"]
 ----
-apiVersion: tekton.dev/v1
-kind: PipelineRun
-metadata:
-  generateName: app-globex-ui-pipeline-
-spec:
-  params:
-    - name: REPO_HOST
-      value: gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com
-    - name: GIT_REPO
-      value: 'https://gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/web-nodejs.git'
-    - name: TLSVERIFY
-      value: 'false'
-    - name: BUILD_EXTRA_ARGS
-      value: $(tt.params.build_extra_args)
-    - name: IMAGE_REPO
-      value: registry-quay-quay-operator.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$WORKSHOP_NUM/globex-ui
-    - name: IMAGE_TAG
-      value: main-b183894cabd3eebaa5844143d5ac60dc9863fb57
-    - name: MANIFEST_FILE
-      value: globex/overlays/dev/kustomization.yaml
-    - name: MANIFEST_FILE_PROD
-      value: globex/overlays/prod/kustomization.yaml
-    - name: MANIFEST_REPO
-      value: 'https://REPLACE_WITH_YOUR_TOKEN_VALUE@gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops'
-    - name: MANIFEST_REPO_NAME
-      value: $USER/gitops
-    - name: COMMIT_SHA
-      value: b183894cabd3eebaa5844143d5ac60dc9863fb57
-    - name: GIT_REF
-      value: main
-    - name: COMMIT_DATE
-      value: '2024-11-03T22:04:11Z'
-    - name: COMMIT_AUTHOR
-      value: $USER
-    - name: COMMIT_MESSAGE
-      value: |
-        Updates for starting scenario.
-    - name: SONARQUBE_HOST_URL
-      value: 'https://sonarqube-$USER-cicd.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
-    - name: SONARQUBE_PROJECT_KEY
-      value: globex-ui
-    - name: SONARQUBE_PROJECT_SECRET
-      value: sonarqube-admin
-    - name: CYCLONEDX_HOST_URL
-      value: 'https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
-  pipelineRef:
-    name: app-globex-ui-pipeline
-  taskRunTemplate:
-    serviceAccountName: pipeline
-  timeouts:
-    pipeline: 1h0m0s
-  workspaces:
-    - name: shared-data
-      volumeClaimTemplate:
-        metadata:
-          creationTimestamp: null
-        spec:
-          accessModes:
-            - ReadWriteOnce
-          resources:
-            requests:
-              storage: 3Gi
-        status: {}
-    - emptyDir: {}
-      name: maven-settings
+include::ROOT:example$devsecops-pipelinerun.yaml[]
 ----
 
 * Let's observe the pipeline running. *Open the openshift URL, click on pipelines, then select PipelineRuns*
@@ -236,13 +112,13 @@ Let's now have a look at container image in Quay, and verify that it has indeed 
 
 * In a new tab, Open the Quay URL: https://registry-quay-quay-operator.{openshift_cluster_ingress_domain}
 
-* Select "Sign in with Keycloak" and login as user *"{user}"* and password *{password}*. 
+* Select "Sign in with Keycloak" and login as user *"{user}"* and password *{password}*.
 
 Next, click the *"workshopX/globex-ui"* repository, and click on 'Tags' on the left side menu (replace workshopX with you current user, for example workshop1 for user1).
 
 image::/devsecops/quay-tags.png[]
 
-We can now see all the history of that container image, with all tags, and the associated metadata. We can particularily see that this container image has a small checkmark next to it, hover it to check that it has been correctly signed by Tekton Chains with the DevSecOps pipeline was last run. 
+We can now see all the history of that container image, with all tags, and the associated metadata. We can particularily see that this container image has a small checkmark next to it, hover it to check that it has been correctly signed by Tekton Chains with the DevSecOps pipeline was last run.
 
 You can also click on the *"Show signatures"* button on the top-right side to reveal additional information about the image.
 
@@ -256,7 +132,7 @@ That's it, you now have a better understanding of Quay capabilities to store the
 == Defining security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
 
-* In a new tab, open the Red Hat ACS console at https://central-stackrox.{openshift_cluster_ingress_domain} 
+* In a new tab, open the Red Hat ACS console at https://central-stackrox.{openshift_cluster_ingress_domain}
 
 * Choose the "Keycloak" auth provider as shown below:
 
@@ -278,7 +154,7 @@ image::/devsecops/acs-trusted-signature-policy.png[]
 
 image::/devsecops/acs-edit-policy.png[]
 
-On the "Policy Details", you can define the metadata and the Severity level and some other information. 
+On the "Policy Details", you can define the metadata and the Severity level and some other information.
 
 Next, select the "Policy Behavior" and this is where you can define when and how the policy gets applied.
 
@@ -348,7 +224,7 @@ Let's now switch to OpenShift GitOps to see how the application gets deployed in
 
 * Select Login via Keycloak, and login as user *"{user}"* with password *openshift*
 
-* OpenShift GitOps uses a concept of an *"Application"* as a group of manifests stored in a git repository that need to be deployed altogether. 
+* OpenShift GitOps uses a concept of an *"Application"* as a group of manifests stored in a git repository that need to be deployed altogether.
 image::/devsecops/argocd-applications.png[]
 
 
@@ -366,7 +242,7 @@ Let's deploy these applications to two namespaces, {user}-dev and {user}-prod
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-dev.yaml && 
+cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-dev.yaml &&
 sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
 ----
 
@@ -375,7 +251,7 @@ and now let's deploy the application in the {user}-prod namespace:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-prod.yaml && 
+cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-prod.yaml &&
 sed 's/$USER/{user}/' ~/web-nodejs-prod.yaml | oc create -f - -n {user}-argocd
 ----
 
@@ -390,7 +266,7 @@ If we pay closer attention, there are 3 items worth mentioning to understand the
 - TARGET REVISION: the branch to use
 - PATH: the folder that contains the specific values for that environment. Here for example, for the "DEV" environment, we use the file located in "globex/overlays/dev".
 
-You can see more details by opening the "gitops" repository in gitea, and navigating to "globex" folder. 
+You can see more details by opening the "gitops" repository in gitea, and navigating to "globex" folder.
 
 image::/devsecops/app-details-dev.png[]
 
@@ -419,11 +295,11 @@ image::/devsecops/gitea-merge-changes.png[]
 
 * Let's see the same resources deployed in the application namespace *{user}-prod* with this URL: https://{openshift_console_url}/topology/ns/{user}-prod?view=graph
 
-* Let's open the application to verify that it is running as expected: 
+* Let's open the application to verify that it is running as expected:
 
 image::/devsecops/globex-ui.png[]
 
-That's it, you now have a better understanding of how the DevSecOps pipeline is combined with OpenShift GitOps for a multicluster deployment of the "Globex" application. 
+That's it, you now have a better understanding of how the DevSecOps pipeline is combined with OpenShift GitOps for a multicluster deployment of the "Globex" application.
 
 
 == Summary
@@ -446,33 +322,3 @@ https://www.redhat.com/en/blog/red-hat-openshift-and-sigstore[Red Hat OpenShift 
 https://docs.openshift.com/pipelines/1.12/secure/using-tekton-chains-for-openshift-pipelines-supply-chain-security.html[Using Tekton Chains for OpenShift Pipelines Supply Chain Security^]: Detailed documentation on implementing and understanding Tekton Chains within OpenShift.
 
 https://docs.openshift.com/acs/4.2/operating/verify-image-signatures.html[ACS Integration Guide^]: A guide on integrating ACS with Cosign for enhanced container image verification.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

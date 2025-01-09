@@ -7,13 +7,13 @@ spec:
     - name: REPO_HOST
       value: gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com
     - name: GIT_REPO
-      value: 'https://gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/web-nodejs.git'
+      value: 'https://gitea-gitea.$SUBDOMAIN/$USER/web-nodejs.git'
     - name: TLSVERIFY
       value: 'false'
     - name: BUILD_EXTRA_ARGS
       value: $(tt.params.build_extra_args)
     - name: IMAGE_REPO
-      value: registry-quay-quay-operator.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$WORKSHOP_NUM/globex-ui
+      value: registry-quay-quay-operator.$SUBDOMAIN/$USERNUM/globex-ui
     - name: IMAGE_TAG
       value: main-b183894cabd3eebaa5844143d5ac60dc9863fb57
     - name: MANIFEST_FILE
@@ -21,7 +21,7 @@ spec:
     - name: MANIFEST_FILE_PROD
       value: globex/overlays/prod/kustomization.yaml
     - name: MANIFEST_REPO
-      value: 'https://REPLACE_WITH_YOUR_TOKEN_VALUE@gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops'
+      value: 'https://gitea-gitea.$SUBDOMAIN/$USER/gitops'
     - name: MANIFEST_REPO_NAME
       value: $USER/gitops
     - name: COMMIT_SHA
@@ -36,13 +36,13 @@ spec:
       value: |
         Updates for starting scenario.
     - name: SONARQUBE_HOST_URL
-      value: 'https://sonarqube-$USER-cicd.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
+      value: 'https://sonarqube-$USER-cicd.$SUBDOMAIN'
     - name: SONARQUBE_PROJECT_KEY
       value: globex-ui
     - name: SONARQUBE_PROJECT_SECRET
       value: sonarqube-admin
     - name: CYCLONEDX_HOST_URL
-      value: 'https://cyclonedx-bom-repo-server-cyclonedx.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
+      value: 'https://cyclonedx-bom-repo-server-cyclonedx.$SUBDOMAIN'
   pipelineRef:
     name: app-globex-ui-pipeline
   taskRunTemplate:
