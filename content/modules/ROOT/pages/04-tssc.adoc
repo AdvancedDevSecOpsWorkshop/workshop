@@ -41,9 +41,6 @@ image::/devsecops/gitea-login-with-sso.png
 
 image:;/devsecops/gitea-link-account.png
 
-
-
-
 == Start the Pipeline
 
 We see that the pipeline hasn't been run yet, so let's trigger it using a "pipelineRun".
@@ -51,7 +48,7 @@ We see that the pipeline hasn't been run yet, so let's trigger it using a "pipel
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cat workshop/content/modules/ROOT/examples/devsecops-pipelinerun.yaml | sed 's/$USERNUM/workshop1/' | sed 's/$USER/user1/' | sed 's/$SUBDOMAIN/apps.cluster-gm7tc.gm7tc.sandbox2168.opentlc.com/' | oc create -f - -n {user}-cicd
+cat workshop/content/modules/ROOT/examples/devsecops-pipelinerun.yaml | sed 's/$USERNUM/{usernum}/' | sed 's/$USER/{user}/' | sed 's/$SUBDOMAIN/{subdomain}/' | oc create -f - -n {user}-cicd
 ----
 
 Here's a look at the content of the pipelineRun used to trigger the pipeline. These are the main parameters that are used by the pipeline tasks to deploy the application:
