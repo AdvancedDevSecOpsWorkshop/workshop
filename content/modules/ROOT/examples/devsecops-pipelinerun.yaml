@@ -5,7 +5,7 @@ metadata:
 spec:
   params:
     - name: REPO_HOST
-      value: gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com
+      value: gitea-gitea.$SUBDOMAIN
     - name: GIT_REPO
       value: 'https://gitea-gitea.$SUBDOMAIN/$USER/web-nodejs.git'
     - name: TLSVERIFY
@@ -13,7 +13,7 @@ spec:
     - name: BUILD_EXTRA_ARGS
       value: $(tt.params.build_extra_args)
     - name: IMAGE_REPO
-      value: registry-quay-quay-operator.$SUBDOMAIN/$USERNUM/globex-ui
+      value: registry-quay-quay-operator.$SUBDOMAIN/workshop$USERNUM/globex-ui
     - name: IMAGE_TAG
       value: main-b183894cabd3eebaa5844143d5ac60dc9863fb57
     - name: MANIFEST_FILE
