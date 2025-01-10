@@ -4,5 +4,6 @@ metadata:
   name: pipeline
 secrets:
   - name: quay
+  - name: gitea-token
 imagePullSecrets:
   - name: quay
