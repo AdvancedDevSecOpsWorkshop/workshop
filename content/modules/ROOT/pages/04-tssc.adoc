@@ -26,20 +26,17 @@ image::/devsecops/pipeline-view.png[width=100%]
 
 * From the left side menu, select Pipelines -> Pipelines. In the right-side window, select the "PipelineRuns" tab, we can see that the pipeline hasn't been run yet.
 
-
 Before we do that, let's review the repositories in gitea that will be used by this pipeline to deploy the application using OpenShift GitOps.
 
 == Login to gitea to review the repositories
 
-* In a new tab, open Gitea's URL: https://gitea-gitea.{openshift_cluster_ingress_domain}
+In a new tab, open Gitea's URL: https://gitea-gitea.{openshift_cluster_ingress_domain}, and then login using SSO:
 
-* Login using Keycloak SSO:
+image::/devsecops/gitea-login-with-sso.png[width=100%]
 
-image::/devsecops/gitea-login-with-sso.png
+When you login, make sure to select the `Link Account` tab, do not `Register New Account`. Link the existing account to Keycloak using the provided credentials: username: *{user}*, password: *openshift*.
 
-* Select the `Link Account` tab, do not `Register New Account`. Link the existing account to Keycloak using the provided credentials: username: *{user}*, password: *openshift*.
-
-image:;/devsecops/gitea-link-account.png
+image::/devsecops/gitea-link-account.png[width=100%]
 
 == Start the Pipeline
 
