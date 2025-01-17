@@ -6,9 +6,7 @@
 This section will showcase how OpenShift Platform Plus (OPP) can be used to provide a comprehensive DevSecOps workflow, with a focus on Software Supply Chain Security throughout the entire process, from development to production.
 DevSecOps stands for Development, Security and Operations, and is a hollistic approach that promotes continous security within your DevOps practices. Our example will highlight capabilities such as defining CI/CD pipelines CD with security gates, image scanning and signing, secure storage in a Trusted registry, and deployment to secured clusters with advanced security monitoring and alerting.
 
-
 Let's examine all the components involved in such a DevSecOps pipeline to deploy our e-commerce application named Globex.
-
 
 == The advanced DevSecOps pipeline - in-depth look
 
@@ -40,12 +38,12 @@ image::/devsecops/gitea-link-account.png[width=100%]
 
 == Start the Pipeline
 
-We see that the pipeline hasn't been run yet, so let's trigger it using a "pipelineRun".
+We see that the pipeline hasn't been run yet, so let's trigger it using a "PipelineRun".
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cat workshop/content/modules/ROOT/examples/devsecops-pipelinerun.yaml | sed 's/$USERNUM/{usernum}/' | sed 's/$USER/{user}/' | sed 's/$SUBDOMAIN/{subdomain}/' | oc create -f - -n {user}-cicd
+cat ~/workshop/content/modules/ROOT/examples/devsecops-pipelinerun.yaml | sed 's/$USERNUM/{usernum}/' | sed 's/$USER/{user}/' | sed 's/$SUBDOMAIN/{subdomain}/' | oc create -f - -n {user}-cicd
 ----
 
 Here's a look at the content of the pipelineRun used to trigger the pipeline. These are the main parameters that are used by the pipeline tasks to deploy the application:
