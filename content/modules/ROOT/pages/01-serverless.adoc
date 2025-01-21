@@ -68,7 +68,6 @@ image::ocp-app/serverless_types.png[width=100%]
 
 image::ocp-app/serverless_serving.png[width=100%]
 
-
 == Modernize applications using OpenShift Web Console
 
 === Application Overview
@@ -85,10 +84,8 @@ image::ocp-app/serverless_serving.png[width=100%]
 
 * Obtain the console URL:
 
-[source,sh,subs="attributes",role=execute]
-----
-{openshift_console_url}
-----
+link:{openshift_console_url}[{openshift_console_url}]
+
 * Copy the console URL in your web browser.
 
 ** Log in the OpenShift using the console:
