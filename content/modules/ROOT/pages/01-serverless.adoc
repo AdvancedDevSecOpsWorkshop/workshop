@@ -82,11 +82,9 @@ image::ocp-app/serverless_serving.png[width=100%]
 
 === Access the OpenShift Web Console
 
-* Obtain the console URL:
+You can access the OpenShift Console at the following URL:
 
-** link:{openshift_console_url}[{openshift_console_url},window='_blank']
-
-* Copy the console URL in your web browser.
+link:{openshift_console_url}[{openshift_console_url},window='_blank']
 
 ** Log in the OpenShift using the console:
 
