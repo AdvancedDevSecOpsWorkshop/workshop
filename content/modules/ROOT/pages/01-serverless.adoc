@@ -86,9 +86,7 @@ You can access the OpenShift Console at the following URL:
 
 link:{openshift_console_url}[{openshift_console_url},window='_blank']
 
-** Log in the OpenShift using the console:
-
-You will see a login screen with two options, select the Keycloak option.
+You will see a login screen with two options, select the *Keycloak* option.
 
 image::ocp-app/openshift_login.png[width=80%]
 
