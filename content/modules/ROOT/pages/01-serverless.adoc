@@ -84,7 +84,7 @@ image::ocp-app/serverless_serving.png[width=100%]
 
 * Obtain the console URL:
 
-link:{openshift_console_url}[{openshift_console_url}]
+** link:{openshift_console_url}[{openshift_console_url},window='_blank']
 
 * Copy the console URL in your web browser.
 
