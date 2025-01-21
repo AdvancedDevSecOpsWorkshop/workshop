@@ -2,23 +2,7 @@
 
 globex:
   registry:
-    imageRepo: "custom-image-repo"
-    dockerConfigJson: ""
-  gitea:
-    manifestRepo: ""
-    manifestFile: ""
-    manifestFileProd: ""
-    manifestRepoName: ""
-    gitRepoHost: ""
-    manifestFileFail: ""
-    webhookSecretKey: ""
-    token: ""
+    url: "registry-quay-quay-operator.apps.cluster-424xp.424xp.sandbox1774.opentlc.com"
   sonarqube:
-    hostUrl: "custom-sonarqube-url"
-  cosign:
-    privateKey: ""
-    password: ""
-    publicKey: ""
-  cyclonedx:
-    hostUrl: ""
+    hostUrl: "https://sonarqube-user49-cicd.apps.cluster-424xp.424xp.sandbox1774.opentlc.com"
 

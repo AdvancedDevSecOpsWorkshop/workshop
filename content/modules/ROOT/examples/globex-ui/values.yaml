@@ -2,23 +2,7 @@
 
 globex:
   registry:
-    imageRepo: ""
-    dockerConfigJson: ""
-  gitea:
-    manifestRepo: ""
-    manifestFile: ""
-    manifestFileProd: ""
-    manifestRepoName: ""
-    gitRepoHost: ""
-    manifestFileFail: ""
-    webhookSecretKey: ""
-    token: ""
+    url: ""
   sonarqube:
-    hostUrl: ""
-  cosign:
-    privateKey: ""
-    password: ""
-    publicKey: ""
-  cyclonedx:
     hostUrl: ""
 

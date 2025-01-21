@@ -12,10 +12,10 @@ spec:
     targetRevision: main
     helm:
       parameters:
-        - name: globex.registry.imageRepo
-          value: 'custom-image-repo'
+        - name: globex.registry.url
+          value: 'registry-quay-quay-operator.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
         - name: sonarqube.hostUrl
-          value: 'custom-sonar-host'
+          value: 'https://sonarqube-user49-cicd.apps.cluster-424xp.424xp.sandbox1774.opentlc.com'
   sources: []
   project: $USER
   syncPolicy:
