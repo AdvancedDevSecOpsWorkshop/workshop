@@ -16,6 +16,14 @@ spec:
   sources: []
   project: $USER
   syncPolicy:
+    syncOptions:
+      - RespectIgnoreDifferences=true
     automated:
       prune: true
       selfHeal: true
+  ignoreDifferences:
+  - group: ""
+    kind: ServiceAccount
+    name: pipeline
+    jsonPointers:
+    - /imagePullSecrets

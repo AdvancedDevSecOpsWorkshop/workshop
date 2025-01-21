@@ -170,7 +170,7 @@ From the OpenShift web console, select *{user}-dev* Project from
 drop-down menu, and use the _Topology_ view to find the link as you did with
 the Argo CD console.
 
-image::gitops-apps/gitops-userx-dev.png[coolstore App]
+image::gitops/gitops-userx-dev.png[coolstore App]
 
 Alternatively, get the app Route from the CLI:
 

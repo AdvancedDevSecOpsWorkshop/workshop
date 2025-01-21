@@ -68,7 +68,6 @@ image::ocp-app/serverless_types.png[width=100%]
 
 image::ocp-app/serverless_serving.png[width=100%]
 
-
 == Modernize applications using OpenShift Web Console
 
 === Application Overview
@@ -83,17 +82,11 @@ image::ocp-app/serverless_serving.png[width=100%]
 
 === Access the OpenShift Web Console
 
-* Obtain the console URL:
+You can access the OpenShift Console at the following URL:
 
-[source,sh,subs="attributes",role=execute]
-----
-{openshift_console_url}
-----
-* Copy the console URL in your web browser.
+link:{openshift_console_url}[{openshift_console_url},window='_blank']
 
-** Log in the OpenShift using the console:
-
-You will see a login screen with two options, select the Keycloak option.
+You will see a login screen with two options, select the *Keycloak* option.
 
 image::ocp-app/openshift_login.png[width=80%]
 
