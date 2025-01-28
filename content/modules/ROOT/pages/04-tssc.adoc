@@ -37,7 +37,7 @@ When you login, make sure to select the `Link Account` tab, do not `Register New
 == Start the Pipeline
 
 We see that the pipeline hasn't been run yet, so let's trigger it using a "PipelineRun".
-=======
+
 * Now run this command to trigger the pipeline execution:
 
 [.console-input]
