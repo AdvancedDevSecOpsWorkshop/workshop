@@ -28,7 +28,7 @@ Before we do that, let's review the repositories in Gitea that will be used by t
 
 == Login to gitea to review the repositories
 
-Open Gitea's URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window,="_blank], and then login using Keycloak:
+Open Gitea's URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank], and then login using Keycloak:
 
 image::/devsecops/gitea-login-with-sso.png[width=100%]
 
