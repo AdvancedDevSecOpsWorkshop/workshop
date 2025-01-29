@@ -198,7 +198,7 @@ image::/devsecops/pipeline-group-4.png[]
 
 * *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a standard approach when using tools like OpenShift GitOps. Let's have a look at the yaml file in Gitea.
 
-* In a new tab, open Gitea's URL: https://gitea-gitea.{openshift_cluster_ingress_domain}
+* Open Gitea's URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank"]
 
 * Login using the provided credentials: username: *{user}*, password: *openshift*.
 
@@ -212,7 +212,7 @@ image::/devsecops/gitea-updated-manifest.png[]
 
 Let's now switch to OpenShift GitOps to see how the application gets deployed in the DEV namespace.
 
-* Open the OpenShift GitOps URL: https://argocd-server-gitops.{openshift_cluster_ingress_domain}
+* Open the OpenShift GitOps URL: link:https://argocd-server-gitops.{openshift_cluster_ingress_domain}[window="_blank"]
 
 * Select Login via Keycloak, and login as user *"{user}"* with password *openshift*
 
