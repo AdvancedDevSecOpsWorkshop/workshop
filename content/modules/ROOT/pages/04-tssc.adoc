@@ -24,15 +24,26 @@ image::/devsecops/pipeline-view.png[width=100%]
 
 * From the left side menu, select Pipelines -> Pipelines. In the right-side window, select the "PipelineRuns" tab, we can see that the pipeline hasn't been run yet.
 
-Before we do that, let's review the repositories in gitea that will be used by this pipeline to deploy the application using OpenShift GitOps.
+Before we do that, let's review the repositories in Gitea that will be used by this pipeline to deploy the application using OpenShift GitOps.
 
 == Login to gitea to review the repositories
 
-In a new tab, open Gitea's URL: https://gitea-gitea.{openshift_cluster_ingress_domain}, and then login using SSO:
+Open Gitea's URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window,="_blank], and then login using Keycloak:
 
 image::/devsecops/gitea-login-with-sso.png[width=100%]
 
-When you login, make sure to select the `Link Account` tab, do not `Register New Account`. Link the existing account to Keycloak using the provided credentials: username: *{user}*, password: *openshift*.
+When you login, your Keycloak account will be automatically linked with the pre-created {user} account giving you access to the existing source code repositories as shown below:
+
+image::/devsecops/gitea-repositories.png[width=100%]
+
+The pre-created repositories are as follows:
+
+* {user}/gitops - This has the GitOps manifests for the Application that are deployed across environments.
+* {user}/web-nodejs - The source code for the front-end Coolstore web application that our pipeline will be building.
+* {user}/workshop - The source content for this workshop including example files we used in previous modules.
+
+[NOTE]
+While these repositories will disappear when the workshop environment is terminated, you can review the public version of these in the GitHub organization here link:https://github.com/AdvancedDevSecOpsWorkshop[window="_blank"].
 
 == Start the Pipeline
 
