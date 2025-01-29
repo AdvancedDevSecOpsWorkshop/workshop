@@ -145,7 +145,7 @@ oc new-project coolstore-dev-{user}
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-git clone https://github.com/AdvancedDevSecOpsWorkshop/workshop.git ~/workshop
+git clone -b main --single-branch https://gitea-gitea.{{subdomain}}/user1/workshop ~/workshop
 ----
 
 * Explore the yaml file that will deploy the catalog and the database.
