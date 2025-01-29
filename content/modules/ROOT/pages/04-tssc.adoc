@@ -73,7 +73,7 @@ image::/devsecops/pipeline-group1.png[]
 In the early stages of the pipeline, we do a traditional source clone, then we verify the code using SonarQube.
 
 You can access your SonarQube instance to check the project using this URL below. If it's unresponsive just wait a bit longer and refresh, because sonarqube needs the projects to be created first:
-https://sonarqube-{user}-cicd.{openshift_cluster_ingress_domain}/projects
+link:https://sonarqube-{user}-cicd.{openshift_cluster_ingress_domain}/projects[window="_blank"]
 
 * You should be able to see your project
 
@@ -84,9 +84,7 @@ image::/devsecops/sonarqube-project.png[]
 
 image::/devsecops/pipeline-group2.png[]
 
-* *"Build-sign-image"*:
-
-Enhancing Security with Tekton Chains
+*Build-sign-image*. Enhancing Security with Tekton Chains
 
 This task is responsible for building a container image based from our source code, including any changes that were committed. The built container image, along with a new tag and a generated Software Bill of Materials (SBOM) is then pushed to our private quay registry on successful completion. An SBOM is a machine-readable, formally structured complete list of all the components, including modules and libraries, used/required to build a software solution. So, in simple words, a software bill of materials offers an insight into the makeup of an application developed using third-party commercial tools and open-source software.
 
@@ -98,22 +96,24 @@ Now let's have a look at the following tasks:
 
 image::/devsecops/pipeline-group3.png[]
 
-* *acs-image-check*: this task uses the roxctl CLI to check build-time violations of your security policies in your image. In this demo, we have set up a policy that verifies signatures on your container image. If this policy is enabled and your container image is unsigned or signed by non trusted source, the pipeline will fail. If the signature is available and is trusted, this pipeline task will complete successfully.
+*acs-image-check*. This task uses the roxctl CLI to check build-time violations of your security policies in your image. In this demo, we have set up a policy that verifies signatures on your container image. If this policy is enabled and your container image is unsigned or signed by non trusted source, the pipeline will fail. If the signature is available and is trusted, this pipeline task will complete successfully.
 
-* *acs-image-scan*: The acs-image-scan uses the roxctl CLI to return the components and vulnerabilities found in the image . Any vulnerabilities that exist in packages embedded in the image will be reported.
+*acs-image-scan*. The acs-image-scan uses the roxctl CLI to return the components and vulnerabilities found in the image. Any vulnerabilities that exist in packages embedded in the image will be reported.
 
-* *scan-export-sbom*: This task is responsible for scanning any vulnerabilities that exist in our SBOM and exports our SBOM to a externally accessible repository. For scanning, this task uses a 3rd-party tool called Grype which is a vulnerability scanner for container images and filesystems.
+*scan-export-sbom*. This task is responsible for scanning any vulnerabilities that exist in our SBOM and exports our SBOM to a externally accessible repository. For scanning, this task uses a 3rd-party tool called Grype which is a vulnerability scanner for container images and filesystems.
 
 That's it! You now have a deeper understanding of the Security capabilities that provide a Trusted Software Supply Chain (or DevSecOps approach), using OpenShift Pipelines (tekton chains), and Red Hat Advanced Cluster Security (Red Hat ACS).
 
+[NOTE]
+While this workshop is using OpenShift Pipelines for Continuous Integration (CI), any CI tool such as GitHub Actions, GitLab, Jenkins, etc is easily capable of integrating with the Red Hat technologies providing these capabilities. In fact if you run an `oc get task <task-name> -o yaml -n {user}-cicd` you will see that the task is simply running a bash script.
 
 == Using a Trusted image registry to store signed images
 
-Red Hat Quay is a trusted, geo-replicated, security enabled container registry that allows to scan container image for vulnerabitilies, but also store the signed images with all their metadata, such as the generated SBOM files and the signatures. These assets can be used later on in the pipelines for verification and validation purposes, like we have seen in the previous pipeline.
+Red Hat Quay is a trusted, geo-replicated, security enabled container registry that allows to scan container image for vulnerabilities, but also store the signed images with all their metadata, such as the generated SBOM files and the signatures. These assets can be used later on in the pipelines for verification and validation purposes, like we have seen in the previous pipeline.
 
 Let's now have a look at container image in Quay, and verify that it has indeed been signed by the pipeline.
 
-* In a new tab, Open the Quay URL: https://registry-quay-quay-operator.{openshift_cluster_ingress_domain}
+* In a new tab, Open the Quay URL: link:https://registry-quay-quay-operator.{openshift_cluster_ingress_domain}[window="_blank"]
 
 * Select "Sign in with Keycloak" and login as user *"{user}"* and password *{password}*.
 
@@ -121,7 +121,7 @@ Next, click the *"workshopX/globex-ui"* repository, and click on 'Tags' on the l
 
 image::/devsecops/quay-tags.png[]
 
-We can now see all the history of that container image, with all tags, and the associated metadata. We can particularily see that this container image has a small checkmark next to it, hover it to check that it has been correctly signed by Tekton Chains with the DevSecOps pipeline was last run.
+We can now see all the history of that container image, with all tags, and the associated metadata. We can particularly see that this container image has a small checkmark next to it, hover it to check that it has been correctly signed by Tekton Chains with the DevSecOps pipeline was last run.
 
 You can also click on the *"Show signatures"* button on the top-right side to reveal additional information about the image.
 
@@ -135,19 +135,19 @@ That's it, you now have a better understanding of Quay capabilities to store the
 == Defining security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
 
-* In a new tab, open the Red Hat ACS console at https://central-stackrox.{openshift_cluster_ingress_domain}
+* Open the Red Hat ACS console at link:https://central-stackrox.{openshift_cluster_ingress_domain}[window="_blank"]
 
 * Choose the "Keycloak" auth provider as shown below:
 
 image::/devsecops/acs-keycloak.png[]
 
-* Login with Keycloak: username *"clusteradmin"* and password *{password}*.
+* Login with Keycloak: username *{user}* and password *{password}*.
 
 * Once you are on the Red Hat ACS console, select "Platform Configuration -> Policy Management" from the left-side menu. This should take you to the policies page.
 
 image::/devsecops/acs-policies.png[]
 
-Red Hat ACS provides about 85 out-of-the-box policies to help implement security best practices and sageguards across your fleets of clusters, you can explore some of them by scrolling through the list of policies.
+Red Hat ACS provides about 85 out-of-the-box policies to help implement security best practices and safeguards across your fleets of clusters, you can explore some of them by scrolling through the list of policies.
 
 * Let's now look at the "Trusted Image Signature" policy. In the "Filter policies" section, type "Policy" then hit enter, then type "Trusted Signature".
 
