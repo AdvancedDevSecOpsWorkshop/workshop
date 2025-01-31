@@ -187,7 +187,9 @@ spec:
     - name: API_PATH_PREFIX
       value: /api/v1
     - name: GITHUB_TOKEN_SECRET_NAME
-      value: gitea-pull-token
+      value: gitea-token
+    - name: GITHUB_TOKEN_SECRET_KEY
+      value: password
     - name: REPO_FULL_NAME
       value: $(params.MANIFEST_REPO_NAME)
     - name: HEAD

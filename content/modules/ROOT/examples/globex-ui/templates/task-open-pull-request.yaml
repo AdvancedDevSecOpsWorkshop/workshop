@@ -123,7 +123,7 @@ spec:
                 f'number={body["number"]} url={body["html_url"]}')
     volumeMounts:
     - mountPath: /etc/github-open-pr
-      name: githubtoken
+      name: gitea-token
       readOnly: true
   volumes:
   - name: githubtoken
