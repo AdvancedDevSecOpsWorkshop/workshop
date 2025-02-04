@@ -149,7 +149,7 @@ You will then see the following:
 
 [source,yaml,subs="+macros,attributes+"]
 ----
-include::ROOT:example$globeex-ui/templates/secret-cosign.yaml[]
+include::ROOT:example$globex-ui/templates/secret-cosign.yaml[]
 ----
 
 Notice there are three keys in the secret. `cosign.key` is the private key used to sign the image, `cosign.pub` is the public key used to validate the image and `cosign.password` is key for the password. All values
@@ -166,7 +166,7 @@ To get a local copy of the the public key we will use to validate the image exec
 oc get secret cosign-secret -o jsonpath="{.data['cosign\.pub']}" -n {user}-cicd | base64 -d > ~/cosign.pub
 ----
 
-Next verify that you retrieved the certificate viewing the file:
+Next verify that you retrieved the certificate by viewing the file:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
@@ -182,17 +182,17 @@ gN6OWsfUdhfT5TCf23ESE3vfuMWtX9syvjmemuGpZ+/fRDOyqAbVnAGNpQ==
 -----END PUBLIC KEY-----
 ----
 
-Finally use the `cosign` command to verify the image:
+Finally use the `cosign` command to verify the image in the Quay image registry:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cosign verify --key ~/cosign.pub registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
+cosign verify --key ~/cosign.pub registry-quay-quay-operator.{subdomain}.opentlc.com/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
 ----
 
 [source,bash,subs="+macros,attributes+"]
 ----
-Verification for registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
+Verification for registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
