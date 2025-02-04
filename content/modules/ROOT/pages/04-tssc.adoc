@@ -216,7 +216,18 @@ Red Hat Trusted Artifact Signer (RHTAS) provides a suite of tools to support ima
 
 In this workshop RHTAS has been deployed and Tekton Chains has been configured to automatically upload the metadata needed to verify the signature in the transparency log.
 
-To perform the verification, execute the following command:
+The first step is to set some environment variables so cosign will use the transparency log for verification:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+export SIGSTORE_REKOR_URL=https://rekor-server-trusted-artifact-signer.{subdomain}
+export REKOR_REKOR_SERVER=https://rekor-server-trusted-artifact-signer.{subdomain}
+export COSIGN_REKOR_URL=https://rekor-server-trusted-artifact-signer.{subdomain}
+export TUF_URL=https://tuf-trusted-artifact-signer.${subdomain}
+----
+
+Next perform the verification by executing the following command:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
