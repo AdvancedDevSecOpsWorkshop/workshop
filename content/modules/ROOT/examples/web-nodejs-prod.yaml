@@ -10,7 +10,7 @@ spec:
   project: $USER
   source:
     path: globex/overlays/prod
-    repoURL: 'https://gitea-gitea.apps.cluster-424xp.424xp.sandbox1774.opentlc.com/$USER/gitops.git'
+    repoURL: 'https://gitea-gitea.$SUBDOMAIN/$USER/gitops.git'
     targetRevision: main
   syncPolicy:
     automated:

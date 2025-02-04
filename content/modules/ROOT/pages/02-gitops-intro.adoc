@@ -95,7 +95,7 @@ Now let's first deploy the application to the {user}-dev environment:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-dev.yaml | oc apply -n {user}-argocd -f -
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-dev.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -n {user}-argocd -f -
 ----
 
 Let's then deploy the application to the {user}-prod environment:
@@ -103,7 +103,7 @@ Let's then deploy the application to the {user}-prod environment:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-prod.yaml | oc apply -n {user}-argocd -f -
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-prod.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -n {user}-argocd -f -
 ----
 
 Now let's login to OpenShift GitOps using this URL: https://argocd-server-gitops.{openshift_cluster_ingress_domain}
@@ -422,7 +422,7 @@ Apply the configuration in the file to create the Argo CD Application in the nam
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app.yaml |  oc create -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc create -f - -n {user}-argocd
 ----
 
 In the ArgoCD interface you should see the successful deployment of the "pipeline-helm" application.
@@ -490,7 +490,7 @@ Now, apply the custom values file to the initial application using Argo CD:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml | oc apply -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
 ----
 
 ==== Step 4: Verify the Changes
@@ -533,7 +533,7 @@ Apply this parameterised configuration to Argo CD:
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml | oc apply -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
 ----
 
 Return to the ArgoCD interface and navigate to the 'App Details' section. Click on 'Parameters.' You will notice that the custom values file, which was present in the previous example, has been successfully removed from the ArgoCD Application.

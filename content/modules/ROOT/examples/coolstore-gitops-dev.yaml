@@ -9,7 +9,7 @@ spec:
   project: $USER
   source:
     path: content/modules/ROOT/files/module-01
-    repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
+    repoURL: https://gitea-gitea.$SUBDOMAIN/$USER/workshop.git
     targetRevision: HEAD
   syncPolicy:
     automated:

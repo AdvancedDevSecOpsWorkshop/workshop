@@ -8,7 +8,7 @@ spec:
     name: in-cluster
   source:
     path: content/modules/ROOT/examples/globex-ui
-    repoURL: 'https://github.com/AdvancedDevSecOpsWorkshop/workshop.git'
+    repoURL: 'https://gitea-gitea.$SUBDOMAIN/$USER/workshop.git'
     targetRevision: main
     helm:
       parameters:
