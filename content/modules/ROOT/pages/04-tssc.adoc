@@ -131,6 +131,78 @@ Quay also provides a summary of the vulnerabilities of the container image, but 
 
 That's it, you now have a better understanding of Quay capabilities to store the signed container images, along with the metadata such as SBOMs, signatures etc.
 
+== Validating Signatures
+
+We can validate the image signature with the sigstore utility called `cosign`. This validation can be performed in variety of ways, first let's validate the signature manually using the public signature.
+
+While cosign signature used to sign the image by Tekton Chains is stored in the `openshift-pipelines` namespace, a copy of the signature is available in the `{user}-cicd` namespace to support validation in the pipeline.
+
+To view the signature run the following:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+oc get secret cosign-secret -o yaml -n {user}-cicd | oc neat
+----
+
+You will then see the following:
+
+[source,yaml,subs="+macros,attributes+"]
+----
+include::ROOT:example$globeex-ui/templates/secret-cosign.yaml[]
+----
+
+Notice there are three keys in the secret. `cosign.key` is the private key used to sign the image, `cosign.pub` is the public key used to validate the image and `cosign.password` is key for the password. All values
+are base64 encoded as per standard Kubernetes practices.
+
+[NOTE]
+To validate the image only the public key is required, we have included a copy of the full secret for illustrative purposes. It is highly recommended to restrict access to the private key and password in normal situations.
+
+To get a local copy of the the public key we will use to validate the image execute the following:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+oc get secret cosign-secret -o jsonpath="{.data['cosign\.pub']}" -n {user}-cicd | base64 -d > ~/cosign.pub
+----
+
+Next verify that you retrieved the certificate viewing the file:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+cat ~/cosign.pub
+----
+
+[source,yaml,subs="+macros,attributes+"]
+----
+-----BEGIN PUBLIC KEY-----
+MFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEjWno6IupPFSRi9btNhFtMeS1iQbM
+gN6OWsfUdhfT5TCf23ESE3vfuMWtX9syvjmemuGpZ+/fRDOyqAbVnAGNpQ==
+-----END PUBLIC KEY-----
+----
+
+Finally use the `cosign` command to verify the image:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+cosign verify --key ~/cosign.pub registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
+----
+
+[source,bash,subs="+macros,attributes+"]
+----
+Verification for registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The signatures were verified against the specified public key
+
+[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui"},"image":{"docker-manifest-digest":"sha256:0f1af3459f8eed8c0db38d68b1e0b2f34e938276797f4e5c27fc9f97ad242e32"},"type":"cosign container image signature"},"optional":null}]
+----
+
+[NOTE]
+The `critical` shown in the output json at the end is highlighting the critical information, it is not indicating an error.
 
 == Defining security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
