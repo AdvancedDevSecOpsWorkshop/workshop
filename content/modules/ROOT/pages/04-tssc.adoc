@@ -189,8 +189,11 @@ Finally use the `cosign` command to verify the image in the Quay image registry:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cosign verify --key ~/cosign.pub registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
+cosign verify --insecure-ignore-tlog=true --key ~/cosign.pub registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
 ----
+
+[NOTE]
+The switch `--insecure-ignore-tlog=true` is added so that cosign bypasses the checking the public transparency log. Tekton Chains is configured to use the transparency log deployed on the workshop cluster, as a result the signature is never uploaded to the public transparency log that cosign uses by default.
 
 [source,bash,subs="+macros,attributes+"]
 ----
@@ -221,10 +224,16 @@ The first step is to set some environment variables so cosign will use the trans
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-export SIGSTORE_REKOR_URL=https://rekor-server-trusted-artifact-signer.{subdomain}
-export REKOR_REKOR_SERVER=https://rekor-server-trusted-artifact-signer.{subdomain}
-export COSIGN_REKOR_URL=https://rekor-server-trusted-artifact-signer.{subdomain}
 export TUF_URL=https://tuf-trusted-artifact-signer.{subdomain}
+export COSIGN_FULCIO_URL=https://fulcio-server-trusted-artifact-signer.{subdomain}
+export COSIGN_REKOR_URL=https://rekor-server-trusted-artifact-signer.{subdomain}
+export COSIGN_MIRROR=$TUF_URL
+export COSIGN_ROOT=$TUF_URL/root.json
+export COSIGN_YES="true"
+export SIGSTORE_FULCIO_URL=$COSIGN_FULCIO_URL
+export SIGSTORE_OIDC_ISSUER=$COSIGN_OIDC_ISSUER
+export SIGSTORE_REKOR_URL=$COSIGN_REKOR_URL
+export REKOR_REKOR_SERVER=$COSIGN_REKOR_URL
 ----
 
 Next perform the verification by executing the following command:
