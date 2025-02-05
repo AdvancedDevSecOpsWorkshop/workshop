@@ -189,7 +189,7 @@ Finally use the `cosign` command to verify the image in the Quay image registry:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cosign verify --key ~/cosign.pub registry-quay-quay-operator.{subdomain}.opentlc.com/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
+cosign verify --key ~/cosign.pub registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
 ----
 
 [source,bash,subs="+macros,attributes+"]
@@ -234,7 +234,6 @@ Next perform the verification by executing the following command:
 ----
 cosign verify --key ~/cosign.pub --rekor-url=https://rekor-server-trusted-artifact-signer.{subdomain} registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
 ----
-
 
 
 
