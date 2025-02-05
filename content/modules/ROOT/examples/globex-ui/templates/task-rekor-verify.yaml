@@ -15,6 +15,22 @@ spec:
       name: image
       type: string
   steps:
+    - name: initialize
+      image: quay.io/redhat-gpte/cosign
+      resources: {}
+      script: >
+        export TUF_URL=http://tuf.trusted-artifact-signer.svc
+        export COSIGN_FULCIO_URL=http://fulcio-server.trusted-artifact-signer.svc
+        export COSIGN_REKOR_URL=http://rekor-server.trusted-artifact-signer.svc
+        export COSIGN_MIRROR=$TUF_URL
+        export COSIGN_ROOT=$TUF_URL/root.json
+        export COSIGN_YES="true"
+        export SIGSTORE_FULCIO_URL=$COSIGN_FULCIO_URL
+        export SIGSTORE_REKOR_URL=$COSIGN_REKOR_URL
+        export REKOR_REKOR_SERVER=$COSIGN_REKOR_URL
+
+        # Initialize cosign with certs based on environment variables
+        cosign initialize
     - env:
         - name: REGISTRY_SECRET
           valueFrom:

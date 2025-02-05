@@ -193,17 +193,18 @@ cosign verify --insecure-ignore-tlog=true --key ~/cosign.pub registry-quay-quay-
 ----
 
 [NOTE]
-The switch `--insecure-ignore-tlog=true` is added so that cosign bypasses the checking the public transparency log. Tekton Chains is configured to use the transparency log deployed on the workshop cluster, as a result the signature is never uploaded to the public transparency log that cosign uses by default.
+The switch `--insecure-ignore-tlog=true` is added so that cosign bypasses checking the public transparency log. Tekton Chains is configured to use the transparency log deployed on the workshop cluster rather then the public instance, as a result the signature is never uploaded to the public transparency log that cosign uses by default. Without this switch the verification will fail
 
 [source,bash,subs="+macros,attributes+"]
 ----
-Verification for registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
+WARNING: Skipping tlog verification is an insecure practice that lacks of transparency and auditability verification for the signature.
+
+Verification for registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
-  - Existence of the claims in the transparency log was verified offline
   - The signatures were verified against the specified public key
 
-[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui"},"image":{"docker-manifest-digest":"sha256:0f1af3459f8eed8c0db38d68b1e0b2f34e938276797f4e5c27fc9f97ad242e32"},"type":"cosign container image signature"},"optional":null}]
+[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui"},"image":{"docker-manifest-digest":"sha256:137f2141572bb833987dc04b58f4114d09e7a5d97d55b78ec8d064252d3f1020"},"type":"cosign container image signature"},"optional":null}]
 ----
 
 [NOTE]
@@ -231,18 +232,40 @@ export COSIGN_MIRROR=$TUF_URL
 export COSIGN_ROOT=$TUF_URL/root.json
 export COSIGN_YES="true"
 export SIGSTORE_FULCIO_URL=$COSIGN_FULCIO_URL
-export SIGSTORE_OIDC_ISSUER=$COSIGN_OIDC_ISSUER
 export SIGSTORE_REKOR_URL=$COSIGN_REKOR_URL
 export REKOR_REKOR_SERVER=$COSIGN_REKOR_URL
 ----
 
-Next perform the verification by executing the following command:
+Next we will initialize and configure cosign, this will also retrieve certificates from the various Sigstore components used by the transparency log:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cosign verify --key ~/cosign.pub --rekor-url=https://rekor-server-trusted-artifact-signer.{subdomain} registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
+cosign initialize
 ----
+
+Finally perform the actual verification by executing the following command:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+cosign verify --key ~/cosign.pub registry-quay-quay-operator.{subdomain}/workshop{usernum}/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57
+----
+
+[source,bash,subs="+macros,attributes+"]
+----
+Verification for registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
+The following checks were performed on each of these signatures:
+  - The cosign claims were validated
+  - Existence of the claims in the transparency log was verified offline
+  - The signatures were verified against the specified public key
+
+[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui"},"image":{"docker-manifest-digest":"sha256:137f2141572bb833987dc04b58f4114d09e7a5d97d55b78ec8d064252d3f1020"},"type":"cosign container image signature"},"optional":null}]
+----
+
+Notice that in this iteration the existence of the signature in the transparency log was verified which was not done previously.
+
+=== Verifying Signatures in Pipeline
 
 
 
