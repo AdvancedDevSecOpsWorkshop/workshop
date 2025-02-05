@@ -14,23 +14,27 @@ spec:
         quay-8hvtv.apps.cluster-8hvtv.8hvtv.sandbox2411.opentlc.com/quayadmin/globex-ui:main-e39ea4710cfe0639f5343ef62695dae5f310d566
       name: image
       type: string
+  stepTemplate:
+    env:
+      - name: "TUF_URL"
+        value: "http://tuf.trusted-artifact-signer.svc"
+      - name: "COSIGN_MIRROR"
+        value: "http://tuf.trusted-artifact-signer.svc"
+      - name: "COSIGN_ROOT"
+        value: "http://tuf.trusted-artifact-signer.svc/root.json"
+      - name: "COSIGN_REKOR_URL"
+        value: "http://rekor-server.trusted-artifact-signer.svc"
+      - name: "SIGSTORE_REKOR_URL"
+        value: "http://rekor-server.trusted-artifact-signer.svc"
+      - name: "REKOR_REKOR_SERVER"
+        value: "http://rekor-server.trusted-artifact-signer.svc"
+      - name: "COSIGN_FULCIO_URL"
+        value: "http://fulcio-server.trusted-artifact-signer.svc"
+      - name: COSIGN_YES
+        value: "true"
+      - name: SIGSTORE_FULCIO_URL
+        value: "http://fulcio-server.trusted-artifact-signer.svc"
   steps:
-    - name: initialize
-      image: quay.io/redhat-gpte/cosign
-      resources: {}
-      script: >
-        export TUF_URL=http://tuf.trusted-artifact-signer.svc
-        export COSIGN_FULCIO_URL=http://fulcio-server.trusted-artifact-signer.svc
-        export COSIGN_REKOR_URL=http://rekor-server.trusted-artifact-signer.svc
-        export COSIGN_MIRROR=$TUF_URL
-        export COSIGN_ROOT=$TUF_URL/root.json
-        export COSIGN_YES="true"
-        export SIGSTORE_FULCIO_URL=$COSIGN_FULCIO_URL
-        export SIGSTORE_REKOR_URL=$COSIGN_REKOR_URL
-        export REKOR_REKOR_SERVER=$COSIGN_REKOR_URL
-
-        # Initialize cosign with certs based on environment variables
-        cosign initialize
     - env:
         - name: REGISTRY_SECRET
           valueFrom:
@@ -42,16 +46,20 @@ spec:
             secretKeyRef:
               key: cosign.pub
               name: $(params.cosignSecret)
-      image: quay.io/redhat-gpte/cosign
+      image: registry.redhat.io/rhtas/cosign-rhel9:1.1.0 #quay.io/redhat-gpte/cosign
       name: cosign-verify-image
       resources: {}
-      script: >
-        echo "${REGISTRY_SECRET}" > /home/cosign/.docker/config.json
+      script: |
+        #!/usr/bin/env bash
+
+        # Initialize cosign with certs based on environment variables
+        cosign initialize
+
+        echo "cosign has been initialized"
 
         echo "${COSIGN_PUBLIC_KEY}" > /workspace/cosign.pub
 
-        cosign verify --key /workspace/cosign.pub $(params.image) --output-file
-        /workspace/cosign.verify
+        cosign verify --key /workspace/cosign.pub $(params.image) --output-file /workspace/cosign.verify
     - image: quay.io/redhat-gpte/jq
       name: extract-signature-details
       resources: {}
