@@ -218,7 +218,7 @@ Red Hat Trusted Artifact Signer (RHTAS) provides a suite of tools to support ima
 * *Certifcate Authority*:  A certificate authority is a free root certification authority that issues short-lived, temporary certificates to an authorized identity and publishes them in a transparency log. It provides the option to use existing self-managed keys maintained in a third-party key management system.
 * *Sigstore Clients*: Command line utilities like `cosign` that we used earlier as well as other tools for generating and verifying digital signatures of source code, artifacts, software bills of materials, and container images.
 
-In this workshop RHTAS has been deployed and Tekton Chains has been configured to automatically upload the metadata needed to verify the signature in the transparency log.
+In this workshop RHTAS has been deployed in the cluster and Tekton Chains has been configured to automatically upload the metadata needed to verify the signature in the transparency log.
 
 The first step is to set some environment variables so cosign will use the transparency log for verification:
 
@@ -236,7 +236,7 @@ export SIGSTORE_REKOR_URL=$COSIGN_REKOR_URL
 export REKOR_REKOR_SERVER=$COSIGN_REKOR_URL
 ----
 
-Next we will initialize and configure cosign, this will also retrieve certificates from the various Sigstore components used by the transparency log:
+Next we will initialize and configure cosign as well as retrieve certificates from the various Sigstore components required for verification with the transparency log:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
@@ -267,7 +267,15 @@ Notice that in this iteration the existence of the signature in the transparency
 
 === Verifying Signatures in Pipeline
 
+While manual verification is useful, ideally we want to bake this process into the Pipeline itself. This is done in the *verify-tlog-signature* step of the pipeline:
 
+image::/devsecops/verify-tlog-signature.png[]
+
+Click on the *verify-tlog-signature* task, note that an identical verification to what was performed manually has been completed:
+
+image::/devsecops/verify-tlog-signature-log.png[]
+
+This verification is performed every time the image is built, however in the next section we will look at how we can enforce a signature requirement through a runtime policy.
 
 == Defining security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
