@@ -275,10 +275,9 @@ Click on the *verify-tlog-signature* task, note that an identical verification t
 
 image::/devsecops/verify-tlog-signature-log.png[]
 
-This verification is performed every time the image is built, however in the next section we will look at how we can enforce a signature requirement through a runtime policy.
+This verification is performed every time the image is built, however in the next section we will look at how we can inform and enforce a signature requirement through a Policy.
 
 == Defining security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
-
 
 * Open the Red Hat ACS console at link:https://central-stackrox.{openshift_cluster_ingress_domain}[window="_blank"]
 
@@ -298,24 +297,32 @@ Red Hat ACS provides about 85 out-of-the-box policies to help implement security
 
 image::/devsecops/acs-trusted-signature-policy.png[]
 
-* Click on the policy to check its details, then select "Actions -> Edit Policy" on the top right side.
+* Click on the policy to check its details:
 
-image::/devsecops/acs-edit-policy.png[]
+image::/devsecops/trusted-signature-policy.png[]
 
-On the "Policy Details", you can define the metadata and the Severity level and some other information.
-
-Next, select the "Policy Behavior" and this is where you can define when and how the policy gets applied.
+The Policy Details displays all of the policy related information:
 
 image::/devsecops/acs-policy-details.png[]
 
-The "Lifecycle stages" allow you to define if it's applied at Build, Deploy or Runtime.
+In the "Policy details" section the metadata and the Severity level and some other information is defined.
+
+image::/devsecops/acs-policy-details-section.png[]
+
+The section "Policy Behavior" is where you can define when and how the policy gets applied.
+
+image::acs-policy-behavior-section.png[]
+
+The "Lifecycle stages" allow you to define if it's applied at Build, Deploy or Runtime. For this Policy, Build and Deploy stages have been chosen:
 
 The response method provides 2 options:
 
 * *Inform*: the policy only triggers an alert but is not enforced, meaning it takes no specific action.
 * *Inform and enforce*: The policy triggers an alert AND is enforced, for example deleting a container that violates a specific policy, or in our previous case by breaking the pipeline because the container image was not signed with a trusted signature.
 
-Finally, the "Configure enforcement behavior" gives you control over how the policy gets enforced, as explained in the different options.
+Finally, the "Enforce" gives you control over how the policy gets enforced, as explained in the different options.
+
+The Policy Scope section at the bottom enables you to control the scope of the policy by selecting the required clusters and namespaces. Wildcards are supported as well selection via labels.
 
 * Next, click on "3-Policy criteria" to explore how the signature verification is implemented. Inside the "Policy Section 1", click on "Select".
 
