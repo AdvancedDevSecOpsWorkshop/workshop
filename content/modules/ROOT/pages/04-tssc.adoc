@@ -307,7 +307,7 @@ image::/devsecops/acs-policy-details-readonly.png[]
 
 In the "Policy details" section the metadata and the Severity level and some other information is defined.
 
-image::acs-policy-details-section.png[]
+image::/devsecops/acs-policy-details-section.png[]
 
 The section "Policy Behavior" is where you can define when and how the policy gets applied.
 
