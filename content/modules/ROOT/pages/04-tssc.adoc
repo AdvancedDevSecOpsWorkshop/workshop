@@ -299,11 +299,7 @@ image::/devsecops/acs-trusted-signature-policy.png[]
 
 * Click on the policy to check its details:
 
-image::/devsecops/trusted-signature-policy.png[]
-
-The Policy Details displays all of the policy related information:
-
-image::/devsecops/acs-policy-details-readonly.png[]
+image::/devsecops/acs-trusted-signature-policy-details.png[]
 
 In the "Policy details" section the metadata and the Severity level and some other information is defined.
 
