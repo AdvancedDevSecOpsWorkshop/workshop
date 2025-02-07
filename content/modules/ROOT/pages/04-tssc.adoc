@@ -277,7 +277,7 @@ image::/devsecops/verify-tlog-signature-log.png[]
 
 This verification is performed every time the image is built, however in the next section we will look at how we can inform and enforce a signature requirement through a Policy.
 
-== Defining security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
+== Using security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
 * Open the Red Hat ACS console at link:https://central-stackrox.{openshift_cluster_ingress_domain}[window="_blank"]
 
@@ -346,12 +346,12 @@ This will take you to the image details, where you see a listing of all CVEs, al
 
 image::/devsecops/acs-image-details.png[]
 
-That's it! You now have a better understanding of how Red Hat ACS allows you to define security policies that can in turn be used within the DevSecOps pipeline as security gates to prevent untrusted / undesirable content from getting into your production environments, and also continuous monitor the security of your multiple clusters and applications across all environments.
+That's it! You now have a better understanding of how Red Hat ACS allows you to define security policies that can in turn be used within the DevSecOps pipeline as security gates to prevent untrusted / undesirable content from getting into your production environments, and also continuously monitor the security of your multiple clusters and applications across all environments.
 
 
-== Adopting a GitOps approach for deployments across multiple clusters
+== Adopting a GitOps approach for deployments across multiple namespaces
 
-As mentioned in the application architecture section, in a typical multicluster scenario, our "Globex" application would be deployed across multiple clusters using a OpenShift GitOps.
+As mentioned in the application architecture section, our "Globex" application would be deployed across multiple namespaces or clusters using OpenShift GitOps.
 
 Let's explore this step in the pipeline, then have a look at argocd to understand how it uses the manifests to target the desired cluster.
 
@@ -359,7 +359,7 @@ Let's explore this step in the pipeline, then have a look at argocd to understan
 
 image::/devsecops/pipeline-group-4.png[]
 
-* *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a standard approach when using tools like OpenShift GitOps. Let's have a look at the yaml file in Gitea.
+* *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a common approach when using tools like OpenShift GitOps. Let's have a look at the yaml file in Gitea.
 
 * Open Gitea's URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank"]
 
@@ -458,7 +458,6 @@ image::/devsecops/gitea-merge-changes.png[]
 image::/devsecops/globex-ui.png[]
 
 That's it, you now have a better understanding of how the DevSecOps pipeline is combined with OpenShift GitOps for a multicluster deployment of the "Globex" application.
-
 
 == Summary
 
