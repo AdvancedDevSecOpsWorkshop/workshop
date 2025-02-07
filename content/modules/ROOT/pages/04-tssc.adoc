@@ -303,7 +303,7 @@ image::/devsecops/trusted-signature-policy.png[]
 
 The Policy Details displays all of the policy related information:
 
-image::/devsecops/acs-policy-details.png[]
+image::/devsecops/acs-policy-details-readonly.png[]
 
 In the "Policy details" section the metadata and the Severity level and some other information is defined.
 
