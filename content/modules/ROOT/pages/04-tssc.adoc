@@ -307,11 +307,11 @@ image::/devsecops/acs-policy-details.png[]
 
 In the "Policy details" section the metadata and the Severity level and some other information is defined.
 
-image::/devsecops/acs-policy-details-section.png[]
+image::acs-policy-details-section.png[]
 
 The section "Policy Behavior" is where you can define when and how the policy gets applied.
 
-image::acs-policy-behavior-section.png[]
+image::/devsecops/acs-policy-behavior-section.png[]
 
 The "Lifecycle stages" allow you to define if it's applied at Build, Deploy or Runtime. For this Policy, Build and Deploy stages have been chosen:
 
@@ -324,9 +324,9 @@ Finally, the "Enforce" gives you control over how the policy gets enforced, as e
 
 The Policy Scope section at the bottom enables you to control the scope of the policy by selecting the required clusters and namespaces. Wildcards are supported as well selection via labels.
 
-* Next, click on "3-Policy criteria" to explore how the signature verification is implemented. Inside the "Policy Section 1", click on "Select".
+* Next, click on "View" in the "Policy Criteria" section to explore how the signature verification is implemented.
 
-image::/devsecops/acs-policy-criteria.png[]
+image::/devsecops/acs-policy-criteria-section.png[]
 
 * In the pop-up, click on "cosign", and this will take you to the public signature that is used to verify the container image, in pair with the private signature that is used by OpenShift Pipelines / Tekton Chains to sign the container images after the build. We will talk about the image signing process in more details in the next pipeline.
 
