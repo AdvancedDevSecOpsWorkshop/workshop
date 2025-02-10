@@ -315,7 +315,6 @@ image::/devsecops/argocd-applications.png[]
 == Using overlays and Kustomize in the DevSecOps pipeline
 
 A common pattern when deploying an application to multiple environments is to have a a repository that contains the following structure:
-
  - base: the common assets that we want to deploy
  - overlays
     |_dev: specific values that will override the ones in the base for the "dev" environment
@@ -326,7 +325,7 @@ Let's deploy these applications to two namespaces, {user}-dev and {user}-prod
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cat ~/workshop/content/modules/ROOT/examples/web-nodejs-dev.yaml | sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-dev.yaml | oc apply -f - -n {user}-argocd
 ----
 
 and now let's deploy the application in the {user}-prod namespace:
@@ -334,7 +333,7 @@ and now let's deploy the application in the {user}-prod namespace:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cat ~/workshop/content/modules/ROOT/examples/web-nodejs-prod.yaml | sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-prod.yaml | oc apply -f - -n {user}-argocd
 ----
 
 We can verify that the applications have been created in OpenShift GitOps by checking the application tiles.
