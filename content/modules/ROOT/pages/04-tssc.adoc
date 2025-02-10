@@ -275,75 +275,8 @@ Click on the *verify-tlog-signature* task, note that an identical verification t
 
 image::/devsecops/verify-tlog-signature-log.png[]
 
-This verification is performed every time the image is built, however in the next section we will look at how we can inform and enforce a signature requirement through a Policy.
-
-== Using security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
-
-* Open the Red Hat ACS console at link:https://central-stackrox.{openshift_cluster_ingress_domain}[window="_blank"]
-
-* Choose the "Keycloak" auth provider as shown below:
-
-image::/devsecops/acs-keycloak.png[]
-
-* Login with Keycloak: username *{user}* and password *{password}*.
-
-* Once you are on the Red Hat ACS console, select "Platform Configuration -> Policy Management" from the left-side menu. This should take you to the policies page.
-
-image::/devsecops/acs-policies.png[]
-
-Red Hat ACS provides about 85 out-of-the-box policies to help implement security best practices and safeguards across your fleets of clusters, you can explore some of them by scrolling through the list of policies.
-
-* Let's now look at the "Trusted Image Signature" policy. In the "Filter policies" section, type "Policy" then hit enter, then type "Trusted Signature".
-
-image::/devsecops/acs-trusted-signature-policy.png[]
-
-* Click on the policy to check its details:
-
-image::/devsecops/acs-trusted-signature-policy-details.png[]
-
-In the "Policy details" section the metadata and the Severity level and some other information is defined.
-
-image::/devsecops/acs-policy-details-section.png[]
-
-The section "Policy Behavior" is where you can define when and how the policy gets applied.
-
-image::/devsecops/acs-policy-behavior-section.png[]
-
-The "Lifecycle stages" allow you to define if it's applied at Build, Deploy or Runtime. For this Policy, Build and Deploy stages have been chosen:
-
-The response method provides 2 options:
-
-* *Inform*: the policy only triggers an alert but is not enforced, meaning it takes no specific action.
-* *Inform and enforce*: The policy triggers an alert AND is enforced, for example deleting a container that violates a specific policy, or in our previous case by breaking the pipeline because the container image was not signed with a trusted signature.
-
-Finally, the "Enforce" gives you control over how the policy gets enforced, as explained in the different options.
-
-The Policy Scope section at the bottom enables you to control the scope of the policy by selecting the required clusters and namespaces. Wildcards are supported as well selection via labels.
-
-* Next, click on "View" in the "Policy Criteria" section to explore how the signature verification is implemented.
-
-image::/devsecops/acs-policy-criteria-section.png[]
-
-* In the pop-up, click on "cosign", and this will take you to the public signature that is used to verify the container image, in pair with the private signature that is used by OpenShift Pipelines / Tekton Chains to sign the container images after the build. We will talk about the image signing process in more details in the next pipeline.
-
-image::/devsecops/acs-signature-integration.png[]
-
-Let's now see how Red Hat ACS allows you to monitor your cluster security, by inspecting image vulnerabilities.
-
-* On the left-side menu, click on "Vulnerability Management -> Dashboard", then select images on the top-right side
-
-image::/devsecops/acs-vuln-management.png[]
-
-* On the filter section, type "Image" then hit enter, then type "globex-ui:main", and select the one with an "active" image status
-
-image::/devsecops/acs-image-cves.png[]
-
-This will take you to the image details, where you see a listing of all CVEs, all components, and all the deployments that are using this image on the right side panel. This helps you mitigate issues when there's a compromised image for example.
-
-image::/devsecops/acs-image-details.png[]
-
-That's it! You now have a better understanding of how Red Hat ACS allows you to define security policies that can in turn be used within the DevSecOps pipeline as security gates to prevent untrusted / undesirable content from getting into your production environments, and also continuously monitor the security of your multiple clusters and applications across all environments.
-
+This verification is performed every time the image is built, however in a later section we will look at how we can inform and enforce a signature requirement through a Policy. However
+before we do that now that we have built the image and verified its signature let's deploy the front-end application.
 
 == Adopting a GitOps approach for deployments across multiple namespaces
 
@@ -455,6 +388,73 @@ image::/devsecops/globex-ui.png[]
 
 That's it, you now have a better understanding of how the DevSecOps pipeline is combined with OpenShift GitOps for a multicluster deployment of the "Globex" application.
 
+== Using security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
+
+* Open the Red Hat ACS console at link:https://central-stackrox.{openshift_cluster_ingress_domain}[window="_blank"]
+
+* Choose the "Keycloak" auth provider as shown below:
+
+image::/devsecops/acs-keycloak.png[]
+
+* Login with Keycloak: username *{user}* and password *{password}*.
+
+* Once you are on the Red Hat ACS console, select "Platform Configuration -> Policy Management" from the left-side menu. This should take you to the policies page.
+
+image::/devsecops/acs-policies.png[]
+
+Red Hat ACS provides about 85 out-of-the-box policies to help implement security best practices and safeguards across your fleets of clusters, you can explore some of them by scrolling through the list of policies.
+
+* Let's now look at the "Trusted Image Signature" policy. In the "Filter policies" section, type "Policy" then hit enter, then type "Trusted Signature".
+
+image::/devsecops/acs-trusted-signature-policy.png[]
+
+* Click on the policy to check its details:
+
+image::/devsecops/acs-trusted-signature-policy-details.png[]
+
+In the "Policy details" section the metadata and the Severity level and some other information is defined.
+
+image::/devsecops/acs-policy-details-section.png[]
+
+The section "Policy Behavior" is where you can define when and how the policy gets applied.
+
+image::/devsecops/acs-policy-behavior-section.png[]
+
+The "Lifecycle stages" allow you to define if it's applied at Build, Deploy or Runtime. For this Policy, Build and Deploy stages have been chosen:
+
+The response method provides 2 options:
+
+* *Inform*: the policy only triggers an alert but is not enforced, meaning it takes no specific action.
+* *Inform and enforce*: The policy triggers an alert AND is enforced, for example deleting a container that violates a specific policy, or in our previous case by breaking the pipeline because the container image was not signed with a trusted signature.
+
+Finally, the "Enforce" gives you control over how the policy gets enforced, as explained in the different options.
+
+The Policy Scope section at the bottom enables you to control the scope of the policy by selecting the required clusters and namespaces. Wildcards are supported as well selection via labels.
+
+* Next, click on "View" in the "Policy Criteria" section to explore how the signature verification is implemented.
+
+image::/devsecops/acs-policy-criteria-section.png[]
+
+* In the pop-up, click on "cosign", and this will take you to the public signature that is used to verify the container image, in pair with the private signature that is used by OpenShift Pipelines / Tekton Chains to sign the container images after the build. We will talk about the image signing process in more details in the next pipeline.
+
+image::/devsecops/acs-signature-integration.png[]
+
+Let's now see how Red Hat ACS allows you to monitor your cluster security, by inspecting image vulnerabilities.
+
+* On the left-side menu, click on "Vulnerability Management -> Dashboard", then select images on the top-right side
+
+image::/devsecops/acs-vuln-management.png[]
+
+* On the filter section, type "Image" then hit enter, then type "globex-ui:main", and select the one with an "active" image status
+
+image::/devsecops/acs-image-cves.png[]
+
+This will take you to the image details, where you see a listing of all CVEs, all components, and all the deployments that are using this image on the right side panel. This helps you mitigate issues when there's a compromised image for example.
+
+image::/devsecops/acs-image-details.png[]
+
+That's it! You now have a better understanding of how Red Hat ACS allows you to define security policies that can in turn be used within the DevSecOps pipeline as security gates to prevent untrusted / undesirable content from getting into your production environments, and also continuously monitor the security of your multiple clusters and applications across all environments.
+
 == Summary
 
 Here a quick summary of all you've seen in this lab:
@@ -463,9 +463,9 @@ Here a quick summary of all you've seen in this lab:
 
 * OpenShift Pipelines (based on Tekton) offers advanced CI/CD capabilities, and allow a direct integration with RH ACS to implement a DevSecOps approach. It also provides advanced capabilities like image signing through the Tekton Chains controller.
 
-* Red Hat Advanced Cluster Security offers out-of-the-box security capabilities such as security policies and image scanning for vulnerabilities to a continuous security monitoring across all your clusters.
-
 * OpenShift GitOps (based on argocd) allows you to adopt a GitOps approach to deploy your application across different environments and multiple clusters, from development to production and all intermediate stages.
+
+* Red Hat Advanced Cluster Security offers out-of-the-box security capabilities such as security policies and image scanning for vulnerabilities to a continuous security monitoring across all your clusters.
 
 
 == Learning References
