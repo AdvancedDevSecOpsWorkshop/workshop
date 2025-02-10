@@ -276,7 +276,7 @@ Click on the *verify-tlog-signature* task, note that an identical verification t
 image::/devsecops/verify-tlog-signature-log.png[]
 
 This verification is performed every time the image is built, however in a later section we will look at how we can inform and enforce a signature requirement through a Policy. However
-before we do that now that we have built the image and verified its signature let's deploy the front-end application.
+before we do that, now that we have built the image and verified its signature, let's deploy the front-end application.
 
 == Adopting a GitOps approach for deployments across multiple namespaces
 
@@ -309,25 +309,24 @@ Let's now switch to OpenShift GitOps to see how the application gets deployed in
 * Select Login via Keycloak, and login as user *"{user}"* with password *openshift*
 
 * OpenShift GitOps uses a concept of an *"Application"* as a group of manifests stored in a git repository that need to be deployed altogether.
-image::/devsecops/argocd-applications.png[]
 
+image::/devsecops/argocd-applications.png[]
 
 == Using overlays and Kustomize in the DevSecOps pipeline
 
 A common pattern when deploying an application to multiple environments is to have a a repository that contains the following structure:
+
  - base: the common assets that we want to deploy
  - overlays
     |_dev: specific values that will override the ones in the base for the "dev" environment
     |_prod: specific values that will override the ones in the base for the "prod" environment
-
 
 Let's deploy these applications to two namespaces, {user}-dev and {user}-prod
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-dev.yaml &&
-sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
+cat ~/workshop/content/modules/ROOT/examples/web-nodejs-dev.yaml | sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
 ----
 
 and now let's deploy the application in the {user}-prod namespace:
@@ -335,8 +334,7 @@ and now let's deploy the application in the {user}-prod namespace:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-cd && wget https://raw.githubusercontent.com/AdvancedDevSecOpsWorkshop/workshop/refs/heads/main/content/modules/ROOT/examples/web-nodejs-prod.yaml &&
-sed 's/$USER/{user}/' ~/web-nodejs-prod.yaml | oc create -f - -n {user}-argocd
+cat ~/workshop/content/modules/ROOT/examples/web-nodejs-prod.yaml | sed 's/$USER/{user}/' ~/web-nodejs-dev.yaml | oc create -f - -n {user}-argocd
 ----
 
 We can verify that the applications have been created in OpenShift GitOps by checking the application tiles.
