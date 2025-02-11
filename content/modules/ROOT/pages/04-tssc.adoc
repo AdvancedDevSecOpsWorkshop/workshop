@@ -325,7 +325,7 @@ Let's deploy these applications to two namespaces, {user}-dev and {user}-prod
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-dev.yaml | sed 's/$USER/{user}/' | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-dev.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
 ----
 
 and now let's deploy the application in the {user}-prod namespace:
@@ -333,7 +333,7 @@ and now let's deploy the application in the {user}-prod namespace:
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-prod.yaml | sed 's/$USER/{user}/' | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-prod.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
 ----
 
 We can verify that the applications have been created in OpenShift GitOps by checking the application tiles.
