@@ -20,7 +20,7 @@ spec:
           patch: |-
             - op: replace
               path: /spec/template/spec/containers/0/env/0/value
-              value: 'gateway-vertx-$USER-prod.$SUBDOMAIN'
+              value: 'gateway-vertx-$USER-prod'
   syncPolicy:
     automated:
       prune: true
