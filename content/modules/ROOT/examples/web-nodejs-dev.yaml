@@ -12,6 +12,15 @@ spec:
     path: globex/overlays/dev
     repoURL: 'https://gitea-gitea.$SUBDOMAIN/$USER/gitops.git'
     targetRevision: main
+    kustomize:
+      patches:
+        - target:
+            kind: Deployment
+            name:  web-nodejs
+          patch: |-
+            - op: replace
+              path: /spec/template/spec/containers/0/env/0/value
+              value: 'gateway-vertx-$USER-dev.$SUBDOMAIN'
   syncPolicy:
     automated:
       prune: true
