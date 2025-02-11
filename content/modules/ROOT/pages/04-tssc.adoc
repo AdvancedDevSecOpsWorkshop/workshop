@@ -438,9 +438,9 @@ image::/devsecops/acs-signature-integration.png[]
 
 Let's now see how Red Hat ACS allows you to monitor your cluster security, by inspecting image vulnerabilities.
 
-* On the left-side menu, click on "Vulnerability Management -> Dashboard", then select images on the top-right side
+* On the left-side menu, click on "Vulnerability Management -> Workloads CVEs", then select Images in the filter.
 
-image::/devsecops/acs-vuln-management.png[]
+image::/devsecops/acs-vuln-management2.png[]
 
 * On the filter section, type "Image" then hit enter, then type "globex-ui:main", and select the one with an "active" image status
 
