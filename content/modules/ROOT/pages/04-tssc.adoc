@@ -278,40 +278,6 @@ image::/devsecops/verify-tlog-signature-log.png[]
 This verification is performed every time the image is built, however in a later section we will look at how we can inform and enforce a signature requirement through a Policy. However
 before we do that, now that we have built the image and verified its signature, let's deploy the front-end application.
 
-== Adopting a GitOps approach for deployments across multiple namespaces
-
-As mentioned in the application architecture section, our "Globex" application would be deployed across multiple namespaces or clusters using OpenShift GitOps.
-
-Let's explore this step in the pipeline, then have a look at argocd to understand how it uses the manifests to target the desired cluster.
-
-* On the OpenShift console, on the left menu, Select Pipelines -> Pipelines, and select the pipelineRun with the "Succeeded" status (the same one as in the previous section).
-
-image::/devsecops/pipeline-group-4.png[]
-
-* *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a common approach when using tools like OpenShift GitOps. Let's have a look at the yaml file in Gitea.
-
-* Open Gitea's URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank"]
-
-* Login using the provided credentials: username: *{user}*, password: *openshift*.
-
-* Click on the last commit id, as shown in the screenshot below:
-
-image::/devsecops/gitea-commit-id.png[]
-
-* Take a look at the changes about the container image tag, as seen below. Because OpenShift GitOps is constantly monitoring that GitOps repository, any update to the yaml file triggers a reconciliation with the target DEV environment, namely the {user}-dev namespace, where the application get re-deployed.
-
-image::/devsecops/gitea-updated-manifest.png[]
-
-Let's now switch to OpenShift GitOps to see how the application gets deployed in the DEV namespace.
-
-* Open the OpenShift GitOps URL: link:https://argocd-server-gitops.{openshift_cluster_ingress_domain}[window="_blank"]
-
-* Select Login via Keycloak, and login as user *"{user}"* with password *openshift*
-
-* OpenShift GitOps uses a concept of an *"Application"* as a group of manifests stored in a git repository that need to be deployed altogether.
-
-image::/devsecops/argocd-applications.png[]
-
 == Using overlays and Kustomize in the DevSecOps pipeline
 
 A common pattern when deploying an application to multiple environments is to have a a repository that contains the following structure:
@@ -353,6 +319,40 @@ If we pay closer attention, there are 3 items worth mentioning to understand the
 You can see more details by opening the "gitops" repository in gitea, and navigating to "globex" folder.
 
 image::/devsecops/app-details-dev.png[]
+
+== Adopting a GitOps approach for deployments across multiple namespaces
+
+As mentioned in the application architecture section, our "Globex" application would be deployed across multiple namespaces or clusters using OpenShift GitOps.
+
+Let's explore this step in the pipeline, then have a look at argocd to understand how it uses the manifests to target the desired cluster.
+
+* On the OpenShift console, on the left menu, Select Pipelines -> Pipelines, and select the pipelineRun with the "Succeeded" status (the same one as in the previous section).
+
+image::/devsecops/pipeline-group-4.png[]
+
+* *update-dev-manifest*: This task is responsible for updating the manifests in the git repository, by updating the container image reference in the deployment yaml file, using Kustomize. This is a common approach when using tools like OpenShift GitOps. Let's have a look at the yaml file in Gitea.
+
+* Open Gitea's URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank"]
+
+* Login using the provided credentials: username: *{user}*, password: *openshift*.
+
+* Click on the last commit id, as shown in the screenshot below:
+
+image::/devsecops/gitea-commit-id.png[]
+
+* Take a look at the changes about the container image tag, as seen below. Because OpenShift GitOps is constantly monitoring that GitOps repository, any update to the yaml file triggers a reconciliation with the target DEV environment, namely the {user}-dev namespace, where the application get re-deployed.
+
+image::/devsecops/gitea-updated-manifest.png[]
+
+Let's now switch to OpenShift GitOps to see how the application gets deployed in the DEV namespace.
+
+* Open the OpenShift GitOps URL: link:https://argocd-server-gitops.{openshift_cluster_ingress_domain}[window="_blank"]
+
+* Select Login via Keycloak, and login as user *"{user}"* with password *openshift*
+
+* OpenShift GitOps uses a concept of an *"Application"* as a group of manifests stored in a git repository that need to be deployed altogether.
+
+image::/devsecops/argocd-applications.png[]
 
 == Deploying to production using a Pull Request in Gitea
 
