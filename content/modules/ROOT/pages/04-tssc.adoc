@@ -451,7 +451,7 @@ Now that we have reviewed the policy, let's see review the policy violations for
 
 * Click on `Policy Violations` in the left sidebar and then in the filter add a filter for the `Trusted Signature Policy`
 
-image::/devsecops/acs-policy-violations.png
+image::/devsecops/acs-policy-violations.png[]
 
 * Notice all of the images violate this policy except for the `globex-ui` image which we just built with the Pipeline with a valid and verified signature.
 
