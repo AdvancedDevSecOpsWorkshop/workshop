@@ -394,6 +394,8 @@ That's it, you now have a better understanding of how the DevSecOps pipeline is 
 
 == Using security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
+=== Review Trusted Signature Policy
+
 * Open the Red Hat ACS console at link:https://central-stackrox.{openshift_cluster_ingress_domain}[window="_blank"]
 
 * Choose the "Keycloak" auth provider as shown below:
@@ -442,6 +444,21 @@ image::/devsecops/acs-policy-criteria-section.png[]
 * In the pop-up, click on "cosign", and this will take you to the public signature that is used to verify the container image, in pair with the private signature that is used by OpenShift Pipelines / Tekton Chains to sign the container images after the build. We will talk about the image signing process in more details in the next pipeline.
 
 image::/devsecops/acs-signature-integration.png[]
+
+=== Viewing Policy Violations
+
+Now that we have reviewed the policy, let's see review the policy violations for this policy.
+
+* Click on `Policy Violations` in the left sidebar and then in the filter add a filter for the `Trusted Signature Policy`
+
+image::/devsecops/acs-policy-violations
+
+* Notice that all of the images violate this policy except for the `globex-ui` image which we just built with the Pipeline with a valid signature.
+
+[NOTE]
+If you are wondering why signature violations are not appearing from other namespaces, this Policy has been scoped to the `{user}-dev` and `{user}-prod` namespaces.
+
+=== Viewing Vulnerabilities
 
 Let's now see how Red Hat ACS allows you to monitor your cluster security, by inspecting image vulnerabilities.
 
