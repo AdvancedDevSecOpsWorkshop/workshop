@@ -453,7 +453,7 @@ Now that we have reviewed the policy, let's see review the policy violations for
 
 image::/devsecops/acs-policy-violations
 
-* Notice that all of the images violate this policy except for the `globex-ui` image which we just built with the Pipeline with a valid signature.
+* Notice all of the images violate this policy except for the `globex-ui` image which we just built with the Pipeline with a valid and verified signature.
 
 [NOTE]
 If you are wondering why signature violations are not appearing from other namespaces, this Policy has been scoped to the `{user}-dev` and `{user}-prod` namespaces.
