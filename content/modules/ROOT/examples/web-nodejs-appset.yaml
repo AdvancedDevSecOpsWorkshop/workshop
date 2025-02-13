@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: web-nodejs
+  namespace: $USER-argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - git:
+      repoURL: https://gitea-gitea.$SUBDOMAIN/$USER/gitops.git
+      revision: HEAD
+      directories:
+      - path: globex/overlays/*
+      values:
+        user: $USER
+  template:
+    metadata:
+      name: app-{{.path.basename}}
+      namespace: '{{ .values.user }}-argocd'
+    spec:
+      destination:
+        name: in-cluster
+        namespace: '{{ .values.user }}-{{.path.basename}}'
+      project: '{{ .values.user }}'
+      source:
+        path: '{{.path.path}}'
+        repoURL: https://gitea-gitea.$SUBDOMAIN/$USER/gitops.git
+        targetRevision: main
+        kustomize:
+          patches:
+            - target:
+                kind: Deployment
+                name: web-nodejs
+              patch: |-
+                - op: replace
+                  path: /spec/template/spec/containers/0/env/0/value
+                  value: 'gateway-vertx-{{ .values.user }}-{{.path.basename}}'
+      syncPolicy:
+        automated:
+          prune: true
