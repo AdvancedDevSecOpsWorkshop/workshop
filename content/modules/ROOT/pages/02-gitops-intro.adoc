@@ -265,7 +265,6 @@ Next have a look at the ApplicationSet that was deployed with this command:
 oc get appset coolstore-apps -o yaml -n {user}-argocd | oc neat
 ----
 
-
 [.console-output]
 [source,yaml,subs="attributes+,+macros"]
 ----
@@ -318,6 +317,23 @@ can be validated with the following command:
 [source,sh,subs="attributes",role=execute]
 ----
 oc get app coolstore-app-dev -o=jsonpath='{.metadata.ownerReferences}' -n {user}-argocd | jq -s .
+----
+
+[.console-output]
+[source,yaml,subs="attributes+,+macros"]
+----
+[
+  [
+    {
+      "apiVersion": "argoproj.io/v1alpha1",
+      "blockOwnerDeletion": true,
+      "controller": true,
+      "kind": "ApplicationSet",
+      "name": "coolstore-apps",
+      "uid": "1cb40de5-09a0-440e-a12e-28941e9c81b1"
+    }
+  ]
+]
 ----
 
 In module 4 we will revisit ApplicationSets again but using the git generator.
