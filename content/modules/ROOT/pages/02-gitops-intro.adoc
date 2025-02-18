@@ -229,6 +229,46 @@ You can also disable the Self-healing behavior by patching the application with 
 oc patch application/coolstore-app-dev -n {user}-argocd --type=merge -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":false}}}}'
 ----
 
+[#applicationsets]
+== ApplicationSets
+
+In the previous sections we deployed the development and production versions of the examples as individual Applications. However there
+are often situations, as per what we did previously, where you want to deploy or generate multiple versions of the same Application with variations.
+
+This is where the Argo CD link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset[ApplicationSet,window="_blank"] feature
+comes into play. ApplicationSets enable you to generate Application resources using templating. Each ApplicationSet can include one or
+ more generators that power the creation of Applications. Argo CD currently includes many different generators and enables users to create custom generators via a Plugin architecture.
+
+The available link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators[generators,,window="_blank"] can operate off of static information,
+such as the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-List[List,window="_blank"] generator, or
+dynamically by interacting with external entities such as the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git/[git]
+generator. Finally there are generators that can combine the output of other generators such as the
+link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Matrix[Matrix,,window="_blank"]
+and link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Merge[Merge,,window="_blank"] generators.
+
+Let's look at a simple example of an Application that uses a List generator to create the development and production Applications
+for the `coolstore-app` Application we deployed earlier.
+
+Deploy the ApplicationSet using the following command:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-appset.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
+----
+
+Next have a look at the ApplicationSet that was deployed with this command:
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+oc get appset coolstore-apps -o yaml -n {user}-argocd | oc neat
+----
+
+
+
+
+
 [#helm]
 == Helm
 include::_attributes.adoc[]

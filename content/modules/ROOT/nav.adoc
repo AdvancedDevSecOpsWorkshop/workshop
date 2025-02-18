@@ -10,6 +10,7 @@
 * xref:02-gitops-intro.adoc[2. Introduction to GitOps]
 ** xref:02-gitops-intro.adoc#introduction[Introduction]
 ** xref:02-gitops-intro.adoc#deploying-application[Deploying Coolstore Application]
+** xref:02-gitops-intro.adoc#applicationsets[ApplicationSets]
 ** xref:02-gitops-intro.adoc#helm[Exploring Helm Charts]
 
 * xref:03-advanced-gitops.adoc[3. Advanced GitOps]

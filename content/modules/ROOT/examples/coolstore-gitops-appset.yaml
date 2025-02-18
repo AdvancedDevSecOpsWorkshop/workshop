@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: coolstore-apps
+  namespace: $USER-argocd
+spec:
+  goTemplate: true
+  goTemplateOptions: ["missingkey=error"]
+  generators:
+  - list:
+      elements:
+      - environment: dev
+      - environment: prod
+  template:
+    metadata:
+      name: coolstore-app-{{.environment}}
+      namespace: $USER-{{.environment}}
+    spec:
+      destination:
+        namespace: $USER-{{.environment}}
+        name: in-cluster
+      project: $USER
+      source:
+        path: content/modules/ROOT/files/module-01
+        repoURL: https://gitea-gitea.$SUBDOMAIN/$USER/workshop.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
