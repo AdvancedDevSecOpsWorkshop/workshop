@@ -232,7 +232,7 @@ oc patch application/coolstore-app-dev -n {user}-argocd --type=merge -p='{"spec"
 [#applicationsets]
 == ApplicationSets
 
-In the previous sections we deployed the development and production versions of the examples as individual Applications. However there
+In the previous sections we deployed the development and production versions of the `coolstore-app` as individual Applications. However there
 are often situations, as per what we did previously, where you want to deploy or generate multiple versions of the same Application with variations.
 
 This is where the Argo CD link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset[ApplicationSet,window="_blank"] feature
@@ -266,8 +266,61 @@ oc get appset coolstore-apps -o yaml -n {user}-argocd | oc neat
 ----
 
 
+[.console-output]
+[source,yaml,subs="attributes+,+macros"]
+----
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: coolstore-apps
+  namespace: user1-argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io <1>
+spec:
+  generators:
+  - list: <2>
+      elements:
+      - environment: dev <3>
+      - environment: prod
+  goTemplate: true
+  goTemplateOptions:
+  - missingkey=error
+  template: <4>
+    metadata:
+      name: coolstore-app-{{.environment}} <5>
+      namespace: user1-argocd
+    spec:
+      destination:
+        name: in-cluster
+        namespace: user1-{{.environment}}
+      project: user1
+      source:
+        path: content/modules/ROOT/files/module-01
+        repoURL: https://gitea-gitea.apps.cluster-7mrzs.7mrzs.sandbox310.opentlc.com/user1/workshop.git
+        targetRevision: HEAD
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+----
+<1> Argo CD will automatically delete the Applications when the ApplicationSet is deleted. Including a finalizer ensures that the
+resources the Application deployed will also be deleted. See more information link:https://argo-cd.readthedocs.io/en/stable/user-guide/app_deletion/#about-the-deletion-finalizer[here,window="_blank"].
+<2> We are using the `list` generator which enables us to provide a static list of elements to dynamically
+generate applications, basically it is 1:1 per element
+<3> Each element has one value, `environment`, which will be templated into the resulting Application object.
+<4> The `template` section is where we define the Application resource that the ApplicationSet will create
+<5> Here is an example of referencing the `environment` value to template the name.
 
+Note that while we created these Applications earlier, the ApplicationSet will now assume ownership of them, This
+can be validated with the following command:
 
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+oc get app coolstore-app-dev -o=jsonpath='{.metadata.ownerReferences}' -n {user}-argocd | jq -s .
+----
+
+In module 4 we will revisit ApplicationSets again but using the git generator.
 
 [#helm]
 == Helm
