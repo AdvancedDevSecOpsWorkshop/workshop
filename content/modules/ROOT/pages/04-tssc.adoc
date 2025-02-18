@@ -287,21 +287,28 @@ A common pattern when deploying an application to multiple environments is to ha
     ** *dev*: specific values that will override the ones in the base for the "dev" environment
     ** *prod*: specific values that will override the ones in the base for the "prod" environment
 
-Let's deploy these applications to two namespaces, {user}-dev and {user}-prod
+Let's deploy these applications using an ApplicationSet as we did previously but this time we will use a git generator.
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-dev.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-appset.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
 ----
 
-and now let's deploy the application in the {user}-prod namespace:
+Let's have a quick look at our new ApplicationSet:
 
 [.console-input]
 [source,sh,subs="attributes",role=execute]
 ----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/web-nodejs-prod.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
+oc get appset coolstore-apps -o yaml -n {user}-argocd | oc neat
 ----
+
+[.console-output]
+[source,yaml,subs="attributes+,+macros"]
+----
+
+----
+
 
 We can verify that the applications have been created in OpenShift GitOps by checking the Application tiles.
 
