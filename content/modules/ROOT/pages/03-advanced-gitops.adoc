@@ -561,3 +561,7 @@ viewed in the UI. Switch to the Argo CD UI and navigate to "Settings > Projects"
 project {user}. You should see the sourceNamespaces defined as follows:
 
 image::gitops/argocd-appproject-sourcenamespaces.png[]
+
+[NOTE]
+We have also enabled the ApplicationSet in Any Namespace feature as well however be
+aware that this feature is considered Technical Preview in OpenShift GitOps.

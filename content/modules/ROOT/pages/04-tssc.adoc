@@ -4,7 +4,7 @@
 
 
 This section will showcase how OpenShift Platform Plus (OPP) can be used to provide a comprehensive DevSecOps workflow, with a focus on Software Supply Chain Security throughout the entire process, from development to production.
-DevSecOps stands for Development, Security and Operations, and is a hollistic approach that promotes continous security within your DevOps practices. Our example will highlight capabilities such as defining CI/CD pipelines CD with security gates, image scanning and signing, secure storage in a Trusted registry, and deployment to secured clusters with advanced security monitoring and alerting.
+DevSecOps stands for Development, Security and Operations, and is a holistic approach that promotes continuous security within your DevOps practices. Our example will highlight capabilities such as defining CI/CD pipelines CD with security gates, image scanning and signing, secure storage in a Trusted registry, and deployment to secured clusters with advanced security monitoring and alerting.
 
 Let's examine all the components involved in such a DevSecOps pipeline to deploy our e-commerce application named Globex.
 
@@ -212,7 +212,8 @@ The `critical` shown in the output json at the end is highlighting the critical 
 
 === Verifying With a Transparency Log
 
-Red Hat Trusted Artifact Signer (RHTAS) provides a suite of tools to support image signing. These tools are primarily sourced from the upstream Sigstore project and include the following:
+link:https://developers.redhat.com/products/trusted-artifact-signer/overview[Red Hat Trusted Artifact Signer (RHTAS),window="_blank"] provides a suite of tools to support
+image signing. These tools are primarily sourced from the upstream link:https://www.sigstore.dev[Sigstore,window="_blank"] project and include the following:
 
 * *Certificate Transparency Log*: A certificate transparency log is a permanent and immutable ledger or record-keeping system for signing events that is immune to change and remains inaccessible to the public. The log can be queried for making informed decisions on the integrity and authenticity of an artifact, verification of a particular entry, or retrieval of entries.
 * *Certifcate Authority*:  A certificate authority is a free root certification authority that issues short-lived, temporary certificates to an authorized identity and publishes them in a transparency log. It provides the option to use existing self-managed keys maintained in a third-party key management system.

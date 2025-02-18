@@ -63,7 +63,7 @@ spec:
       selfHeal: true
 ----
 <1> The destination server is API endpoint for the cluster where Argo CD is
-  running -- in this case, using the locally-resolveable URL for the cluster
+  running -- in this case, using the locally-resolvable URL for the cluster
 <2> Here you're installing the application in Argo CD's `default` project
   (`.spec.project`).
 [NOTE]
@@ -236,10 +236,10 @@ In the previous sections we deployed the development and production versions of 
 are often situations, as per what we did previously, where you want to deploy or generate multiple versions of the same Application with variations.
 
 This is where the Argo CD link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset[ApplicationSet,window="_blank"] feature
-comes into play. ApplicationSets enable you to generate Application resources using templating. Each ApplicationSet can include one or
+comes into play. ApplicationSets enables you to generate Application resources using templating. Each ApplicationSet can include one or
  more generators that power the creation of Applications. Argo CD currently includes many different generators and enables users to create custom generators via a Plugin architecture.
 
-The available link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators[generators,,window="_blank"] can operate off of static information,
+The available link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators[generators,window="_blank"] can operate off of static information,
 such as the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-List[List,window="_blank"] generator, or
 dynamically by interacting with external entities such as the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git/[git]
 generator. Finally there are generators that can combine the output of other generators such as the
@@ -336,13 +336,14 @@ oc get app coolstore-app-dev -o=jsonpath='{.metadata.ownerReferences}' -n {user}
 ]
 ----
 
-In module 4 we will revisit ApplicationSets again but using the git generator.
+As we can see ApplicationSets provide an easy way to generate Application objects both statically, but
+more importantly as we will see in module 4, dynamically.
 
 [#helm]
 == Helm
 include::_attributes.adoc[]
 
-link:https://helm.sh/[Helm] is a package and install manager that standardises and
+link:https://helm.sh/[Helm] is a package and install manager that standardizes and
 simplifies packaging and deployment of containerized applications with Kubernetes. Unlike Kustomize, which
 uses a patching approach, Helm uses templating to enable users to tailor the deployed manifests
 as required.
@@ -498,7 +499,7 @@ spec:
 [#helm-charts-deploy-applications]
 === Using Helm charts to deploy applications in Argo CD
 
-In this section, we will utilise Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the BGD app. This file contains essential configuration details such as the destination, source, project, and sync policy.
+In this section, we will utilizes Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the BGD app. This file contains essential configuration details such as the destination, source, project, and sync policy.
 
 ==== Step 1: View the Argo CD Application Configuration
 
@@ -577,7 +578,7 @@ You will notice a section in this YAML file that defines the name and path of th
         - custom_values_1/values.yaml
 ----
 
-This configuration specifies how Helm accesses and uses the custom values file to modify the Helm chart's behaviour.
+This configuration specifies how Helm accesses and uses the custom values file to modify the Helm chart's behavior.
 
 ==== Step 2: Explore the Custom Values File
 
@@ -615,7 +616,7 @@ Using ArgoCD to deploy a Helm chart with custom values files offers the advantag
 
 In this section, we'll explore a YAML file where parameter values are embedded directly within the Application, eliminating the need for separate values files.
 
-==== Step 1: Examine the Parameterised Configuration
+==== Step 1: Examine the Parameterized Configuration
 
 Begin by examining the YAML file named "pipeline-helm-app-para.yaml." This file, similar to the previous configurations, defines an Argo CD Application for deploying a Helm chart. However, a notable difference is the inclusion of all desired parameter values directly within the YAML file:
 
@@ -635,9 +636,9 @@ In the 'parameters' section of the YAML, you will notice that we have included a
 
 This approach allows us to apply these settings directly to Argo CD without relying on external values files.
 
-==== Step 2: Apply the Parameterised Configuration
+==== Step 2: Apply the Parameterized Configuration
 
-Apply this parameterised configuration to Argo CD:
+Apply this parameterize configuration to Argo CD:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
@@ -649,7 +650,7 @@ Return to the ArgoCD interface and navigate to the 'App Details' section. Click 
 
 image::gitops-helm/helm-parameters.png[]
 
-Deploying a Helm chart through ArgoCD with integrated parameters allows you to customise default settings without modifying the chart itself or relying on external values files. This centralises configuration management across different environments.
+Deploying a Helm chart through ArgoCD with integrated parameters allows you to customize default settings without modifying the chart itself or relying on external values files. This centralizes configuration management across different environments.
 
 ==== Step 4: Make Further Adjustments
 
@@ -662,14 +663,14 @@ In this module we learned how to deploy Helm charts using Argo CD and we looked 
 
 |===
 |*Custom Values File - Pros* | *Built-in Parameters - Pros*
-|Customise Configurations:Create a separate values.yaml file to tailor configurations for different environments. Override default values in the chart’s values.yaml file with your specific settings.|Environment-specific YAML: Manage YAML configurations for each environment using branches or tags.
+|Customize Configurations:Create a separate values.yaml file to tailor configurations for different environments. Override default values in the chart’s values.yaml file with your specific settings.|Environment-specific YAML: Manage YAML configurations for each environment using branches or tags.
 | Rapid Modification: External values files provide an advantage over managing multiple Helm charts with individual values.
 Facilitates quick modification of multiple values through a single file change.|No reliance on external values files makes local testing and debugging with `helm template` and `helm lint` easier.
 |*Custom Values File - Cons*|*Built-in Parameters - Cons*
-|Manual Updates: Requires manual updates to the values file, deviating from the default Helm charts behaviour.|Customisation Limitations: Limited customisation options due to YAML file constraints.
+|Manual Updates: Requires manual updates to the values file, deviating from the default Helm charts behavior.|Customization Limitations: Limited customization options due to YAML file constraints.
 |Potential for errors or inconsistencies if the values file and chart configurations do not align.|Necessitates a separate chart for each environment, potentially leading to redundancy.
 |===
 
 You can read more about the patterns for deploying Helm charts with Argo CD link:https://developers.redhat.com/articles/2023/05/25/3-patterns-deploying-helm-charts-argocd[here].
 
-In conclusion, this module introduced Helm as a Kubernetes package manager with templating capabilities. We explored its usage in ArgoCD, focusing on rendering Helm charts as pure YAML and customising deployments with custom values and parameter values for flexible configuration management. This approach streamlines the deployment process and enables customised configurations without altering the Helm chart directly.
+In conclusion, this module introduced Helm as a Kubernetes package manager with templating capabilities. We explored its usage in ArgoCD, focusing on rendering Helm charts as pure YAML and customizing deployments with custom values and parameter values for flexible configuration management. This approach streamlines the deployment process and enables customized configurations without altering the Helm chart directly.
