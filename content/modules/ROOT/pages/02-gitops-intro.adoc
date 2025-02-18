@@ -272,7 +272,7 @@ apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
   name: coolstore-apps
-  namespace: user1-argocd
+  namespace: {user}-argocd
   finalizers:
     - resources-finalizer.argocd.argoproj.io <1>
 spec:
@@ -287,15 +287,15 @@ spec:
   template: <4>
     metadata:
       name: coolstore-app-{{.environment}} <5>
-      namespace: user1-argocd
+      namespace: {user}-argocd
     spec:
       destination:
         name: in-cluster
-        namespace: user1-{{.environment}}
-      project: user1
+        namespace: {user}-{{.environment}}
+      project: {user}
       source:
         path: content/modules/ROOT/files/module-01
-        repoURL: https://gitea-gitea.apps.cluster-7mrzs.7mrzs.sandbox310.opentlc.com/user1/workshop.git
+        repoURL: https://gitea-gitea.{subdomain}/{user}/workshop.git
         targetRevision: HEAD
       syncPolicy:
         automated:
