@@ -69,6 +69,6 @@ sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app
 This module shows Advanced GitOps techniques in the context of supporting Argo CD as part of a platform solution. It is dependent on Module 1
 but is a standalone module otherwise.
 
-== Module 4 - Trsuted Software Supply Chain
+== Module 4 - Trusted Software Supply Chain
 
 This module depends on module 1 and module 2, please perform those prerequisites before proceeding with this module.
