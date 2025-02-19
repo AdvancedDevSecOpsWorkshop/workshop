@@ -1,5 +1,5 @@
 name: modules
-title: OpenShift DevOps Roadshow
+title: OpenShift DevSecOps Roadshow
 version: main
 nav:
   - modules/ROOT/nav.adoc

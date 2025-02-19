@@ -1,6 +1,6 @@
 ---
 site:
-  title: OpenShift DevOps Roadshow(Dev Mode)
+  title: OpenShift DevSecOps Roadshow
   # url: http://localhost:3000
   start_page: modules::index.adoc
 
@@ -27,8 +27,8 @@ runtime:
 output:
   dir: ./www
 
-antora:
-  extensions:
-    - id: dev-mode
-      require: ./content/lib/dev-mode.js
-      enabled: true
+# antora:
+#   extensions:
+#     - id: dev-mode
+#       require: ./content/lib/dev-mode.js
+#       enabled: true
