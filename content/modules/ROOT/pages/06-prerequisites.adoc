@@ -1,0 +1,74 @@
+= Prerequisites
+
+Each module in this workshop depends on work performed in previous modules. This section
+lays out the work that is required from previous modules in case you need to advance for
+some reason such as not being able to complete a module due to time, technical difficulties
+or the instructor running a shortened version of the workshop.
+
+== Module 1 - OpenShift as an Application Platform
+
+In this module participants learn how to use the OpenShift console and command line to
+deploy applications. The work performed here to login into OpenShift and clone
+the workshop git repository is required in all following modules.
+
+* Access the OpenShift console here:
+
+link:{openshift_console_url}[{openshift_console_url},window='_blank']
+
+* Login into the console using the *Keycloak* provider:
+
+image::ocp-app/openshift_login.png[width=80%]
+
+[IMPORTANT]
+If you accidentally login with the `htpasswd_provider` option then you will not be
+able to login to OpenShift with Keycloak. Please ask your instructor
+to correct it by deleting the OpenShift user and identity before logging in again
+with Keycloak.
+
+* Use the username `{user}` and password `openshift`
+
+* In OpenShift Console you will need to click on your user name in
+the upper right corner and select `Copy login command`:
+
+image::ocp-app/oc_login_command.png[width=80%]
+
+* Paste the command into the terminal to login into OpenShift.
+
+* Finally clone the `workshop` repository with the following command:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+git clone -b main --single-branch https://gitea-gitea.{subdomain}/user1/workshop ~/workshop
+----
+
+== Module 2 - Introduction to GitOps
+
+This module provides an introduction to GitOps and shows how to deploy applications using
+kustomize, helm and ApplicationSets. These applications are required to be deployed for Module
+4.
+
+* Deploy the Coolstore Application using the ApplicationSet
+
+[.console-input]
+[source,sh,subs="attributes",role=execute]
+----
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-appset.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
+----
+
+* Deploy the Pipeline that will be required to build the front-end image in Module 4
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+----
+sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc create -f - -n {user}-argocd
+----
+
+== Module 3 - Advanced GitOps
+
+This module shows Advanced GitOps techniques in the context of supporting Argo CD as part of a platform solution. It is dependent on Module 1
+but is a standalone module otherwise.
+
+== Module 4 - Trsuted Software Supply Chain
+
+This module depends on module 1 and module 2, please perform those prerequisites before proceeding with this module.

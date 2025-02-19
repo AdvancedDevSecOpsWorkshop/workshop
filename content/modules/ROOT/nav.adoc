@@ -19,5 +19,13 @@
 ** xref:03-advanced-gitops.adoc#argocd-deep-dive[Argo CD Deep Dive]
 
 * xref:04-tssc.adoc[4. Trusted Software Supply Chain with OpenShift Pipelines]
+** xref:04-tssc.adoc#advanced-devsecops-pipeline[Advanced DevSecOps Pipeline]
+** xref:04-tssc.adoc#trusted-image-registry[Trusted Image Registry]
+** xref:04-tssc.adoc#validating-signatures[Validating Signatures]
+** xref:04-tssc.adoc#deploying-web-application-gitops[Deploying Web Application with GitOps]
+** xref:04-tssc.adoc#using-security-policies[Using Security Policies]
 
 * xref:05-conclusion.adoc[5. Conclusion]
+** xref:05-conclusion.adoc#more-information[More Information]
+
+* xref:06-prerequisites.adoc[6. Prerequisites]

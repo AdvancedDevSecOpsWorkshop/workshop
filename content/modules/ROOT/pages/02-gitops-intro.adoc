@@ -526,7 +526,6 @@ This YAML configuration defines an Argo CD Application named "pipeline-helm" tha
 
 ==== Step 2: Deploy/Observe the Argo CD Application
 
-
 Apply the configuration in the file to create the Argo CD Application in the namespace {user}-argocd. This application will deploy the Helm chart for the pipeline app:
 
 [.console-input]

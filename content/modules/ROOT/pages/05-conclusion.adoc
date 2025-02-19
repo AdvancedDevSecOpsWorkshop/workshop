@@ -1,12 +1,36 @@
 = Conclusion (15 Minutes)
 
-In this module
+In this workshop you have learned the following:
 
-== Introduction
+* Using the OpenShift Console to deploy applications
+* How to use GitOps to deploy Applications using Kustomize and Helm
+* Leveraging GitOps ApplicationSets to dynamically generate Applications
+* Advanced GitOps configuration and techniques needed for deploying it as part of a platform solution
+* Using OpenShift Pipelines to build applications validating the supply-side software chain
+* Leveraging Red Hat Trusted Artifact Signer (RHTAS) based on SigStore to validate signed images
+* Using Red Hat Advanced Cluster Security to enforce policies to require signed images
 
-I
+We hope you enjoyed the time spent in this workshop. As always feedback is greatly appreciated,
+please feel free to offer comments and suggestions to your instructors in terms of content or
+process improvements you would like to see in this workshop.
 
-== Conclusion
-
-A
+[#more-information]
 == More Information:
+
+=== Free e-Books from Red Hat
+
+[cols="1,1"]
+|===
+|image::/conclusion/modern-devops-lifecycle-cover.png[The Modern DevOps Lifecycle, https://developers.redhat.com/e-books/modern-devops-lifecycle]
+|image:://conclusion/GettingGitOps.png[Getting GitOps, https://developers.redhat.com/e-books/getting-gitops-practical-platform-openshift-argo-cd-and-tekton]
+|===
+
+=== GitHub Repository
+
+The content of this workshop and the GitOps plumbing use to provision this workshop is available in Git
+in the link:https://github.com/AdvancedDevSecOpsWorkshop[AdvancedDevSecOps,window=+"_blank"] organization. Specific
+repositories and links:
+
+* GitHub repo for link:https://github.com/AdvancedDevSecOpsWorkshop/workshop[raw ASCIIDoc content,window="_blank"]
+* Browseable compiled workshop link:https://advanceddevsecopsworkshop.github.io/workshop[content,window=+_blank"].
+* GitOps plumbing used to provision workshop is in the link:https://github.com/AdvancedDevSecOpsWorkshop/bootstrap[bootstrap,window="_blank"] repo.

@@ -1,14 +1,15 @@
 = DevSecOps with OpenShift Platform Plus (60 mins)
 
+[#introduction]
 == Introduction
-
 
 This section will showcase how OpenShift Platform Plus (OPP) can be used to provide a comprehensive DevSecOps workflow, with a focus on Software Supply Chain Security throughout the entire process, from development to production.
 DevSecOps stands for Development, Security and Operations, and is a holistic approach that promotes continuous security within your DevOps practices. Our example will highlight capabilities such as defining CI/CD pipelines CD with security gates, image scanning and signing, secure storage in a Trusted registry, and deployment to secured clusters with advanced security monitoring and alerting.
 
 Let's examine all the components involved in such a DevSecOps pipeline to deploy our e-commerce application named Globex.
 
-== The advanced DevSecOps pipeline - in-depth look
+[#advanced-devsecops-pipeline]
+== Advanced DevSecOps Pipeline
 
 In this section, we will have a look at the end-to-end DevSecOps pipeline and explore the security gates that are provided in it.
 
@@ -26,7 +27,7 @@ image::/devsecops/pipeline-view.png[width=100%]
 
 Before we do that, let's review the repositories in Gitea that will be used by this pipeline to deploy the application using OpenShift GitOps.
 
-== Login to Gitea to review the repositories
+=== Login to Gitea to review the repositories
 
 We are using Gitea as our source control system for this workshop. To access Gitea, click on this URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank"], and then login using Keycloak. Do *not* login directly with user1 credentials.
 
@@ -45,7 +46,7 @@ The pre-created repositories are as follows:
 [NOTE]
 While these repositories will disappear when the workshop environment is terminated, you can review the public version of these in the GitHub organization here link:https://github.com/AdvancedDevSecOpsWorkshop[window="_blank"].
 
-== Start the Pipeline
+=== Start the Pipeline
 
 We see that the pipeline hasn't been run yet, so let's trigger it using a "PipelineRun".
 
@@ -107,7 +108,8 @@ That's it! You now have a deeper understanding of the Security capabilities that
 [NOTE]
 While this workshop is using OpenShift Pipelines for Continuous Integration (CI), any CI tool such as GitHub Actions, GitLab, Jenkins, etc is easily capable of integrating with the Red Hat technologies providing these capabilities. In fact if you run an `oc get task <task-name> -o yaml -n {user}-cicd` you will see that the task is simply running a bash script.
 
-== Using a Trusted image registry to store signed images
+[#trusted-image-registry]
+== Trusted Image Registry
 
 Red Hat Quay is a trusted, geo-replicated, security enabled container registry that allows to scan container image for vulnerabilities, but also store the signed images with all their metadata, such as the generated SBOM files and the signatures. These assets can be used later on in the pipelines for verification and validation purposes, like we have seen in the previous pipeline.
 
@@ -131,6 +133,7 @@ Quay also provides a summary of the vulnerabilities of the container image, but 
 
 That's it, you now have a better understanding of Quay capabilities to store the signed container images, along with the metadata such as SBOMs, signatures etc.
 
+[#validating-signatures]
 == Validating Signatures
 
 === Manual Verification
@@ -279,7 +282,10 @@ image::/devsecops/verify-tlog-signature-log.png[]
 This verification is performed every time the image is built, however in a later section we will look at how we can inform and enforce a signature requirement through a Policy. However
 before we do that, now that we have built the image and verified its signature, let's deploy the front-end application.
 
-== Using overlays and Kustomize in the DevSecOps pipeline
+[#deploying-web-application-gitops]
+== Deploying Web Application
+
+=== Using overlays and Kustomize in the DevSecOps pipeline
 
 A common pattern when deploying an application to multiple environments is to have a a repository that contains the following structure:
 
@@ -400,7 +406,7 @@ You can see more details by opening the "gitops" repository in gitea, and naviga
 
 image::/devsecops/app-details-dev.png[]
 
-== Adopting a GitOps approach for deployments across multiple namespaces
+=== Adopting a GitOps approach for deployments across multiple namespaces
 
 As mentioned in the application architecture section, our "Globex" application would be deployed across multiple namespaces or clusters using OpenShift GitOps.
 
@@ -436,7 +442,7 @@ image::/devsecops/argocd-applications.png[]
 
 Notice that the `app-dev` and `app-prod` Applications are targeted to different namespaces, `{user}-dev` and `{user}-prod`. They could just as easily be targeted to different clusters as well since it is common in many organizations to have separate clusters for non-production versus production.
 
-== Deploying to production using a Pull Request in Gitea
+=== Deploying to production using a Pull Request in Gitea
 
 We have deployed the same application to the "PROD" environment using the app-prod Application in OpenShift GitOps. The main difference is that the prod version is using "globex/overlays/prod" for the specific values required for production.
 
@@ -467,7 +473,8 @@ image::/devsecops/globex-ui.png[]
 
 That's it, you now have a better understanding of how the DevSecOps pipeline is combined with OpenShift GitOps for a multicluster deployment of the "Globex" application.
 
-== Using security policies in Red Hat Advanced Cluster Security (Red Hat ACS)
+[#using-security-policies]
+== Using Security Policies in Red Hat Advanced Cluster Security (Red Hat ACS)
 
 === Review Trusted Signature Policy
 
