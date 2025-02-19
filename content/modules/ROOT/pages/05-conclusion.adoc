@@ -21,8 +21,8 @@ process improvements you would like to see in this workshop.
 
 [cols="1,1"]
 |===
-|image::/conclusion/modern-devops-lifecycle-cover.png[The Modern DevOps Lifecycle, https://developers.redhat.com/e-books/modern-devops-lifecycle]
-|image:://conclusion/GettingGitOps.png[Getting GitOps, https://developers.redhat.com/e-books/getting-gitops-practical-platform-openshift-argo-cd-and-tekton]
+a|image::conclusion/modern-devops-lifecycle-cover.png[The Modern DevOps Lifecycle, https://developers.redhat.com/e-books/modern-devops-lifecycle]
+a|image::conclusion/GettingGitOps.png[Getting GitOps, https://developers.redhat.com/e-books/getting-gitops-practical-platform-openshift-argo-cd-and-tekton]
 |===
 
 === GitHub Repository
