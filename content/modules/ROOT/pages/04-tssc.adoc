@@ -129,7 +129,7 @@ You can also click on the *"Show signatures"* button on the top-right side to re
 
 image::/devsecops/quay-image-signed.png[]
 
-Quay also provides a summary of the vulnerabilities of the container image, but since we've already seen that with Red Hat ACS, let's skip to the next section.
+Quay also provides a summary of the vulnerabilities of the container image, but will save that for when we review Red Hat Advanced Cluster Security so let's skip to the next section.
 
 That's it, you now have a better understanding of Quay capabilities to store the signed container images, along with the metadata such as SBOMs, signatures etc.
 
