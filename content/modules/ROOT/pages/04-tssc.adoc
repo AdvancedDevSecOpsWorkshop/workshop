@@ -458,12 +458,14 @@ Click on the pull request and then click on Create Merge Commit, and select crea
 
 image::/devsecops/gitea-merge-commit.png[]
 
-* In the Pull Request details, click on *Files Changed*, and you should see that we have updated the image pullspec for the prod environment, as seen below:
+* In the Pull Request details, click on *Files Changed*, and you should see that we have updated the image reference for the prod environment, as seen below:
 
 image::/devsecops/gitea-merge-changes.png[]
 
-
 * Close the application details window, and explore the application page to see all the kubernetes resources that are deployed by OpenShift GitOps to the target cluster / namespace, such as the deployments, the services, etc.
+
+[NOTE]
+It may take a couple of minutes for Argo CD to pick up the change, you can accelerate the process by clicking the `Refresh` button.
 
 * Let's see the same resources deployed in the application namespace *{user}-prod* with this URL: {openshift_console_url}/topology/ns/{user}-prod?view=graph
 
