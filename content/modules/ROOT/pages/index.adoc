@@ -5,14 +5,13 @@
 == 1. Introduction and Overview
 
 *Welcome to the OpenShift DevSecOps Roadshow!*
-In this Roadshow, you will learn the techniques and technologies for adopting https://www.redhat.com/en/topics/devops[DevOps^] and https://www.redhat.com/en/topics/devops/what-is-devsecops[DevSecOps^] practices to run applications in https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux?intcmp=7013a0000026H3vAAE&extIdCarryOver=true&sc_cid=7013a000003ScmnAAC[The Open Hybrid Cloud^].
+In this Roadshow, you will learn the techniques and technologies for adopting https://www.redhat.com/en/topics/devops[DevOps^] and https://www.redhat.com/en/topics/devops/what-is-devsecops[DevSecOps^] practices to run applications in https://www.redhat.com/en/technologies/cloud-computing/openshift[The Open Hybrid Cloud^].
 
 == 2. Key Takeaways
 
 * Learn how to leverage *Red Hat OpenShift*  as an *Application Platform Trusted - Comprehensive - Consistent capabilities*.
 * Dive into *CI/CD* pipelines using *OpenShift Pipelines*.
 * Adopt *DevSecOps* best practices securely with *OpenShift GitOps* and *Trusted Software Supply Chain*.
-* TBD
 
 == 3. Environment Overview
 
