@@ -30,7 +30,7 @@ Fig 1. The image shows an Overview of OpenShift as an Application Platform.
 
 == Exploring OpenShift as an Application Platform from the OpenShift console
 
-In this section we will explore some of the capabilities discussed such as *Image Build, *Runtimes*, *Serverless* and *CI/CD*.
+In this section we will explore some of the capabilities discussed such as *Image Build*, *Runtimes*, *Serverless* and *CI/CD*.
 
 *Red Hat OpenShift* allows you to use the *Developer perspective* to build applications and associated components and services, define how they work together, and monitor their health over time.
 
@@ -108,7 +108,7 @@ Once you have logged in you will be redirected back to the OpenShift Console.
 
 Since we are using Keycloak SSO you will need to copy the CLI login
 command from the console. To do so, click on your user name in
-the upper right corner and select `Copy login command`:
+the upper right corner and select `Copy login command`
 
 image::ocp-app/copy_login_command.png[width=80%]
 
@@ -390,7 +390,7 @@ image::ocp-app/available_metrics.png[width=80%]
 
 image::ocp-app/events.png[width=80%]
 
-https://docs.openshift.com/container-platform/4.14/monitoring/reviewing-monitoring-dashboards.html[Reviewing monitoring dashboards^]
+https://docs.openshift.com/container-platform/4.18/observability/monitoring/about-ocp-monitoring/about-ocp-monitoring.html[Reviewing monitoring dashboards^]
 
 [#conclusion]
 == Conclusion
@@ -409,4 +409,4 @@ With the Developer Perspective, you can create, build, and manage applications o
 
 * https://docs.openshift.com/pipelines/latest/about/about-pipelines.html[Pipelines^]
 
-* https://docs.openshift.com/container-platform/latest/cicd/index.html[Builds^]
+* https://docs.openshift.com/container-platform/4.18/applications/index.html[Builds^]
