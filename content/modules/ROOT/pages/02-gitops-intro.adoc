@@ -136,23 +136,29 @@ The output should list several things:
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
 ----
-NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/catalog-database    1/1     1            1           16m
-deployment.apps/gateway-vertx       1/1     1            1           16m
-deployment.apps/inventory-quarkus   1/1     1            1           16m
-deployment.apps/nexus               1/1     1            1           26h
-deployment.apps/sonarqube           1/1     1            1           26h
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/catalog-spring-boot-5564b65bbf-n98rm   1/1     Running   0          77s
+pod/gateway-vertx-5c5dd94dfd-jzsjj         1/1     Running   0          77s
+pod/inventory-quarkus-64f5b79fc8-5kncz     1/1     Running   0          25m
 
-NAME                                           DESIRED   CURRENT   READY   AGE
-replicaset.apps/catalog-database-57b4b4f4bc    1         1         1       16m
-replicaset.apps/gateway-vertx-5f6b554664       1         1         1       16m
-replicaset.apps/inventory-quarkus-64f5b79fc8   1         1         1       16m
-replicaset.apps/nexus-85ffd9f685               1         1         1       26h
-replicaset.apps/sonarqube-66c4694b89           1         1         1       26h
+NAME                          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/catalog-spring-boot   ClusterIP   172.30.100.248   <none>        8080/TCP,8443/TCP            77s
+service/gateway-vertx         ClusterIP   172.30.249.65    <none>        8080/TCP,8443/TCP,8778/TCP   25m
+service/inventory-quarkus     ClusterIP   172.30.67.189    <none>        8080/TCP                     25m
 
-NAME                            COMPLETIONS   DURATION   AGE
-job.batch/configure-nexus       1/1           79s        26h
-job.batch/configure-sonarqube   1/1           2m10s      26h
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/catalog-spring-boot   1/1     1            1           77s
+deployment.apps/gateway-vertx         1/1     1            1           25m
+deployment.apps/inventory-quarkus     1/1     1            1           25m
+
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/catalog-spring-boot-5564b65bbf   1         1         1       77s
+replicaset.apps/gateway-vertx-5c5dd94dfd         1         1         1       77s
+replicaset.apps/gateway-vertx-764dd8945          0         0         0       25m
+replicaset.apps/inventory-quarkus-64f5b79fc8     1         1         1       25m
+
+NAME                                      SERVICES        PORT       TERMINATION     
+route.route.openshift.io/gateway-vertx   gateway-vertx   8080-tcp   edge/Redirect   
 ----
 
 
@@ -376,13 +382,15 @@ This should display the version, it should look something like this.
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
 ----
-{v3.9.0+3.el8+ge09b16a}
+{v3.14.4+37.el9+g7163c12}
 ----
 
 Helm is a package manager that can be used to install a Helm chart into a kubernetes cluster
 and can then manage the lifecycle of the application including upgrades and uninstalling the
 application. However Helm can also render the chart as pure yaml without installing the
 application in a cluster.
+
+Helm Charts will be a set of manifests that will define your application for Kubernetes.
 
 Argo CD follows a philosophy of managing manifests and as a result it interacts with Helm by
 having Helm templating the chart. It does not install the chart in a Kubernetes cluster. The
@@ -429,7 +437,7 @@ you can provide your own values.yaml to override some or all of these defaults a
 Notice that since this is a yaml file parameters can be hierarchical which enables grouping related parameters together as shown
 by the `gitea` section.
 
-The templates/ directory is where template files reside. When Helm assesses a chart, it processes all files in the templates/ directory using the template rendering engine. The results of these templates are then gathered and forwarded to Kubernetes.You can learn more about templating link:https://helm.sh/docs/chart_template_guide/getting_started/[here].
+The templates/ directory is where template files reside. When Helm assesses a chart, it processes all files in the templates/ directory using the template rendering engine. The results of these templates are then gathered and forwarded to Kubernetes.You can learn more about templating link:https://helm.sh/docs/chart_template_guide/getting_started/[here,window='_blank'].
 
 [#helm-template]
 === Helm Template
@@ -499,7 +507,7 @@ spec:
 [#helm-charts-deploy-applications]
 === Using Helm charts to deploy applications in Argo CD
 
-In this section, we will utilizes Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the BGD app. This file contains essential configuration details such as the destination, source, project, and sync policy.
+In this section, we will utilizes Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the app. This file contains essential configuration details such as the destination, source, project, and sync policy.
 
 ==== Step 1: View the Argo CD Application Configuration
 
@@ -670,6 +678,6 @@ Facilitates quick modification of multiple values through a single file change.|
 |Potential for errors or inconsistencies if the values file and chart configurations do not align.|Necessitates a separate chart for each environment, potentially leading to redundancy.
 |===
 
-You can read more about the patterns for deploying Helm charts with Argo CD link:https://developers.redhat.com/articles/2023/05/25/3-patterns-deploying-helm-charts-argocd[here].
+You can read more about the patterns for deploying Helm charts with Argo CD link:https://developers.redhat.com/articles/2023/05/25/3-patterns-deploying-helm-charts-argocd[here,window='_blank'].
 
 In conclusion, this module introduced Helm as a Kubernetes package manager with templating capabilities. We explored its usage in ArgoCD, focusing on rendering Helm charts as pure YAML and customizing deployments with custom values and parameter values for flexible configuration management. This approach streamlines the deployment process and enables customized configurations without altering the Helm chart directly.
