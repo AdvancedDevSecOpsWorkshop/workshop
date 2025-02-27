@@ -136,23 +136,29 @@ The output should list several things:
 [.console-output]
 [source,bash,subs="attributes+,+macros"]
 ----
-NAME                                READY   UP-TO-DATE   AVAILABLE   AGE
-deployment.apps/catalog-database    1/1     1            1           16m
-deployment.apps/gateway-vertx       1/1     1            1           16m
-deployment.apps/inventory-quarkus   1/1     1            1           16m
-deployment.apps/nexus               1/1     1            1           26h
-deployment.apps/sonarqube           1/1     1            1           26h
+NAME                                       READY   STATUS    RESTARTS   AGE
+pod/catalog-spring-boot-5564b65bbf-n98rm   1/1     Running   0          77s
+pod/gateway-vertx-5c5dd94dfd-jzsjj         1/1     Running   0          77s
+pod/inventory-quarkus-64f5b79fc8-5kncz     1/1     Running   0          25m
 
-NAME                                           DESIRED   CURRENT   READY   AGE
-replicaset.apps/catalog-database-57b4b4f4bc    1         1         1       16m
-replicaset.apps/gateway-vertx-5f6b554664       1         1         1       16m
-replicaset.apps/inventory-quarkus-64f5b79fc8   1         1         1       16m
-replicaset.apps/nexus-85ffd9f685               1         1         1       26h
-replicaset.apps/sonarqube-66c4694b89           1         1         1       26h
+NAME                          TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)                      AGE
+service/catalog-spring-boot   ClusterIP   172.30.100.248   <none>        8080/TCP,8443/TCP            77s
+service/gateway-vertx         ClusterIP   172.30.249.65    <none>        8080/TCP,8443/TCP,8778/TCP   25m
+service/inventory-quarkus     ClusterIP   172.30.67.189    <none>        8080/TCP                     25m
 
-NAME                            COMPLETIONS   DURATION   AGE
-job.batch/configure-nexus       1/1           79s        26h
-job.batch/configure-sonarqube   1/1           2m10s      26h
+NAME                                  READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/catalog-spring-boot   1/1     1            1           77s
+deployment.apps/gateway-vertx         1/1     1            1           25m
+deployment.apps/inventory-quarkus     1/1     1            1           25m
+
+NAME                                             DESIRED   CURRENT   READY   AGE
+replicaset.apps/catalog-spring-boot-5564b65bbf   1         1         1       77s
+replicaset.apps/gateway-vertx-5c5dd94dfd         1         1         1       77s
+replicaset.apps/gateway-vertx-764dd8945          0         0         0       25m
+replicaset.apps/inventory-quarkus-64f5b79fc8     1         1         1       25m
+
+NAME                                      SERVICES        PORT       TERMINATION     
+route.route.openshift.io/gateway-vertx   gateway-vertx   8080-tcp   edge/Redirect   
 ----
 
 
