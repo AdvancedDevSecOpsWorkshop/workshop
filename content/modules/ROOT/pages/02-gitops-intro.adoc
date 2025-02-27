@@ -35,7 +35,7 @@ We want to deploy that application to two namespaces: a "development" environmen
 A managed collection of manifests is known as an `Application` within Argo CD.
 Therefore, you must define it as such using an
 link:https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#applications[Application
-CR (CustomResource)^] in order to have Argo CD apply these manifests in your
+CRD (CustomResourceDefinition)^] in order to have Argo CD apply these manifests in your
 cluster.
 
 Let's review the `Application` manifest used to deploy this application (found link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/content/modules/ROOT/examples/coolstore-gitops-dev.yaml[here,window="_blank"])
@@ -55,7 +55,7 @@ spec:
   project: $USER <2>
   source: <3>
     path: content/modules/ROOT/files/module-01
-    repoURL: https://github.com/AdvancedDevSecOpsWorkshop/workshop.git
+    repoURL: https://gitea-gitea.$SUBDOMAIN/$USER/workshop.git
     targetRevision: HEAD
   syncPolicy: <4>
     automated:
