@@ -54,7 +54,7 @@ spec:
     name: in-cluster <1>
   project: $USER <2>
   source: <3>
-    path: content/modules/ROOT/files/module-01
+    path: content/modules/ROOT/files/gitops/module-02
     repoURL: https://gitea-gitea.$SUBDOMAIN/$USER/workshop.git
     targetRevision: HEAD
   syncPolicy: <4>
@@ -106,7 +106,7 @@ Let's then deploy the application to the {user}-prod environment:
 sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-prod.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -n {user}-argocd -f -
 ----
 
-Now let's login to OpenShift GitOps using this URL: https://argocd-server-gitops.{openshift_cluster_ingress_domain}
+Now let's login to OpenShift GitOps using this URL: link:https://argocd-server-gitops.{openshift_cluster_ingress_domain}[https://argocd-server-gitops.{openshift_cluster_ingress_domain},window="_blank"]
 
 You can also find the links by clicking on the mosaic icon on the top-right of the openshift console:
 
@@ -157,8 +157,8 @@ replicaset.apps/gateway-vertx-5c5dd94dfd         1         1         1       77s
 replicaset.apps/gateway-vertx-764dd8945          0         0         0       25m
 replicaset.apps/inventory-quarkus-64f5b79fc8     1         1         1       25m
 
-NAME                                      SERVICES        PORT       TERMINATION     
-route.route.openshift.io/gateway-vertx   gateway-vertx   8080-tcp   edge/Redirect   
+NAME                                      SERVICES        PORT       TERMINATION
+route.route.openshift.io/gateway-vertx   gateway-vertx   8080-tcp   edge/Redirect
 ----
 
 
@@ -173,8 +173,8 @@ oc rollout status deploy/inventory-quarkus -n {user}-dev
 If it is successful, you can now visit the deployed application in the browser.
 
 From the OpenShift web console, select *{user}-dev* Project from
-drop-down menu, and use the _Topology_ view to find the link as you did with
-the Argo CD console.
+drop-down menu, and use the _Topology_ view and click on the route shortcut
+for the `gateway-vertx` application.
 
 image::gitops/gitops-userx-dev.png[coolstore App]
 
@@ -197,7 +197,7 @@ Let's introduce a change in the application environment! We will scale up the re
 [source,bash,subs="attributes+,+macros"]
 
 ----
-oc -n {user}-dev scale deploy inventory-quarkus --replicas=4
+oc -n {user}-dev scale deploy inventory-quarkus --replicas=2
 ----
 
 You can see that the pods will start to get created, but instantly get deleted again. This is because OpenShift GitOps is automatically setting the replicas number to 1, as specified in the application manifest for the quarkus-inventory deployment.
@@ -214,26 +214,40 @@ spec:
   syncPolicy:
     automated:
       prune: true
-      selfHeal: true # Set this to true
+      selfHeal: true
 ----
 
-You can also manually sync your app via the Argo CD by:
-
-* First clicking `SYNC`
-* Then clicking `SYNCHRONIZE`
-
-image::gitops-apps/coolstore-manual-sync.png[Manually Sync the application]
-
-After the sync process is done, the Argo CD UI should mark the application as in
-sync.
-
-You can also disable the Self-healing behavior by patching the application with this command:
+As an exercise, lets try disabling the Self-healing behavior by patching the application with this command:
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
 oc patch application/coolstore-app-dev -n {user}-argocd --type=merge -p='{"spec":{"syncPolicy":{"automated":{"prune":true,"selfHeal":false}}}}'
 ----
+
+And then repeat the process of changing the replicas:
+
+[.console-input]
+[source,bash,subs="attributes+,+macros"]
+
+----
+oc -n {user}-dev scale deploy inventory-quarkus --replicas=2
+----
+
+Notice that the Application is now showing an out-of-sync status:
+
+image::gitops-apps/gitops-user-dev-out-of-sync.png[Out-Of-Sync]
+
+Note that when selfHeal is not enabled you can manually sync your app via the Argo CD UI by:
+
+* First clicking `SYNC`
+* Then clicking `SYNCHRONIZE`
+
+image::gitops-apps/coolstore-manual-sync.png[Manually Sync the application]
+
+After the sync process is done, the Argo CD UI would mark the application as in
+sync.
+
 
 [#applicationsets]
 == ApplicationSets
@@ -243,14 +257,16 @@ are often situations, as per what we did previously, where you want to deploy or
 
 This is where the Argo CD link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset[ApplicationSet,window="_blank"] feature
 comes into play. ApplicationSets enables you to generate Application resources using templating. Each ApplicationSet can include one or
- more generators that power the creation of Applications. Argo CD currently includes many different generators and enables users to create custom generators via a Plugin architecture.
+more generators that power the creation of Applications. Argo CD currently includes many different generators and enables users to create custom generators via a Plugin architecture.
 
-The available link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators[generators,window="_blank"] can operate off of static information,
-such as the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-List[List,window="_blank"] generator, or
-dynamically by interacting with external entities such as the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git/[git]
-generator. Finally there are generators that can combine the output of other generators such as the
-link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Matrix[Matrix,,window="_blank"]
-and link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Merge[Merge,,window="_blank"] generators.
+There are a number of link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators[generators,window="_blank"] available, some common examples of these generators include:
+
+* Using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-List[List,window="_blank"] generator for generating applications for different environments. We will look at an example of this shortly
+* Leveraging the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Git/[git,window="_blank"] generator to create Applications based on the contents of a git repo, we will look at this in Module 4 as a more dynamic way to generate apps for environments.
+* Using the https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Pull-Request/[Pull Request,window="_blank"] generator to provision new environments on the fly to run automated tests before merging the code.
+* Using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Cluster/[Cluster,window="_blank"] generator to provision an Application across multiple clusters.
+* Using the link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Matrix[Matrix,window="_blank"]
+and link:https://argo-cd.readthedocs.io/en/stable/operator-manual/applicationset/Generators-Merge[Merge,window="_blank"] to combine the results from multiple generators.
 
 Let's look at a simple example of an Application that uses a List generator to create the development and production Applications
 for the `coolstore-app` Application we deployed earlier.
@@ -300,7 +316,7 @@ spec:
         namespace: {user}-{{.environment}}
       project: {user}
       source:
-        path: content/modules/ROOT/files/module-01
+        path: content/modules/ROOT/files/gitops/module-02
         repoURL: https://gitea-gitea.{subdomain}/{user}/workshop.git
         targetRevision: HEAD
       syncPolicy:
@@ -563,15 +579,14 @@ image::gitops-helm/pipeline-view.png[]
 
 In this section we explore the use of custom values files with Helm charts. These allow you to tailor deployments to your specific needs. Custom values files offer the flexibility to override default settings without modifying the chart directly.
 
-==== Step 1: Explore the Custom Values Configuration
-
+==== Explore the Custom Values Configuration
 
 Begin by examining a YAML file named "pipeline-helm-app-custom.yaml." This file closely resembles the previous configuration but introduces a critical difference: it references a custom values file stored in the same Git repository as the Helm chart.
 
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-cat ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app-custom.yaml
+cat ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml
 ----
 
 You will notice a section in this YAML file that defines the name and path of the custom values file responsible for adjusting the Helm chart's default settings:
@@ -585,45 +600,17 @@ You will notice a section in this YAML file that defines the name and path of th
         - custom_values_1/values.yaml
 ----
 
-This configuration specifies how Helm accesses and uses the custom values file to modify the Helm chart's behavior.
-
-==== Step 2: Explore the Custom Values File
-
-
-Examine the custom values file that is being referenced:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
-----
-cat ~/workshop/content/modules/ROOT/examples/globex-ui/custom_values_1/values.yaml
-----
-
-You should see that it defines specific values for some of the parameters in the chart, using this specific values file.
-
-==== Step 3: Apply the Custom Values
-
-Now, apply the custom values file to the initial application using Argo CD:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
-----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-custom.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
-----
-
-==== Step 4: Verify the Changes
-
-Return to ArgoCD and click on "App Details," then navigate to the "Parameters" section, where you previously made changes. You’ll notice that the custom value file has been successfully added, and it has updated the values to display the animated balls in green.
-
-image::gitops-helm/custom-values.png[]
-
 Using ArgoCD to deploy a Helm chart with custom values files offers the advantage of tailoring and overriding the chart’s default settings, all without needing to alter the chart directly. This flexibility enables you to deploy the chart with different configurations to suit various environments or specific use cases.
+
+[NOTE]
+Since we already deployed the Pipelines Helm chart we will not deploy the custom values Application since the two Applications would fight over the same resources.
 
 [#parameter_values]
 === Argo CD Application with Parameter Values
 
 In this section, we'll explore a YAML file where parameter values are embedded directly within the Application, eliminating the need for separate values files.
 
-==== Step 1: Examine the Parameterized Configuration
+==== Examine the Parameterized Configuration
 
 Begin by examining the YAML file named "pipeline-helm-app-para.yaml." This file, similar to the previous configurations, defines an Argo CD Application for deploying a Helm chart. However, a notable difference is the inclusion of all desired parameter values directly within the YAML file:
 
@@ -641,27 +628,7 @@ include::ROOT:example$pipeline-helm-app-para.yaml[]
 
 In the 'parameters' section of the YAML, you will notice that we have included all the desired values direcly within the chart.
 
-This approach allows us to apply these settings directly to Argo CD without relying on external values files.
-
-==== Step 2: Apply the Parameterized Configuration
-
-Apply this parameterize configuration to Argo CD:
-
-[.console-input]
-[source,bash,subs="attributes+,+macros"]
-----
-sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -f - -n {user}-argocd
-----
-
-Return to the ArgoCD interface and navigate to the 'App Details' section. Click on 'Parameters.' You will notice that the custom values file, which was present in the previous example, has been successfully removed from the ArgoCD Application.
-
-image::gitops-helm/helm-parameters.png[]
-
 Deploying a Helm chart through ArgoCD with integrated parameters allows you to customize default settings without modifying the chart itself or relying on external values files. This centralizes configuration management across different environments.
-
-==== Step 4: Make Further Adjustments
-
-To make changes to the parameters, simply click on the 'Edit' button. Feel free to explore and make adjustments as desired during the workshop.
 
 [#helm-conclusion]
 === Conclusion: Helm on ArgoCD
