@@ -17,7 +17,7 @@ spec:
       - RespectIgnoreDifferences=true
     automated:
       prune: true
-      selfHeal: false
+      selfHeal: true
   ignoreDifferences:
   - group: ""
     kind: ServiceAccount
