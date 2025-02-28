@@ -208,8 +208,19 @@ https://github.com/OpenShiftDemos/web-nodejs.git
 *Note*: Ignore the error "Danger alert: Import is not possible." You will be updating the Builder Option.SECURE_COOLSTORE_GW_ENDPOINT
 
 5. Edit *Import Strategy* and select *Builder Image* (keep Node.js but change to Builder Image version: 18-ubi8)
-6. On Deploy -> Resource Type, select *Serverless Deployment*
-7. Click on *Show advanced Deployment option*: and add *an environment variable* to connect with the Gateway URL:
++
+image::ocp-app/use-builder-image-ubi-18.png[width=80%]
++
+6. Instead of using the default `coolstore` application, create a new one:
++
+image::ocp-app/create-application.png[width=80%]
++
+7. Name the new application `catalog-app`:
++
+image::ocp-app/create-catalog-app.png[width=80%]
++
+8. On Deploy -> Resource Type, select *Serverless Deployment*
+9. Click on *Show advanced Deployment option*: and add *an environment variable* to connect with the Gateway URL:
 
 *Note*: Ensure you copy the entire Gateway URL before pasting it.
 
@@ -238,7 +249,7 @@ image::ocp-app/serverless_resources.png[width=80%]
 1. Click on the *View Logs* on the *Builds* section
 2. Verify that the build is running and that the logs have no issues. The log will show *Push successful* in the last line once has finished.
 
-**Notes**: The build might take a few seconds to complete.
+**Notes**: The build might take a few minutes to complete.
 
 image::ocp-app/build_ok.png[width=80%]
 
