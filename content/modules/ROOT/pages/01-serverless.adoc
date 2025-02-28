@@ -172,10 +172,6 @@ output:
     route.route.openshift.io/gateway-vertx created
     deployment.apps/inventory-quarkus created
     service/inventory-quarkus created
-    serviceaccount/catalog-app created
-    secret/catalog-database created
-    deployment.apps/catalog-database created
-    service/catalog-database created
 ----
 
 === Explore the topology view

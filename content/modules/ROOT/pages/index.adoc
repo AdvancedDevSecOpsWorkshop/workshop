@@ -35,8 +35,6 @@ Fig 1. The diagram shows the technology stack and its interactions.
 
 * https://access.redhat.com/products/red-hat-build-of-keycloak[Red Hat Build of Keycloak^] is a cloud-native Identity Access Management solution based on the popular open source Keycloak project.
 
-* https://access.redhat.com/products/red-hat-openshift-dev-spaces[Red Hat OpenShift Dev Spaces^] is a container-based, in-browser development environment offered by Red Hat that facilitates cloud-native development directly within the OpenShift ecosystem.
-
 * https://www.redhat.com/en/technologies/cloud-computing/quay[Red Hat Quay^] is a security-focused and scalable private registry platform for managing content across globally distributed datacenter and cloud environments.
 
 * https://www.redhat.com/en/technologies/cloud-computing/openshift/advanced-cluster-security-kubernetes[Red Hat Advanced Cluster Security for Kubernetes^] is a Kubernetes-native security platform that equips you to build, deploy, and run cloud-native applications with more security. The solution helps protect containerized Kubernetes workloads in all major clouds and hybrid platforms, including Red Hat OpenShift, Amazon Elastic Kubernetes Service (EKS), Microsoft Azure Kubernetes Service (AKS), and Google Kubernetes Engine (GKE).
