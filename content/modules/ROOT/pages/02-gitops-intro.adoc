@@ -154,7 +154,6 @@ deployment.apps/inventory-quarkus     1/1     1            1           25m
 NAME                                             DESIRED   CURRENT   READY   AGE
 replicaset.apps/catalog-spring-boot-5564b65bbf   1         1         1       77s
 replicaset.apps/gateway-vertx-5c5dd94dfd         1         1         1       77s
-replicaset.apps/gateway-vertx-764dd8945          0         0         0       25m
 replicaset.apps/inventory-quarkus-64f5b79fc8     1         1         1       25m
 
 NAME                                      SERVICES        PORT       TERMINATION
@@ -238,7 +237,7 @@ Notice that the Application is now showing an out-of-sync status:
 
 image::gitops-apps/gitops-user-dev-out-of-sync.png[Out-Of-Sync]
 
-Note that when selfHeal is not enabled you can manually sync your app via the Argo CD UI by:
+Note that when Self Heal is not enabled you can manually sync your app via the Argo CD UI by:
 
 * First clicking `SYNC`
 * Then clicking `SYNCHRONIZE`
