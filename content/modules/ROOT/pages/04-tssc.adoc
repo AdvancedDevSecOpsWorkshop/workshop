@@ -540,7 +540,8 @@ image::/devsecops/acs-policy-violations.png[]
 * Notice all of the images violate this policy except for the `globex-ui` image which we just built with the Pipeline with a valid and verified signature.
 
 [NOTE]
-If you are wondering why signature violations are not appearing from other namespaces, this Policy has been scoped to the `{user}-dev` and `{user}-prod` namespaces.
+If you are wondering why signature violations are not appearing from other namespaces, this Policy has been scoped to the `{user}-dev` and `{user}-prod` namespaces. Additionally ACS
+has been configured for multi-tenancy so that your user only has permissions to view data generated from the namespaces and clusters you have been granted access to.
 
 === Viewing Vulnerabilities
 
