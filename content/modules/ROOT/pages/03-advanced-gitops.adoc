@@ -130,7 +130,8 @@ image::gitops/shared-gitops-apps.png[]
 
 Note in the Shared GitOps, unlike the Cluster GitOps instance, you can only view Applications that are specific to your user.
 
-We have a single `dev-tools` Application to deploy team specific Sonarqube and Nexus instances which will be used in the Pipelines
+We have a `dev-tools` Application, along with the other applications deployed in the previous module, to deploy team specific
+Sonarqube and Nexus instances which will be used in the Pipelines
 module of this workshop. If you check with your neighbors, assuming they have reached this section, you will note that
 every person has their own dev-tools Application which is unique to that workshop user. How can we have an Application
 with the same name multiple times in the same Argo CD instance?
@@ -330,7 +331,7 @@ using the OpenShift Console or `kubectl`/`oc` then only the Kubernetes RBAC is u
 
 Additionally the application-controller in Argo CD, as shown previously in the GitOps Architecture, interacts with the
 Kubernetes API and is governed by Kubernetes RBAC. Argo CD can only deploy and manage the Kubernetes resources that
-the application-controller has been given permission to use in Kubernetes RBAC,
+the application-controller has been given permission to use in Kubernetes RBAC.
 
 This relationship is shown in the following diagram:
 
@@ -513,7 +514,7 @@ could easily bypass the security provided by Argo CD Projects simply by assignin
 This problem arises because Argo CD RBAC is only enforced when using the Argo UI or CLI, it is not enforced by Kubernetes.
 
 The Apps in Any Namespace feature avoids this issue by requiring the platform team to bind a specific Argo CD Project to each specific namespace
-where Applications reside. In this workshop this means the `user1-argocd` namespace is automatically bound to Project `team1`, `user2-argocd` namespace to `team2`, etc.
+where Applications reside. In this workshop this means the `user1-argocd` namespace is automatically bound to Project `user1`, `user2-argocd` namespace to `user2`, etc.
 
 The namespace being included as part of the Application name is a subtle indication that Apps in Any Namespace is being used
 
