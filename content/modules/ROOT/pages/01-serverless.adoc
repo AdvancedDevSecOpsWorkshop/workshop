@@ -211,16 +211,8 @@ https://github.com/OpenShiftDemos/web-nodejs.git
 +
 image::ocp-app/use-builder-image-ubi-18.png[width=80%]
 +
-6. Instead of using the default `coolstore` application, create a new one:
-+
-image::ocp-app/create-application.png[width=80%]
-+
-7. Name the new application `catalog-app`:
-+
-image::ocp-app/create-catalog-app.png[width=80%]
-+
-8. On Deploy -> Resource Type, select *Serverless Deployment*
-9. Click on *Show advanced Deployment option*: and add *an environment variable* to connect with the Gateway URL:
+6. On Deploy -> Resource Type, select *Serverless Deployment*
+7. Click on *Show advanced Deployment option*: and add *an environment variable* to connect with the Gateway URL:
 
 *Note*: Ensure you copy the entire Gateway URL before pasting it.
 
