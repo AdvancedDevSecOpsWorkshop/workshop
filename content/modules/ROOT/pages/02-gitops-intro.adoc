@@ -71,11 +71,11 @@ Argo CD's concept of a `Project` is different than OpenShift's. Here you're
 installing the application in Argo CD's `default` project (`.spec.project`).
 *NOT* OpenShift's default project.
 <3> The manifest repo, and the path within it where the YAML resides.
-<4> The `syncPolicy` is set to `automated`. It will automatically prune
-  resources that have been removed from the Git repo, but will not automatically
-  correct resources that deviate from the definition stored in the repo, i.e
-  manual changes made using `oc` or `kubectl` will not be "healed".
-
+<4> The `syncPolicy` is set to `automated` with prune and selfHeal enabled.
+  Prune will automatically remove resources that have been removed from the Git
+  repo, selfHeal will automatically correct resources that deviate from the
+  definition stored in the repo, i.e manual changes made using `oc` or `kubectl`
+  will be "healed".
 
 OpenShift GitOps monitors your dedicated namespace {user}-argocd, where creating a resource of type *Application* creates an application in OpenShift GitOps.
 
