@@ -98,16 +98,16 @@ with Keycloak.
 
 You will be redirected to Keycloak, use your credentials to login:
 
-*User*:
-
+* *User*:
++
 [.console-input]
 [source,subs="attributes"]
 ----
 {user}
 ----
 
-*Password*:
-
+* *Password*:
++
 [.console-input]
 [source,subs="attributes"]
 ----
@@ -126,16 +126,16 @@ image::ocp-app/copy_login_command.png[width=80%]
 
 This will redirect you to Keycloak to login with your credentials:
 
-*User*:
-
+* *User*:
++
 [.console-input]
 [source,subs="attributes"]
 ----
 {user}
 ----
 
-*Password*:
-
+* *Password*:
++
 [.console-input]
 [source,subs="attributes"]
 ----
@@ -160,7 +160,7 @@ Use insecure connections? (y/n): y
 
 WARNING: Using insecure TLS client config. Setting this option is not supported!
 
-Logged into "https://api.cluster-jpq8b.jpq8b.sandbox406.opentlc.com:6443" as "user3" using the token provided.
+Logged into "https://api.cluster-jpq8b.jpq8b.sandbox406.opentlc.com:6443" as "{user}" using the token provided.
 
 You have access to the following projects and can switch between them with 'oc project <projectname>':
 
@@ -265,8 +265,21 @@ image::ocp-app/use-builder-image-ubi-18.png[width=80%]
 
 *Note*: Ensure you copy the entire Gateway URL before pasting it.
 
-    - *name*: SECURE_COOLSTORE_GW_ENDPOINT
-    - *value*: https://gateway-vertx-coolstore-dev-{user}.{openshift_cluster_ingress_domain}/
+    - *name*:
++
+[.console-input]
+[source,subs="+attributes",role=execute]
+----
+SECURE_COOLSTORE_GW_ENDPOINT
+----
+
+    - *value*:
++
+[.console-input]
+[source,subs="+attributes",role=execute]
+----
+https://gateway-vertx-coolstore-dev-{user}.{openshift_cluster_ingress_domain}/
+----
 
 Verify your input data is the same as shown below:
 
