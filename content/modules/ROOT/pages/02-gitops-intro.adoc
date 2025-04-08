@@ -121,7 +121,7 @@ image::gitops/argocd-keycloak-login.png[]
 Assuming you have already logged into OpenShift with Keycloak you will be automatically logged into Argo CD since
 we are using Keycloak to provide Single-Sign-On in this workshop.
 
-The newly created Applications appears as a tile with the title `bgd-app` in the
+The newly created Applications appears as a tile with the titles `app-dev` and `app-prod` in the
 Argo CD UI.
 
 image::devsecops/coolstore-app.png[SampleApp]
