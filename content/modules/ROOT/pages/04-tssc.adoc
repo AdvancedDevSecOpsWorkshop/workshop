@@ -29,7 +29,7 @@ Before we do that, let's review the repositories in Gitea that will be used by t
 
 === Login to Gitea to review the repositories
 
-We are using Gitea as our source control system for this workshop. To access Gitea, click on this URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank"], and then login using Keycloak. Do *not* login directly with user1 credentials.
+We are using Gitea as our source control system for this workshop. To access Gitea, click on this URL: link:https://gitea-gitea.{openshift_cluster_ingress_domain}[window="_blank"], and then login using Keycloak. Do *not* login directly with {user} credentials.
 
 image::/devsecops/gitea-login-with-sso.png[width=100%]
 
