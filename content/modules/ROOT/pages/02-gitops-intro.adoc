@@ -522,7 +522,7 @@ spec:
 [#helm-charts-deploy-applications]
 === Using Helm charts to deploy applications in Argo CD
 
-In this section, we will utilizes Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the app. This file contains essential configuration details such as the destination, source, project, and sync policy.
+In this section, we will utilize Helm charts to deploy applications within Argo CD. Helm charts provide a convenient way to manage and deploy Kubernetes applications. We will first examine the configuration file for an Argo CD Application that deploys a Helm chart for the app. This file contains essential configuration details such as the destination, source, project, and sync policy.
 
 ==== Step 1: View the Argo CD Application Configuration
 
