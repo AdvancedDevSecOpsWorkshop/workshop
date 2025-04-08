@@ -542,11 +542,10 @@ To view the YAML configuration file for the Argo CD Application, execute the fol
 [.console-input]
 [source,bash,subs="attributes+,+macros"]
 ----
-cat ~/workshop/content/modules/ROOT/files/gitops/helm/pipeline-helm-app.yaml
+cat ~/workshop/content/modules/ROOT/examples/pipeline-helm-app.yaml
 ----
 
 You should see the following output:
-
 
 .link:https://github.com/AdvancedDevSecOpsWorkshop/workshop/blob/main/documentation/modules/ROOT/examples/pipeline-helm-app.yaml[pipeline-helm-app.yaml,window='_blank']
 [source,yaml,subs="+macros,attributes+"]
