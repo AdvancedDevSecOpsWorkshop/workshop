@@ -106,11 +106,20 @@ Let's then deploy the application to the {user}-prod environment:
 sed 's/$USER/{user}/' ~/workshop/content/modules/ROOT/examples/coolstore-gitops-prod.yaml | sed 's/$SUBDOMAIN/{subdomain}/' | oc apply -n {user}-argocd -f -
 ----
 
-Now let's login to OpenShift GitOps using this URL: link:https://argocd-server-gitops.{openshift_cluster_ingress_domain}[https://argocd-server-gitops.{openshift_cluster_ingress_domain},window="_blank"]
+Now let's login to OpenShift GitOps using this URL:
+
+link:https://argocd-server-gitops.{openshift_cluster_ingress_domain}[https://argocd-server-gitops.{openshift_cluster_ingress_domain},window="_blank"]
 
 You can also find the links by clicking on the mosaic icon on the top-right of the openshift console:
 
 image::devsecops/mosaic-links.png[ConsoleLinks]
+
+To login click the Keycloak button shown in red:
+
+image::gitops/argocd-keycloak-login.png[]
+
+Assuming you have already logged into OpenShift with Keycloak you will be automatically logged into Argo CD since
+we are using Keycloak to provide Single-Sign-On in this workshop.
 
 The newly created Applications appears as a tile with the title `bgd-app` in the
 Argo CD UI.
