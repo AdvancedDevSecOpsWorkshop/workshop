@@ -28,8 +28,8 @@ runtime:
 output:
   dir: ./www
 
-antora:
-  extensions:
-    - id: dev-mode
-      require: ./content/lib/dev-mode.js
-      enabled: true
+# antora:
+#   extensions:
+#     - id: dev-mode
+#       require: ./content/lib/dev-mode.js
+#       enabled: true
