@@ -1,4 +1,4 @@
-#ODF Chart Values
+#Pipeline Chart Values
 
 globex:
   registry:
@@ -21,4 +21,3 @@ globex:
     publicKey: ""
   cyclonedx:
     hostUrl: ""
-
