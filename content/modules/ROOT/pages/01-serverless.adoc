@@ -98,9 +98,21 @@ with Keycloak.
 
 You will be redirected to Keycloak, use your credentials to login:
 
-* user: {user}
+*User*:
 
-* password: openshift
+[.console-input]
+[source,subs="attributes"]
+----
+{user}
+----
+
+*Password*:
+
+[.console-input]
+[source,subs="attributes"]
+----
+{password}
+----
 
 Once you have logged in you will be redirected back to the OpenShift Console.
 
@@ -114,15 +126,52 @@ image::ocp-app/copy_login_command.png[width=80%]
 
 This will redirect you to Keycloak to login with your credentials:
 
-* user: {user}
+*User*:
 
-* password: openshift
+[.console-input]
+[source,subs="attributes"]
+----
+{user}
+----
+
+*Password*:
+
+[.console-input]
+[source,subs="attributes"]
+----
+{password}
+----
 
 Once you have logged in you will see a page with a link `Display Token`, click
 the link to view the token. Copy the oc login command as per below and paste
 it into the terminal.
 
 image::ocp-app/oc_login_command.png[width=80%]
+
+When you paste the copied command into the terminal you will be prompted to accept the certificate, enter 'y' as per below:
+
+[.console-output]
+[source,subs="+attributes,macros+"]
+----
+[lab-user: ~]$ oc login --token=sha256~F2yqBi9f01H0AJHxwozAERhGbKvX4RMFBba-ijY27t0 --server=https://api.cluster-jpq8b.jpq8b.sandbox406.opentlc.com:6443
+The server uses a certificate signed by an unknown authority.
+You can bypass the certificate check, but any data you send to the server could be intercepted by others.
+Use insecure connections? (y/n): y
+
+WARNING: Using insecure TLS client config. Setting this option is not supported!
+
+Logged into "https://api.cluster-jpq8b.jpq8b.sandbox406.opentlc.com:6443" as "user3" using the token provided.
+
+You have access to the following projects and can switch between them with 'oc project <projectname>':
+
+  * {user}-argocd
+    {user}-cicd
+    {user}-dev
+    {user}-prod
+
+Using project "{user}-argocd".
+Welcome! See 'oc help' to get started.
+----
 
 [NOTE]
 In later versions of OpenShift you can avoid this process by using `oc login --web <openshift-api-url>`. This

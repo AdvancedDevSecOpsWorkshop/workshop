@@ -202,12 +202,12 @@ The switch `--insecure-ignore-tlog=true` is added so that cosign bypasses checki
 ----
 WARNING: Skipping tlog verification is an insecure practice that lacks of transparency and auditability verification for the signature.
 
-Verification for registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
+Verification for registry-quay-quay-operator.{subdomain}/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - The signatures were verified against the specified public key
 
-[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui"},"image":{"docker-manifest-digest":"sha256:137f2141572bb833987dc04b58f4114d09e7a5d97d55b78ec8d064252d3f1020"},"type":"cosign container image signature"},"optional":null}]
+[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.{subdomain}/workshop1/globex-ui"},"image":{"docker-manifest-digest":"sha256:137f2141572bb833987dc04b58f4114d09e7a5d97d55b78ec8d064252d3f1020"},"type":"cosign container image signature"},"optional":null}]
 ----
 
 [NOTE]
@@ -258,13 +258,13 @@ cosign verify --key ~/cosign.pub registry-quay-quay-operator.{subdomain}/worksho
 
 [source,bash,subs="+macros,attributes+"]
 ----
-Verification for registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
+Verification for registry-quay-quay-operator.apps.{subdomain}/workshop1/globex-ui:main-b183894cabd3eebaa5844143d5ac60dc9863fb57 --
 The following checks were performed on each of these signatures:
   - The cosign claims were validated
   - Existence of the claims in the transparency log was verified offline
   - The signatures were verified against the specified public key
 
-[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.apps.cluster-f7qxj.f7qxj.sandbox1749.opentlc.com/workshop1/globex-ui"},"image":{"docker-manifest-digest":"sha256:137f2141572bb833987dc04b58f4114d09e7a5d97d55b78ec8d064252d3f1020"},"type":"cosign container image signature"},"optional":null}]
+[{"critical":{"identity":{"docker-reference":"registry-quay-quay-operator.{subdomain}/workshop1/globex-ui"},"image":{"docker-manifest-digest":"sha256:137f2141572bb833987dc04b58f4114d09e7a5d97d55b78ec8d064252d3f1020"},"type":"cosign container image signature"},"optional":null}]
 ----
 
 Notice that in this iteration the existence of the signature in the transparency log was verified which was not done previously.
