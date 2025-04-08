@@ -4,7 +4,7 @@ metadata:
   name: web-nodejs
   namespace: $USER-argocd
   finalizers:
-    - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io/background
 spec:
   goTemplate: true
   goTemplateOptions: ["missingkey=error"]
