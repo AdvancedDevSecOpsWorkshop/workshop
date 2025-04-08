@@ -572,7 +572,7 @@ image::gitops-helm/pipeline-helm-app.png[]
 
 Now click on the "pipeline-helm" application. We will explore its deployment. You can tell by the icon that it's deployed via a Helm chart from a Git repository. Although you could deploy it through a Helm repository, we're using a Git repository for this demonstration.
 
-Access the application details by clicking on the "App Details" option.
+Access the application details by clicking on the "Details" button.
 
 image::gitops-helm/pipeline-helm-app2.png[]
 
