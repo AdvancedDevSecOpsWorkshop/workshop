@@ -257,7 +257,7 @@ https://github.com/rhpds/web-nodejs.git
 ----
 +
 
-*Note*: Ignore the error "Danger alert: Import is not possible." You will be updating the Builder Option.SECURE_COOLSTORE_GW_ENDPOINT
+*Note*: Ignore the error "Danger alert: Import is not possible." You will be updating the Builder Option.
 
 5. Edit *Import Strategy* and select *Builder Image* (keep Node.js but change to Builder Image version: 18-ubi8)
 +
