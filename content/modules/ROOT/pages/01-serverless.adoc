@@ -253,7 +253,7 @@ In this section, you will move the UI source code into OpenShift using the Devel
 [.console-input]
 [source,bash,subs="+attributes",role=execute]
 ----
-https://github.com/OpenShiftDemos/web-nodejs.git
+https://github.com/rhpds/web-nodejs.git
 ----
 +
 
@@ -379,7 +379,7 @@ image::ocp-app/pipeline_run.png[width=80%]
 [.console-input]
 [source,bash,subs="+attributes",role=execute]
 ----
-https://github.com/OpenShiftDemos/catalog-spring-boot.git
+https://github.com/rhpds/catalog-spring-boot.git
 ----
 +
 
