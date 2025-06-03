@@ -525,7 +525,7 @@ The Policy Scope section at the bottom enables you to control the scope of the p
 
 image::/devsecops/acs-policy-criteria-section.png[]
 
-* In the pop-up, click on "cosign", and this will take you to the public signature that is used to verify the container image, in pair with the private signature that is used by OpenShift Pipelines / Tekton Chains to sign the container images after the build. We will talk about the image signing process in more details in the next pipeline.
+* In the pop-up, click on "cosign", and this will take you to the public signature that is used to verify the container image, in pair with the private signature that is used by OpenShift Pipelines / Tekton Chains to sign the container images after the build. We will talk about the image signing process in more details in the next section.
 
 image::/devsecops/acs-signature-integration.png[]
 
