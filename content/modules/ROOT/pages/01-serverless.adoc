@@ -75,7 +75,7 @@ image::ocp-app/serverless_serving.png[width=100%]
 - *Web NodeJS*: The application recently created is the UI enabling users to interact with the coolstore.
 - *Gateway-vertx*: A Java application that works as a gateway between the UI and the rest of the application services.
 - *Inventory*: A Java-based application built with Quarkus that provides the inventory information for each specific product. The data is shown in the UI as to how much quantity is available on each product.
-- *Catalog*: A Java-based application built with Spring Boot that connects with the Catalog Database to provide all the catalog information. The catalog data will not be visible in the UI without this service.
+- *Catalog*: A Java-based application built with Spring Boot to provide all the catalog information. The catalog data will not be visible in the UI without this service.
 
 image::ocp-app/coolstore_diagram.png[width=80%]
 Image showing the final topology view that makes the coolstore microservices
@@ -200,7 +200,7 @@ oc new-project coolstore-dev-{user}
 git clone -b main --single-branch https://gitea-gitea.{subdomain}/user1/workshop ~/workshop
 ----
 
-* Explore the yaml file that will deploy the catalog and the database.
+* Explore the yaml file that will deploy the catalog.
 
 [.console-input]
 [source,bash,subs="+attributes,macros+"]

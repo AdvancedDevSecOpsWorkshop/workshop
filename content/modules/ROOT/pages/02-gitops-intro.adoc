@@ -124,7 +124,7 @@ we are using Keycloak to provide Single-Sign-On in this workshop.
 [NOTE]
 If you need to login again, remember your credentials are *{user}*/*{password}*.
 
-The newly created Applications appears as a tile with the titles `app-dev` and `app-prod` in the
+The newly created Applications appears as a tile with the titles `coolstore-app-dev` and `coolstore-app-prod` in the
 Argo CD UI.
 
 image::devsecops/coolstore-app.png[SampleApp]
@@ -636,7 +636,7 @@ cat ~/workshop/content/modules/ROOT/examples/pipeline-helm-app-para.yaml
 include::ROOT:example$pipeline-helm-app-para.yaml[]
 ----
 
-In the 'parameters' section of the YAML, you will notice that we have included all the desired values direcly within the chart.
+In the 'parameters' section of the YAML, you will notice that we have included all the desired values directly within the chart.
 
 Deploying a Helm chart through ArgoCD with integrated parameters allows you to customize default settings without modifying the chart itself or relying on external values files. This centralizes configuration management across different environments.
 
